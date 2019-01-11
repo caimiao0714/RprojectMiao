@@ -1,0 +1,91 @@
+---
+title: "A visualization of random effects model and fixed effects model"
+author: "Miao Cai"
+date: "October 10, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Random intercept model
+
+\begin{align}
+y_{ij} & = \beta_{0j} + \beta_{1}*x + \epsilon\\
+\beta_{0j} & \sim N(\mu, \sigma^2)
+\end{align}
+
+Let's assume $\mu = 1, \sigma = 1$.
+
+```{r SimulateData}
+set.seed(666)
+
+Total_obs = 500
+group = 10
+Group_Obs = Total_obs/group
+
+b1 = 1
+mu = 1
+sigma = 1
+epsilon = 2
+
+# y = b0 + b1 + e
+j = rep(1:group, Group_Obs)
+b0 = rnorm(group, 1, 5)
+x = rnorm(Total_obs, 5, 5)
+
+y = rep(b0, Group_Obs) + b1*x + rnorm(Total_obs)
+
+dat = data.frame(y, j, x, b0, b1)
+
+plot(x, y)
+for (i in 1:group) {
+  abline(b0[i], b1)
+}
+
+reg1 <- lm(y ~ x,data = dat) 
+abline(reg1, col = "grey", lwd = 3)
+
+reg2 <- lm(y ~ factor(j) + x,data = dat)
+reg2_b0 = reg2$coefficients[labels(reg2$coefficients) == "(Intercept)"]
+reg2_b1 = reg2$coefficients[labels(reg2$coefficients) == "x"]
+abline(reg2_b0, reg2_b1, col = "blue", lwd = 3)
+
+
+require(lme4)
+reg3 <- lmer(y ~ x + (1|j), dat)
+summary(reg3)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+require(ggplot2)
+
+nDriver = 50
+Hour = 10
+
+x = seq(0, Hour, 0.1)
+driverID = 1:nDriver
+b0 = rnorm(nDriver, -2, 1)
+b1 = rnorm(nDriver, 0.25, 0.2)
+
+dat = data.frame(driverID = rep(driverID, each = length(x)), 
+                 b0 = rep(b0, each = length(x)), 
+                 b1 = rep(b1, each = length(x)), 
+                 x = rep(x, nDriver))
+
+
+dat$p = 1 - exp(-exp(dat$b0 + dat$b1*dat$x))
+
+ggplot(data = dat, aes(x = x, y = p, group = driverID)) + 
+  geom_line(size = 0.1) + 
+  xlab("Cumulative hours of driving") + 
+  ylab("Probability of at least 1 critical event") + 
+  ggtitle("Random intercept and random slope model of driver fatigue")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
