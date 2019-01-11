@@ -1,0 +1,202 @@
+---
+title: "Structural Equation Modelling with lavaan in R"
+author: "Miao Cai"
+date: "1/9/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+# One factor models
+
+The goals of structural equation modeling
+
+- Explore the relationship between variables
+- Confirm the structure of a developed model
+
+Variables:
+
+- Manifest variables: real numbers in your dataset (squares)
+- Latent variables: phenomenon measured by manifest variables (circles)
+
+Set up your model: `model = 'latent_var =~ manifest_var1 + manifest_var2 + ...'`
+
+**Model terms**
+
+Degrees of Freedom
+
+- Determined by the number of manifest variables and estimated values
+- df = possible values - estimated values
+- possible values = manifest variables*(manifest variables + 1)/2
+
+Identification
+
+- Include at least three manifest variables.
+- Create models with df > 0
+- Using scaling and constraints to control df
+
+
+## Build Text Speed Model
+
+Use the HolzingerSwineford1939 dataset to create a new model of textual speed with the variables x4, x5, and x6, which represent reading comprehension and understanding word meaning. x7, x8, and x9 represent speed counting and addition. The model will have one latent variable that predicts scores  on these six manifest variables.
+
+```{r}
+# Load the lavaan library
+library(lavaan)
+
+# Look at the dataset
+data(HolzingerSwineford1939)
+head(HolzingerSwineford1939[ , 7:15])
+
+# Define your model specification
+text.model <- 'textspeed =~ x4 + x5 + x6 + x7 + x8 + x9'
+```
+
+## Build Political Democracy Model
+
+You can now expand your model specification skills to a new dataset. Create a model of Political Democracy ratings from 1960 using the `PoliticalDemocracy` dataset. This dataset includes ratings of politics in developing countries from the 1960s.
+
+Variables y1, y2, y3, and y4 measure freedom of the press, freedom of political opposition, election fairness, and effectiveness of the legislature. You should create a model with one latent variable, named `poldemo60`, and four manifest variables.
+
+```{r}
+library(lavaan)
+
+# Look at the dataset
+data(PoliticalDemocracy)
+head(PoliticalDemocracy)
+
+# Define your model specification
+politics.model <- 'poldemo60 =~ y1 + y2 + y3 + y4'
+```
+
+## Analyze the model
+
+
+- Model specification: `vmodel = 'v =~ x1 +x2 + ...'`
+- Model analysis: `fit = cfa(model = vmodel, data = dat)`
+
+```{r}
+# Load the lavaan library
+library(lavaan)
+
+# Load the dataset and define model
+data(HolzingerSwineford1939)
+text.model <- 'textspeed =~ x4 + x5 + x6 + x7 + x8 + x9'
+
+# Analyze the model with cfa()
+text.fit <- cfa(
+  model = text.model,
+  data = HolzingerSwineford1939
+)
+
+# Summarize the model
+summary(text.fit)
+```
+
+It is also important to examine model variances, which indicate the size of error in estimating manifest or latent variables. Use the `summary()` function on `politics.fit` to display the coefficients and variances for the model.
+
+## Model Assessment
+
+**Standardized Loadings**
+
+- Loadings - strength of the relationship of the manifest variables to the latent variable, and the standardized loadings often easiest to interpret
+
+
+```{r}
+summary(text.fit, standardized = TRUE)
+```
+
+`Std.all` near one indicates that the manifest variable has strong relationship with the latent variable. There are no consistent rule for picking loadings, but people generally use 0.3 as an acceptable loading.
+
+**Fit Indices**
+
+- Model fit - how well the data fit the specified model
+  - Goodness of fit indices like the Comparative Fit Index (CFI) or the Tucker Lewis Index (TLI)
+  - Badness of fit indices like Root Mean Square Error of Approximation (RMSEA) or Standardized Root Mean Square Residual (SRMR)
+- Measuring Model Fit
+
+We want CFI or TLI to be close to 1 and above 0.9 (model matches data almost identically), while we want RMSEA and SRMR to be close to 0, usually below 0.1
+
+```{r}
+summary(text.fit, standardized = TRUE, fit.measures = TRUE)
+```
+
+
+# Multifactor Specification
+
+The model fit may be bad because we put two underlying factors into one latent variable.
+
+
+```{r notworking, eval = FALSE}
+visual.model <- 'visual =~ x1 + x2 + x3'
+visual.fit <- cfa(model = visual.model,
+                  data = HolzingerSwineford1939)    
+summary(visual.fit, standardized = TRUE, fit.measures = TRUE)
+
+speed.model <- 'speed =~ x7 + x8 + x9'
+speed.fit <- cfa(model = speed.model,
+                 data = HolzingerSwineford1939)    
+summary(speed.fit, standardized = TRUE, fit.measures = TRUE)
+```
+
+The above code does not work:
+
+- Possible parameters: 3*(3+1)/2 = 6
+- Estimated parameters: 2 coefficients + 4 variances = 6
+
+We need at least one degree of freedom to identify the model. Therefore, the above model is unidentifiable.
+
+**Constraints** are normally applied to nonidentifiable models and other problems.
+
+- Constraints set parameters to be equal
+- Gain df by estimating less numbers
+
+
+```{r}
+visual.model <- 'visual =~ x1 + a*x2 + a*x3'
+
+visual.fit <- cfa(model = visual.model,
+                  data = HolzingerSwineford1939)    
+summary(visual.fit, standardized = TRUE, fit.measures = TRUE)
+```
+
+The completely standardized solutions (`Std.all`)) for x2 and x3 show you different loadings, indicating they have different relationships to the latent variable. These differences occur because completely standardized solution is z-score on both the latent and manifest variables
+
+
+The problem for separating into two models is failing to capture the relationships between the latent variables. So it would be better to integrate them into a larger model.
+
+```{r}
+twofactor.model <- 'visual =~ x1 + x2 + x3 
+    speed =~ x7 + x8 + x9'
+
+
+twofactor.fit <- cfa(model = twofactor.model,
+                  data = HolzingerSwineford1939)    
+summary(twofactor.fit, standardized = TRUE, fit.measures = TRUE)
+```
+
+This model can be identified with 8 degrees of freedom, while the one-factor model has to be constrained to reach one degree of freedom.
+
+
+
+
+
+
+
+
+
+
+
+
+

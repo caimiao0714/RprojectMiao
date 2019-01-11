@@ -1,0 +1,293 @@
+---
+title: "Hierarchical and Mixed Effects Model"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University. Email: [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "1/10/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+link-color: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+A link to compare fixed and random effects in the perspectives of economists and biostatistics [link](https://rlbarter.github.io/Practical-Statistics/2017/03/03/fixed-mixed-and-random-effects/)
+
+# Random-effect syntax
+
+- `(1|group)`: Random intercept with fixed mean
+- `(1|group1/group2)`: Intercepts vary among `g1` and `g2` within `g2`
+- `(1|group1) + (1|group2)`: Random intercepts for 2 variables
+- `x + (x|group)`: Correlated random slope and intercept
+- `x + (x||group)`: Uncorrelated random slope and intercept
+
+ The summary of a lmer() has of 4 parts:
+
+- How the model was fit; the specific model; the REML at convergence; and the scaled Pearson residuals, which help with debugging.
+- The random-effects and residual variation.
+- The fixed-effects.
+- _The correlations among fixed-effects._
+
+About the last one **The correlation among fixed-effects**
+
+The "correlation of fixed effects" output doesn't have the intuitive meaning that most would ascribe to it. Specifically, is not about the correlation of the variables. It is in fact about the expected correlation of the regression coefficients. Although this may speak to multicollinearity it does not necessarily. In this case it is telling you that if you did the experiment again and it so happened that the coefficient for `cropforage` got smaller, it is likely that so too will would the coeffienct of `sbare.`
+
+In part his book "Analyzing Linguistic Data: A Practical Introduction to Statistics using R " dealing with lme4 Baayen suppresses that part of the output and declares it useful only in special cases. Here is a listserv message where Bates himself describes how to interpret that part of the output:
+
+> It is an approximate correlation of the estimator of the fixed effects. (I include the word "approximate" because I should but in this case the approximation is very good.) I'm not sure how to explain it better than that. Suppose that you took an MCMC sample from the parameters in the model, then you would expect the sample of the fixed-effects parameters to display a correlation structure like this matrix.
+
+
+```{r PlotRandomIntercept}
+require(ggplot2)
+require(lme4)
+
+# First, re-run the model to re-load it
+outLmer <- lmer( response ~ x + (1|group), data = multIntDemo)
+
+# Second, save the model predictions as a column to the original data.frame
+multIntDemo$lmerPredict <- predict(outLmer)
+
+# Third, plot the original data
+ggmultIntgDemo2 <- ggplot( multIntDemo, aes(x = x, y = response) ) +
+  geom_point(aes(color = group))+
+  theme_minimal() +
+  scale_color_manual(values = c("blue", "black", "red")) +
+  geom_abline(data = multIntDemo,
+              aes(intercept = intercept, slope = slope, color = group))
+
+# Fourth, use the predicted values to plot the new outputs
+ggmultIntgDemo2 +
+  geom_line( data =  multIntDemo,
+             aes(x = x, y = lmerPredict, color = group),
+             linetype = 2)
+```
+
+
+```{r PlotRandomSlope}
+# First, re-run the model to re-load it
+outLmer2 <- lmer( response ~ x + (x|group), data = multIntDemo)
+
+# Second, save the model predictions as a column to the original data.frame
+multIntDemo$lmerPredict <- predict(outLmer2)
+
+# Third, plot the original data
+ggmultIntgDemo2 <- ggplot( multIntDemo, aes(x = x, y = response) ) +
+        geom_point(aes(color = group))+
+        theme_minimal() +
+        scale_color_manual(values = c("blue", "black", "red")) +
+        geom_abline(data = multIntDemo,
+                    aes(intercept = intercept, slope = slope, color = group))
+
+# Fourth, use the residual to plot the new outputs
+ggmultIntgDemo2 +
+	geom_line( data =  multIntDemo,
+               aes(x = x, y = lmerPredict, color = group),
+               linetype = 2)
+```
+
+# Interpeting results from lme4
+
+REML (restricted maximum likelihood method) criterion at converge:
+
+Numerically compute mixed-effects model is difficult and using MLE to do that often fails.
+
+
+## Displaying the results from a lmer model
+
+Communicating is an important part of data science and DataCamp offers courses on the topic. This is especially true for complex models such as the results from `lmer()`. A critical part of communication is to match your audience's knowledge level and expectations.
+
+For non-technical audiences, simply describing your outputs may be sufficient. For example, you might say, counties with older mothers tend to have lower birth rates. For technical audiences, include the coefficient estimates, confidence intervals, and test statistics. Additionally, formal resources for describing regression outputs exist, such as The Chicago Guide to Writing about Multivariate Analysis.
+
+During this exercise, you will extract and plot fixed-effects. This requires some wrangling code, which you are given. Besides plotting the coefficients (with `geom_point()`) and their 95% confidence intervals (with `geom_linerange()`), you will add a red-line to the plot to help visualize where zero is located (using `geom_hline()`). If the 95% confidence intervals do not include zero, the coefficient's estimate differs from zero.
+
+Additionally, `cood_flip()` is required because ggplot does not allow for xmin or xmax, only ymin and ymax. And, `theme_minimal()` changes the theme from the default.
+
+
+
+```{r}
+library(lme4)
+library(broom)
+
+names(sleepstudy) <- tolower(names(sleepstudy))
+
+```
+
+
+```{r}
+fm1 <- lmer(reaction ~ days + (days | subject), data = sleepstudy)
+summary(fm1)
+tidy(fm1)
+tidy(fm1, "ran_modes")
+ranef(fm1)
+
+tidy(fm1)
+fixef(fm1)
+```
+
+```{r}
+fm2 <- lmer(reaction ~ (days | subject), data = sleepstudy)
+summary(fm2)
+tidy(fm2)
+tidy(fm2, "ran_modes")
+ranef(fm2)
+
+tidy(fm2)
+fixef(fm2)
+```
+
+
+We can use `lmerTest` package to estimate P-values.
+
+
+```{r}
+# Load lmerTest
+library(lmerTest)
+
+# Fit a lmer use lme4
+out_lme4 <- lme4::lmer(Crime ~ Year2 + (1 + Year2 | County) , data = MDCrime)
+
+# Fit a lmer use lme4
+out_lmerTest <- lmerTest::lmer(Crime ~ Year2 + (1 + Year2 | County) , data = MDCrime)
+
+## Look at the summaries
+summary(out_lme4)
+summary(out_lmerTest)
+```
+
+
+
+## Model comparison with ANOVA
+
+Comparing models can be difficult and many methods exist that are beyond the scope of this course such as model selection (e.g., AIC). For example, including too many predictors can cause models to be overfit.
+
+One tool you are likely familiar with, Analysis of Variance (ANOVA), can be used to compare two different lmer models and test if one model explains more variability than the other model. Specifically, ANOVA can be used to test the amount of variability explained by lmer models.
+
+If you wanted to see if Year is important for predicting Crime in Maryland, we can build a null model with only County as a random-effect and a year model that includes Year. You can then compare the two models using the anova() function.
+
+If Year explains a significant amount of variability, then the P-value will be less than your pre-specified threshold (usually 0.05).
+
+```{r}
+# Build the Null model with only County as a random-effect
+null_model <- lmer(Crime ~ (1 | County) , data = MDCrime)
+
+# Build the Year2 model with Year2 as a fixed and random slope and County as the random-effect
+year_model <- lmer(Crime ~ Year2 + (1 + Year2 | County) , data = MDCrime)
+
+# Compare null_model and year_model using an anova
+anova(null_model, year_model)
+```
+
+
+# Generalized Linear Models
+
+[The arcsine is asinine: the analysis of proportions in ecology](https://esajournals.onlinelibrary.wiley.com/doi/10.1890/10-0340.1)
+
+**Abstract**
+
+The arcsine square root transformation has long been standard procedure when analyzing proportional data in ecology, with applications in data sets containing binomial and non‐binomial response variables. Here, we argue that the arcsine transform should not be used in either circumstance. For binomial data, logistic regression has greater interpretability and higher power than analyses of transformed data. However, it is important to check the data for additional unexplained variation, i.e., overdispersion, and to account for it via the inclusion of random effects in the model if found. For non‐binomial data, the arcsine transform is undesirable on the grounds of interpretability, and because it can produce nonsensical predictions. The logit transformation is proposed as an alternative approach to address these issues. Examples are presented in both cases to illustrate these advantages, comparing various methods of analyzing proportions including untransformed, arcsine‐ and logit‐transformed linear models and logistic regression (with or without random effects). Simulations demonstrate that logistic regression usually provides a gain in power over other methods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

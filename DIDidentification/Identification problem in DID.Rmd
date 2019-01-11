@@ -1,0 +1,123 @@
+---
+title: "An identification problem in DID"
+author: "Miao Cai"
+date: "12/20/2018"
+output:
+  pdf_document:
+    number_sections: yes
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+In classic difference-in-difference (DID) settings, there are only two periods, before and after.
+
+$$Y = \beta_0 + \beta_1 \cdot Tr + \beta_2 \cdot Post + \beta_3 T \cdot Post + \epsilon$$
+
+Where $T$ is an indicator of treatment or not, $Post$ is an indicator of pre or post periods, and $\beta_3$ is the DID estimator of treatment causal effect. 
+
+
+```{r twpperiods}
+set.seed(666)
+
+nunits = 400
+nyear = 2
+
+b3 = 5
+b1 = 3
+b2 = 5
+b0 = 0
+
+Group = rep(1:nunits, each = nyear)
+Year = rep(2007:(2007+nyear-1), times = nunits)
+Tr = rep(sample(0:1, nunits, replace = TRUE), each = nyear)
+Post = ifelse(Year<2008, 0, 1)
+
+
+
+Y = b0 + b1*Tr + b2*Post + b3*Tr*Post  + rnorm(nunits*nyear, 0, 1)
+
+dat = data.frame(Y, Group, Tr, Post)
+
+require(tidyverse)
+
+dat %>%  
+  ggplot(aes(x = Post, y = Y, group = Group, color = 
+               factor(Tr))) + 
+  geom_line(alpha = 0.3)+ 
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) + 
+  theme_bw()
+```
+
+
+
+In modern econometrics, long panel data are more and more commonly used. Researchers typically add year dummy variables to allow for time trend fixed effects in their models. 
+
+$$Y = \beta_0 + \beta_1 \cdot Tr + \beta_2 \cdot Post + \beta_3 \cdot T \cdot Post + \beta_4 \cdot Year + \epsilon$$
+
+However, identification may be a potential issue in this case since $Post$ and $Year$ dummies have a lot in common. In this demonstration, I will use simulation to test the identification issue in this scenario.
+
+```{r longpanel}
+set.seed(666)
+
+nunits = 400
+nyear = 10
+
+b0 = 1
+b1 = 2
+b2 = 3
+b3 = 4
+
+Group = rep(1:nunits, each = nyear)
+Year = rep(2007:(2007+nyear-1), times = nunits)
+Tr = rep(sample(0:1, nunits, replace = TRUE), each = nyear)
+Post = ifelse(Year<2013, 0, 1)
+
+byear = c(0, rnorm(nyear-1, 0, 1))
+yyear = model.matrix( ~ YEAR-1, data=data.frame(YEAR = factor(Year))) %*% byear
+
+Y = b0 + b1*Tr + b2*Post + b3*Tr*Post + yyear + rnorm(nunits*nyear, 0, 1)
+
+dat = data.frame(Y, Group, Tr, Post, Year)
+
+require(tidyverse)
+
+dat %>%  
+  ggplot(aes(x = Year, y = Y, group = Group, color = factor(Tr))) + 
+  geom_line(alpha = 0.3) + 
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) + 
+  theme_bw()
+```
+
+- $nobs$: `r nunits*nyear`
+- $Year$: 2007 - 2016, in total 10 years
+- $Tr$: 0 or 1
+- $Post$: 0 or 1
+
+- $\beta_0$ = `r b0`
+- $\beta_1$ = `r b1`
+- $\beta_2$ = `r b2`
+- $\beta_3$ = `r b3`
+
+```{r did}
+didfit = lm(Y ~ Tr + Post + Tr*Post + factor(Year), data = dat)
+summary(didfit)
+
+namerow = rownames(summary(didfit)$coefficients)
+
+estimates = round(summary(didfit)$coefficients[namerow %in% c("(Intercept)", "Tr", "Post", "Tr:Post"), 1], 2)
+parameters = c(b0, b1, b2, b3)
+```
+
+- The parameters are `r parameters`
+- The estimates are `r estimates`
+
+It seems that there are identification issues here: the estimate of $\beta_2$, which is estimates the post-treatment fixed effect, is biased by one unit. The model cannot generate estimate for the last year's fixed effect.

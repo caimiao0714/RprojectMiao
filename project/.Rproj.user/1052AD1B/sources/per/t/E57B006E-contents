@@ -1,0 +1,149 @@
+---
+title: "Visualization of temperature data in Shanxi, China 2013 - 2017"
+subtitle: "SBT5920 Data Visualization Final Project - User Manual"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, Saint Louis University. Email address [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "12/17/2018"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: hide
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+linkcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = T, fig.width=8)
+```
+
+Introduction
+============
+
+Climate change has been a global public health issue that has wide impacts on the society, including human health, agriculture, food security and water supply. Visualizing real life temperature data help us better understand climate change, and predict future temperature trend.
+
+This shiny app explores the time trend of temperature and temperature variation in 127 counties in Shanxi, China from January 1st, 2013 to November 27, 2017. The link to the shiny app is [https://miaocai.shinyapps.io/datavisproject/](https://miaocai.shinyapps.io/datavisproject/)
+
+
+Data sources
+==============
+
+## Shanxi
+
+Shanxi is a province located in North China region, with over 36 million residents living in 127 districts or counties. As Shanxi has a wide range in latitude and complex and different types of landforms, it has distinct four seasons, very different temperature patterns between north and south Shanxi, between winter and summer, and between day and night.
+
+It is to be noted that counties are nested within cities in China, which is different from the geographical division in the United States. There are 127 counties and 11 cities in Shanxi, China, but these 127 counties belongs to any of the 11 cities.
+
+## Weather data
+
+All the historical temperature data were scraped from [2345 Historical Weather](http://tianqi.2345.com/wea_history/53772.htm), published by [China Meteorological Administration](http://www.cma.gov.cn/en2014/).
+
+## Visualization
+
+All the visualization was conducted in [shiny](https://shiny.rstudio.com/) and [shinydashboard](https://rstudio.github.io/shinydashboard/index.html). The time series plots were made using the R package [dygraphs](https://rstudio.github.io/dygraphs/), which was built on the fast and flexible open source JavaScript library [dygraphs](http://dygraphs.com/). 
+
+There are three files associated with this project:
+
+1. [Shinyapp](https://miaocai.shinyapps.io/datavisproject/)
+2. [User's manual](caimiao0714/DATAVIS/20181217TemperatureMANUAL/User_Manual_-_Miao_Cai.html)
+3. [Presentation slides](caimiao0714/DATAVIS/20181217TemperaturesLIDE/BST5920_Presentation_-_Miao_Cai.html)
+
+This user manual is written using [Rmarkdown](https://rmarkdown.rstudio.com/). A accompanying final project in-browser presentation is made using the R package [xaringan](https://github.com/yihui/xaringan), which is based on the JavaScript library [remark.js](https://github.com/gnab/remark). All the source code can be found on my personal [GitHub repository](https://github.com/caimiao0714/BST5920DataVisulizationHW/tree/master/project).
+
+
+## Graph Interactivity 
+
+Since there are a fair amount of time series data on this plots, I enabled several interactive components in this shiny app:
+
+- mouseover: you can access temperature date at a specific date by placing your mouse on that day.
+- range selector: you can select the range of the dates by:
+  - left click and select the date range you want
+  - adjusing the range selector at the bottom of the graphs
+
+
+
+
+Temperature trends
+==================
+
+Temperature demonstrates significant regional and seasonal patterns. This temperature trend plots aims to demonstrate temperature trends on any selected periods between January 1, 2013 and November 28, 2017 in any of the 127 counties in Shanxi, China.
+
+Choices:
+
+- City: 11 cities
+- County: 127 counties in total
+- Time range: between January 1, 2013 and November 28, 2017
+- Temperature types: Maximum, Average, Minumum
+
+## Example
+
+The following example shows the maximum, minumum and average temperatures in Datong County, Datong City, Shanxi, 2013 - 2017.
+
+
+```{r trends, message=F}
+require(tidyverse)
+require(xts)
+require(dygraphs)
+
+load("manual_data.Rdata")
+
+manual_data %>%
+      select(tmax, tmed, tmin) %>%
+      xts(., order.by = manual_data$date) %>%
+      dygraph(main = "Temperature trend in Datong County, 
+              Datong City, Shanxi China",
+              y = "Temperature in Fahrenheits") %>%
+      dyAxis("x", drawGrid = FALSE) %>%
+      dyOptions() %>%
+      dyLegend(width = 400) %>% 
+      dyRangeSelector()
+```
+
+
+Temperature variation
+=====================
+
+## Sources of variation
+
+I decompose temperature variation into two sources:
+
+- Horizontal variation ($V_h$): the sum of the absolute difference between the average temperature in two consecutive days in the past week. 
+- Vertical variation ($V_v$, a.k.a. diurnal range): the absolute difference between the maximum and minimum temperature during a day.
+
+\[
+V_h = \sum_{i = \text{d} - 7}^{\text{d}} \Big|T_i - T_{i - 1}\Big|
+\]
+Where $d$ is today's date.
+
+\[
+V_v = T_{max} - T_{min}
+\]
+
+This decomposition allows for temperature variation within a day and temperature variation across multiple days.
+
+## Example
+
+The following example shows the temperature variations in Datong County, Datong City, Shanxi China, January 1st, 2013 to November 27, 2017, where orange line represented vertical variation, while green line represented horizontal variation.
+
+```{r variation}
+manual_data %>%
+      select(tvarv, tvarh) %>%
+      xts(., order.by = manual_data$date) %>%
+      dygraph(main = "Temperature variation in Datong County, 
+              Datong City, Shanxi China",
+              y = "Temperature in Fahrenheits") %>%
+      dySeries("tvarv", label = "Vertical variation", color = "orange") %>%
+      dySeries("tvarh", label = "Horizontal variation", color = "green") %>%
+      dyOptions() %>%
+      dyAxis("x", drawGrid = FALSE) %>%
+      dyLegend(width = 400) %>%
+      dyRangeSelector()
+```
+
+
+
+
