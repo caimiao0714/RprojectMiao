@@ -1,0 +1,62 @@
+---
+title: "Hyperparameter Tuning in R"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University. Email: [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "1/10/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+link-color: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+*Splitting* data into training and testing sets.
+
+```{r}
+# Load caret and set seed
+library(caret)
+set.seed(42)
+
+# Create partition index
+index <- createDataPartition(breast_cancer_data$diagnosis, p = .70, 
+                             list = FALSE)
+# Subset `breast_cancer_data` with index
+bc_train_data <- breast_cancer_data[index, ]
+bc_test_data  <- breast_cancer_data[-index, ]
+```
+
+
+```{r crossvalidation}
+library(caret)
+library(tictoc)
+
+# Repeated CV.
+fitControl <- trainControl(method = "repeatedcv",
+                           number = 3,
+                           repeats = 5)
+```
+
+train a random forrest model
+
+```{r}
+tic()
+set.seed(42)
+rf_model <- train(diagnosis ~ ., 
+                  data = bc_train_data, 
+                  method = "rf", 
+                  trControl = fitControl,
+                  verbose = FALSE)
+toc()
+```
+
