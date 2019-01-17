@@ -50,3 +50,28 @@ mtcarsDT[
 ## Doing j by group
 
 `DT[, .(MySum = sum(B)), by = .(Grp = A%%2)]`
+
+
+```{r}
+head(mtcars)
+require(data.table)
+t = data.table(mtcars[1:10,])
+# t[,"{x1 := am + gear, x2 := gear + carb}"]
+```
+
+Group_by summarize and rename the variables:
+
+`DT[, .(Count = .N), by = .(Area = 10 * round(Sepal.Length * Sepal.Width / 10))]`
+
+# data.table yeoman
+
+## Chaining
+
+```{r, eval = FALSE}
+ans = DT[, sum(B), by = A]
+ans = ans[order(A)]
+
+# by chaining:
+ans = DT[, sum(B), by = A][order(A)]
+```
+
