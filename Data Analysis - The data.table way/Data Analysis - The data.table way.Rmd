@@ -1,0 +1,52 @@
+---
+title: "Data Analysis - The data.table way"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University. Email: [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "1/10/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+link-color: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# data.table novice
+
+## Introduction
+
+General form maps to SQL:
+
+- i -> WHERE
+- j - > SELECT
+- by -> GROUP BY
+
+## Select columns in j
+
+```
+mtcarsDT[
+  mpg > 20,
+  .(AvgHP = mean(hp),
+    "MinWT(kg)" = min(wt*453.6)),
+  by = .(cyl, under5gears = gear < 5)
+]
+```
+
+`DT[i, j, by]` is pronounced as: 
+
+> Take `DT`, subset by row using `i`, then calculate `j` grouped by `by`.
+
+`DT[, .(Total = sum(A), Mean = mean(C))]`
+
+## Doing j by group
+
+`DT[, .(MySum = sum(B)), by = .(Grp = A%%2)]`

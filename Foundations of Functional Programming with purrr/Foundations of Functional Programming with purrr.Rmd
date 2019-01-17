@@ -27,5 +27,19 @@ knitr::opts_chunk$set(echo = TRUE)
 - object: can be a vector or list
 - function: any function in R that takes the input offered by the object
 
+`map(survey_data, ~nrow(.x))`
 
+`map_dbl` outputs a vector as the output:
+`map_dbl(survey_data, ~nrow(.x))`
+
+
+`map_lgl` outputs a vector of logical values as the output:
+`map_lgl(survey_data, ~nrow(.x)==14)`
+
+
+`map_chr`
+```{r}
+# Map over species_names list
+map_chr(species_names, ~.x)
+```
 
