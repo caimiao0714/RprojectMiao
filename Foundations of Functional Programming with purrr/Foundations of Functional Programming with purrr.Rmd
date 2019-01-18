@@ -18,6 +18,7 @@ link-color: blue
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+require(purrr)
 ```
 
 # Simplify iterations and lists with purrr
@@ -38,7 +39,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 `map_chr`
-```{r}
+```{r eval = FALSE}
 # Map over species_names list
 map_chr(species_names, ~.x)
 ```

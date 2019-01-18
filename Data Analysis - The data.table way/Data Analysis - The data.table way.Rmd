@@ -52,12 +52,6 @@ mtcarsDT[
 `DT[, .(MySum = sum(B)), by = .(Grp = A%%2)]`
 
 
-```{r}
-head(mtcars)
-require(data.table)
-t = data.table(mtcars[1:10,])
-# t[,"{x1 := am + gear, x2 := gear + carb}"]
-```
 
 Group_by summarize and rename the variables:
 
@@ -74,4 +68,129 @@ ans = ans[order(A)]
 # by chaining:
 ans = DT[, sum(B), by = A][order(A)]
 ```
+
+## Subset of data - `.SD`
+
+The data.table package provides a special built-in variable `.SD`. It refers to the subset of data for each unique value of the by argument. That is, the number of observations in the output will be equal to the number of unique values in by.
+
+`DT[, lapply(.SD, mean), by = x]`
+
+## subset of data - `.SDcols`
+
+`.SDcols` specifies the columns of DT that are included in .SD. Using .SDcols comes in handy if you have too many columns and you want to perform a particular operation on a subset of the columns (apart from the grouping variable columns).
+
+Using `.SDcols` allows you to apply a function to all rows of a data.table, but only to some of the columns. For example, consider the dog example from the last exercise. If you wanted to compute the average weight and age (the second and third columns) for all dogs, you could assign .SDcols accordingly
+
+```
+dogs[, lapply(.SD, mean), .SDcols = 2:3]
+   Weight Age
+1:     56 5.2
+```
+
+Select all but the first row of groups 1 and 2, returning only the grp column and the Q columns
+
+`DT[, .SD[-1], by = grp, .SDcols = paste0("Q", 1:3)]`
+
+```
+# Sum of all columns and the number of rows
+DT[, c(lapply(.SD, sum), .N), by = x, .SDcols = c("x", "y", "z")]
+
+# Cumulative sum of column x and y while grouping by x and z > 8
+DT[, lapply(.SD, cumsum), by = .(by1 = x, by2 = z > 8), .SDcols = c("x", "y")]
+```
+
+## add and remove columns
+
+`:=` is defined for use in j only, and is used to update data.tables by reference. One way of using `:=` is the `LHS := RHS` form, where LHS is a character vector of columns (referenced by name or number) you wish to update and RHS is the corresponding value for each column (Note: LHS stands for "left hand side" and RHS stands for "right hand side" in what follows).
+
+```{r}
+require(data.table)
+t = data.table(mtcars[1:5,])
+t
+
+# add columns
+t[,c("x1", "x2") := .( am + gear, gear + carb)]; t
+
+t[, `:=` (
+  y1 = am - gear,
+  y2 = gear + carb
+)] ; t
+
+
+t[,c("mpg", "cyl", "disp") := NULL];t
+cols = c("hp", "drat", "x1", "x2")
+t[, (cols) := NULL]; t
+```
+
+You've had practice with using `:=` in the `LHS := RHS` form. The second way to use `:=` is with functional form:
+
+`DT[, `:=`(colA = colB + colC)]`
+
+Notice that the `:=` is surrounded by two tick marks! Otherwise data.table will throw a syntax error. It is also important to note that in the generic functional form above, `my_fun()` can refer to any function, including the basic arithmetic functions. The nice thing about the functional form is that you can get both the RHS alongside the LHS so that it's easier to read.
+
+## Using set
+
+```
+# change the names of "y" to "z"
+setnames(DT, "y", "z")
+
+# change the order of columns
+setcolorder(DT, c("y", "x"))
+```
+
+The `set()` function is used to repeatedly update a data.table by reference. You can think of the `set()` function as a loopable, low overhead version of the `:=` operator, except that `set()` cannot be used for grouping operations. The structure of the `set()` function looks like this:
+
+The function takes four arguments:
+
+- A data.table with the columns you wish to update
+- The index used in a loop (e.g. the i in for(i in 1:5))
+- The column or columns you wish to update in the loop
+- How the column or columns should be updated
+
+For example, Loop through columns 2, 3, and 4, and for each one, select 3 rows at random and set the value of that column to NA
+
+`for (i in 2:4) set(DT, sample(10, 3), i, NA)`
+
+A summary of the set() family:
+
+- `set()` is a loopable, low overhead version of `:=`.
+- You can use `setnames()` to set or change column names.
+- `setcolorder()` lets you reorder the columns of a data.table.
+
+# data.table expert
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
