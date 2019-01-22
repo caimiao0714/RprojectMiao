@@ -160,15 +160,65 @@ A summary of the set() family:
 # data.table expert
 
 
+```{r}
+iris <- data.table::as.data.table(iris)
+
+# Remove the "Sepal." prefix
+data.table::setnames(iris, gsub("^Sepal\\.", "", names(iris)))
+
+# Remove the two columns starting with "Petal"
+iris[, grep("^Petal", names(iris)) := NULL]
+```
+
+## Selecting groups or parts of groups
+
+The previous exercise illustrated how you can manually set a key via `setkey(DT, A, B)`. `setkey()` sorts the data by the columns that you specify and changes the table by reference. Having set a key will allow you to use it, for example, as a super-charged row name when doing selections. Arguments like mult and nomatch then help you to select only particular parts of groups.
+
+Furthermore, two of the instructions will require you to make use of `by = .EACHI`. This allows you to run j for each group in which each item in i joins too. The last instruction will require you to produce a side effect inside the j argument in addition to selecting rows.
+
+```{r}
+# The 'keyed' data.table DT
+DT <- data.table(A = letters[c(2, 1, 2, 3, 1, 2, 3)], 
+                 B = c(5, 4, 1, 9, 8, 8, 6), 
+                 C = 6:12)
+setkey(DT, A, B)
+
+# Select the "b" group
+DT["b"]
+
+# "b" and "c" groups
+DT[c("b", "c")]
+
+# The first row of the "b" and "c" groups
+DT[c("b", "c"), mult = "first"]
+
+# First and last row of the "b" and "c" groups
+DT[c("b", "c"), .SD[c(1, .N)], by = .EACHI]
+```
 
 
 
+## Rolling joins
 
+To carry the first observation backwards, set the rollends argument to TRUE
 
+```{r}
+# Keyed data.table DT
+DT <- data.table(A = letters[c(2, 1, 2, 3, 1, 2, 3)], 
+                 B = c(5, 4, 1, 9, 8, 8, 6), 
+                 C = 6:12, 
+                 key = "A,B")
 
+# Print the sequence (-2):10 for the "b" group
+DT[.("b", (-2):10)]
 
+# Add code: carry the prevailing values forwards
+DT[.("b", (-2):10), roll = TRUE]
 
-
+# Add code: carry the first observation backwards
+DT[.("b", (-2):10), roll = TRUE, rollends = TRUE]
+DT[.("b", (-2):10), roll = TRUE, rollends = c(TRUE, TRUE)] # also OK
+```
 
 
 
