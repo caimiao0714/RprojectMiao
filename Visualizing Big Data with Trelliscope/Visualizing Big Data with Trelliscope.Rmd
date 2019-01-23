@@ -1,0 +1,86 @@
+---
+title: "Visualizing Big Data with Trelliscope"
+author: "Miao Cai <miao.cai@slu.edu>"
+date: "1/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+
+# General strategies for visualizing big data
+## Binning Continuous Variables using geom_hex()
+
+We would assume that there is a relationship between the total cab fare and the duration of the trip. Since there are too many data points to make a scatterplot, let's use a hexagon-binned plot to investigate this relationship.
+
+```{r}
+library(ggplot2)
+
+# Create a hexagon-binned plot of total_amount vs. trip_duration
+ggplot(tx, aes(trip_duration, total_amount)) +
+  geom_hex(bins = 75) +
+  scale_x_log10() +
+  scale_y_log10()
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Summarize taxi rides count by payment type, pickup date, pickup day of week
+daily_count <- tx %>%
+  filter(payment_type %in% c("Card", "Cash")) %>%
+  group_by(pickup_date, pickup_dow, payment_type) %>%
+  summarise(n_rides = n())
+
+# Plot the data
+ggplot(daily_count, aes(pickup_date, n_rides)) +
+  geom_point() +
+  facet_grid(payment_type ~ pickup_dow) +
+  coord_fixed(ratio = 0.4)
+```
+
+## Cash / Card Distribution Comparison Using a Quantile Plot
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+ggplot(tx_pop, aes(sample = total_amount, color = payment_type)) +
+  geom_qq(distribution = stats::qunif) +
+  ylim(c(3, 20))
+
+# Get data ready to plot
+amount_compare <- tx_pop %>%
+  mutate(total_no_tip = total_amount - tip_amount) %>%
+  select(total_amount, total_no_tip, payment_type) %>%
+  gather(amount_type, amount, -payment_type)
+
+# Quantile plot
+ggplot(amount_compare, aes(sample = amount, color = payment_type)) +
+  geom_qq(distribution = stats::qunif, shape = 21) +
+  facet_wrap(~ amount_type) +
+  ylim(c(3, 20))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

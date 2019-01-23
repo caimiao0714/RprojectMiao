@@ -54,9 +54,12 @@ batrips[start_station %in% c("Japantown", "Mezes Park", "MLK Library")]
 
 # Selecting rows from data.table
 
-Selecting a column from a data.frame, you will get a vector, while you will still get a data.table if you select a single column from a data.table.
+Selecting a column from a data.frame, you will get a vector, while you will still get a data.table if you select a single column from a data.table using the variable name without quotation.
 
 
+## Computing on columns
+
+Since columns can be refered to as variables, you can omputing directly on them in `j`.
 
 
 
