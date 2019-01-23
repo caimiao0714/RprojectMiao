@@ -1404,7 +1404,7 @@ display: none;
 padding: 0 4px 0 4px;
 }
 .pagedtable .even {
-background-color: #fcfcfc;
+background-color: rgba(140, 140, 140, 0.1);
 }
 .pagedtable-padding-col {
 display: none;
@@ -2721,6 +2721,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -2728,9 +2731,70 @@ button.code-folding-btn:focus {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
 });
 </script>
 
@@ -2743,7 +2807,6 @@ $(document).ready(function () {
   window.initializeCodeFolding("show" === "show");
 });
 </script>
-
 
 
 
@@ -2875,7 +2938,51 @@ div.tocify {
 <p><code>map_lgl</code> outputs a vector of logical values as the output: <code>map_lgl(survey_data, ~nrow(.x)==14)</code></p>
 <p><code>map_chr</code></p>
 <pre class="r"><code># Map over species_names list
-map_chr(species_names, ~.x)</code></pre>
+map_chr(species_names, ~.x)
+
+sw_films_names &lt;- sw_films %&gt;% 
+  set_names(map_chr(sw_films, &quot;title&quot;))</code></pre>
+<ul>
+<li>map_*() Output</li>
+<li>map_chr() character vector</li>
+<li>map_lgl() logical vector [TRUE or FALSE]</li>
+<li>map_int() integer vector</li>
+<li>map_dbl() double vector</li>
+</ul>
+</div>
+<div id="why-should-we-use-pmap" class="section level1">
+<h1><span class="header-section-number">2</span> Why should we use pmap?</h1>
+<pre><code>for(i in list_of_means){
+  for(j in list_of_sd){
+    for(k in list_of_samplesize){
+    num &lt;- 1
+      simdata[[1]] &lt;- rnorm(mean=i, sd=j, n = k)
+    num &lt;- num + 1
+    }
+  }
+}</code></pre>
+<pre class="r"><code>simdata &lt;- pmap(inputs_list, 
+     function(means, sd, samplesize)
+     data.frame(a = rnorm(mean=means,
+                            n=samplesize, 
+                            sd=sd)))
+
+head(simdata[[1]])</code></pre>
+<p>What if you need to iterate over three lists? Is there a map3()? To iterate over more than two lists, whether it’s three, four, or even 20, you’ll need to use pmap(). However, pmap() does require us to supply our list arguments a bit differently.</p>
+<p>To use pmap(), you first need to create a master list of all the lists we want to iterate over. The master list is the input for pmap(). Instead of using .x or .y, use the list names as the argument names.</p>
+<p>You are going to simulate data one more time, using five lists as inputs, instead of two. Using pmap() gives you complete control over our simulated dataset, and will allow you to use two different means and two different standard deviations along with the different sites.</p>
+<pre class="r"><code># Create a master list, a list of lists
+pmapinputs &lt;- list(sites = sites, means = means, sigma = sigma, 
+                   means2 = means2, sigma2 = sigma2)
+
+# Map over the master list
+list_of_files_pmap &lt;- pmap(pmapinputs, 
+  function(sites, means, sigma, means2, sigma2) 
+    data.frame(sites = sites,
+        a = rnorm(mean = means,  n = 200, sd = sigma),
+        b = rnorm(mean = means2, n = 200, sd = sigma2)))
+
+list_of_files_pmap</code></pre>
 </div>
 <div class="footnotes">
 <hr />

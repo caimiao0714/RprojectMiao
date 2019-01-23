@@ -42,5 +42,118 @@ require(purrr)
 ```{r eval = FALSE}
 # Map over species_names list
 map_chr(species_names, ~.x)
+
+sw_films_names <- sw_films %>% 
+  set_names(map_chr(sw_films, "title"))
 ```
+
+
+- map_*()	Output
+- map_chr()	character vector
+- map_lgl()	logical vector [TRUE or FALSE]
+- map_int()	integer vector
+- map_dbl()	double vector
+
+# More complex iterations with purrr
+
+## Why should we use pmap?
+
+```
+for(i in list_of_means){
+  for(j in list_of_sd){
+    for(k in list_of_samplesize){
+    num <- 1
+      simdata[[1]] <- rnorm(mean=i, sd=j, n = k)
+    num <- num + 1
+    }
+  }
+}
+```
+
+## Simulating data with multiple inputs using map2()
+
+The map() function is great if you need to iterate over one list, however, you will often need to iterate over two lists at the same time. This is where map2() comes in. While map() takes the list as the .x argument; map2() takes two lists as two arguments: .x and .y.
+
+To test out map2(), you are going to create a simple dataset, with one list of numbers and one list of strings. You will put these two lists together and create some simulated data.
+
+```{r eval=FALSE}
+simdata <- pmap(inputs_list, 
+     function(means, sd, samplesize)
+     data.frame(a = rnorm(mean=means,
+                            n=samplesize, 
+                            sd=sd)))
+
+head(simdata[[1]])
+```
+
+## Simulating data 3+ inputs with pmap()
+
+What if you need to iterate over three lists? Is there a map3()? To iterate over more than two lists, whether it's three, four, or even 20, you'll need to use pmap(). However, pmap() does require us to supply our list arguments a bit differently.
+
+To use pmap(), you first need to create a master list of all the lists we want to iterate over. The master list is the input for pmap(). Instead of using .x or .y, use the list names as the argument names.
+
+You are going to simulate data one more time, using five lists as inputs, instead of two. Using pmap() gives you complete control over our simulated dataset, and will allow you to use two different means and two different standard deviations along with the different sites.
+
+```{r, eval = FALSE}
+# Create a master list, a list of lists
+pmapinputs <- list(sites = sites, means = means, sigma = sigma, 
+                   means2 = means2, sigma2 = sigma2)
+
+# Map over the master list
+list_of_files_pmap <- pmap(pmapinputs, 
+  function(sites, means, sigma, means2, sigma2) 
+    data.frame(sites = sites,
+        a = rnorm(mean = means,  n = 200, sd = sigma),
+        b = rnorm(mean = means2, n = 200, sd = sigma2)))
+
+list_of_files_pmap
+```
+
+# Troubleshooting with lists in purrr
+
+## How to safely() use purrr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

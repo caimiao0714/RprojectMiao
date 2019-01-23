@@ -1,0 +1,76 @@
+---
+title: "Data manipulation with data.table"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University. Email: [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "1/10/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+link-color: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction to data.table
+
+`indices(DT)` makes filtering much faster in data.table
+
+- %like% allows you to search for a pattern in a character or a factor vector
+  - Usage: col %like% pattern
+- %between% allows you to search for values in the closed interval [val1, val2]
+  - Usage: numeric_col %between% c(val1, val2)
+- %chin% is similar to %in%, but it is much faster and only for character vectors
+  - Usage: character_col %chin% c("val1", "val2", "val3")
+
+These operations are internally parallelized to enable faster speed.
+
+```{r eval = FALSE}
+# Subset all rows where start_station starts with San Francisco
+batrips[start_station %like% "^San Francisco"]
+# Instead of 
+batrips[grepl("^San Francisco", start_station)]
+
+# Subset all rows where duration is between 2000 and 3000
+batrips[duration %between% c(2000, 3000)]
+# Instead of 
+batrips[duration >= 2000 & duration <= 3000]
+
+# Subset all rows where start_station is 
+# "Japantown", "Mezes Park" or "MLK Library"
+batrips[start_station %chin% c("Japantown", "Mezes Park", "MLK Library")]
+# much faster than
+batrips[start_station %in% c("Japantown", "Mezes Park", "MLK Library")]
+```
+
+
+# Selecting rows from data.table
+
+Selecting a column from a data.frame, you will get a vector, while you will still get a data.table if you select a single column from a data.table.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
