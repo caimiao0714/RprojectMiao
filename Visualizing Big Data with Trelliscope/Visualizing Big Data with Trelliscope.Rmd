@@ -66,6 +66,166 @@ ggplot(amount_compare, aes(sample = amount, color = payment_type)) +
   ylim(c(3, 20))
 ```
 
+# trelliscopejs package in R
+
+The trelliscope package is more like a shiny app, constructed by a Javascript API trelliscope.
+
+```{r}
+library(ggplot2)
+library(gapminder)
+library(trelliscopejs)
+
+library(ggplot2)
+library(trelliscopejs)
+
+# Create the plot
+ggplot(gapminder, aes(year, lifeExp)) +
+  geom_line() +
+  # Facet on country and continent
+  facet_trelliscope(~ country + continent)
+```
+
+## Customizing the gapminder display
+
+With the linear model layer added to the plot, specify that automatic cognostics should be computed for this display and explore what new cognostics this layer adds to the display.
+
+```{r}
+library(trelliscopejs)
+library(ggplot2)
+
+# Create the plot
+ggplot(gapminder, aes(year, lifeExp)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_trelliscope(~ country + continent,
+    name = "lifeExp_by_country",
+    desc = "Life expectancy vs. year for 142 countries.",
+    nrow = 1, ncol = 2,
+    # Set the scales
+    scales = "sliced",
+    # Specify automatic cognistics
+    auto_cog = TRUE)
+```
+
+All variables in the data passed in to ggplot() are inspected for use as cognostics.
+
+- If the variable is numeric and varies within each panel group, a set of summary statistics is computed for each panel.
+- If the variable is constant within each panel group, a single cognostic with that value is computed for each panel.
+
+## Customizing custom cognostics
+
+A function cog() can be wrapped around a variable to fine-tune how a cognostic is handled in Trelliscope.
+
+With cog(), some of the most useful things you can specify include:
+
+- desc: a meaningful description for the cognostic
+- default_label: a boolean specifying whether the cognostic should be shown as a label by default or not
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+library(trelliscopejs)
+space_to_dash <- function(x) gsub(" ", "-", x)
+
+# Group by country and create the two new variables
+gap <- gapminder %>%
+  group_by(country) %>%
+  mutate(
+    delta_lifeExp = tail(lifeExp, 1) - head(lifeExp, 1),
+    ihme_link = paste0("http://www.healthdata.org/", space_to_dash(country)))
+
+# Add the description
+gap$delta_lifeExp <- cog(gap$delta_lifeExp, desc = "Overall change in life expectancy")
+# Specify the default label
+gap$ihme_link <- cog(gap$ihme_link, default_label = TRUE)
+
+ggplot(gap, aes(year, lifeExp)) +
+  geom_point() +
+  facet_trelliscope(~ country + continent,
+    name = "lifeExp_by_country",
+    desc = "Life expectancy vs. year.",
+    nrow = 1, ncol = 2,
+    scales = c("same", "sliced"))
+```
+
+```{r eval=FALSE}
+library(dplyr)
+library(tidyr)
+library(purrr)
+
+# Nest stocks by symbol
+by_symbol <- stocks %>%
+  group_by(symbol) %>%
+  nest()
+
+min_volume_fn <- function(x) min(x$volume)
+
+# Create new column
+by_symbol_min <- by_symbol %>%
+  mutate(min_volume = map_dbl(data, min_volume_fn))
+```
+
+an "open-high-low-close" plot using plotly, then create a trelliscope display by wrapping the result with trelliscope() and provide it the name of "ohlc_top500".
+
+```{r}
+library(trelliscopejs)
+library(dplyr)
+library(purrr)
+library(plotly)
+
+ohlc_plot <- function(d) {
+  plot_ly(d, x = ~date, type = "ohlc",
+    open = ~open, close = ~close,
+    high = ~high, low = ~low)
+}
+
+by_symbol_plot <- by_symbol %>%
+  mutate(panel = map_plot(data, ohlc_plot))
+
+trelliscope(by_symbol_plot, name = "ohlc_top500")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
