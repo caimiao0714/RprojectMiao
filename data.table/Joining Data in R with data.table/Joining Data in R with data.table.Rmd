@@ -24,6 +24,112 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The tables() function will show you all data.tables loaded in your R session
 
+## Joins
+
+Concept of joins come from database query languages (e.g. SQL).
+
+- inner (default): Only keep observations that have information in both data.tables
+- full: Keep all observations that are in either data.table
+- left: Add information from the right data.table to the left data.table
+- right: Add information from the left data.table to the right data.tablea
+
+All these joins can be acheived using the `merge()` from data.table package.
+
+```{r}
+require(data.table)
+merge(x = demographics, y = shipping, by.x = "name", by.y = "name") # inner join
+merge(x = demographics, y = shipping, by.x = "name", by.y = "name", all = TRUE) # full join
+merge(x = demographics, y = shipping, by = "name", all.x = TRUE) # left join
+merge(x = demographics, y = shipping, by = "name", all.y = TRUE) # right join
+```
+
+# Join tables using data.table syntax
+
+The default format for joining in data.table syntax is right join. The general form of data.table syntax joins:
+
+`DT[i, on]`
+
+```{r}
+demographics[shipping, on = .(name)]
+demographics[shipping, on = list(name)]
+demographics[shipping, on = "name"]
+```
+
+**Inner-join**: `DT[i, on, nomatch = 0]`
+
+Not possible with the data.table syntax, use the merge() function:
+
+**Anti-join**: Filter a data.table to rows that have no match in another data.table
+
+```{r}
+demographics[!shipping, on = .(name)]
+```
+
+## Setting data.table keys
+
+- Setting keys means you don't need the on argument when performing a join
+  - Useful if you need to use a data.table in many different joins
+- Sorts the data.table in memory by the key column(s)
+  - Makes filtering and join operations faster
+- Multiple keys can be set
+
+```{r}
+setkey(DT, key1, key2, key3)
+setkey(DT, "key1", "key2", "key3")
+
+keys <- c("key1", "key2", "key3")
+setkeyv(dt, keys)
+haskey(dt) # haskey() checks whether you have set keys
+key(dt) # returns the key columns you have set
+```
+
+## Chaining data.table expressions
+
+`DT1[DT2, on][i, j, by]`
+
+
+# Diagnosing and Fixing Common Join Problems
+
+## Complex keys
+
+> Error in bmerge(i, x, leftcols, rightcols, io, xo, roll, rollends, 
+> nomatch,  : 
+>  typeof x.age (double) != typeof i.name (character)
+
+The keys are of different data types.
+
+Avoid misspecified joins: Learning what each column represents before joins will help you avoid errors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
