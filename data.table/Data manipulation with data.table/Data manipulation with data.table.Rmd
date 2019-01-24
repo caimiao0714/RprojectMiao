@@ -61,6 +61,118 @@ Selecting a column from a data.frame, you will get a vector, while you will stil
 
 Since columns can be refered to as variables, you can omputing directly on them in `j`.
 
+# Groupwise operations
+
+`.SD` together with `.SDcols` is an incredibly powerful feature that makes computing on multiple columns so much easier.
+
+- `.SD` is a special symbol which stands for Subset of Data
+- `.SDcols` holds the columns that should be included in `.SD`
+
+```{r eval = FALSE}
+# For each month, find the row corresponding to the shortest trip (by using which.min() on duration).
+relevant_cols <- c("start_station", "end_station", 
+                   "start_date", "end_date", "duration")
+
+# Find the row corresponding to the shortest trip per month
+shortest <- batrips[, .SD[which.min(duration)], 
+                    by = month(start_date), 
+                    .SDcols = relevant_cols]
+shortest
+
+# Find the total number of unique start stations and zip codes per month
+unique_station_month <- batrips[, lapply(.SD, uniqueN), 
+                                by = month(start_date), 
+                                .SDcols = c("start_station", "zip_code")]
+unique_station_month
+```
+
+
+
+# Reference Semantics
+## data.table internals
+
+- data.table updates columns in place, i.e., by reference
+- This means, you don't need the assign the result back to a variable
+- No copy of any column is made while their values are changed
+- data.table uses a new operator := to add/update/delete columns by reference
+
+```{r eval=FALSE}
+batrips[, c("is_dur_gt_1hour", "week_day") := list(duration > 3600, wday(start_date)]
+
+batrips[, `:=`(is_dur_gt_1hour = NULL,                  
+               start_station = toupper(start_station))]
+```
+
+As mentioned in the video, data.table does not have to deep copy objects in order to modify them. It can modify objects by reference (inplace) to save memory and runtime using the := operator. When you update a data.table by reference, you don't have to assign the result to a new object as the original data.table is modified directly.
+
+## Adding multiple columns in data.table
+
+More often than not, you may want to add/update multiple columns by reference. There are two ways to do this in data.table:
+
+- LHS := RHS form
+- Functional form
+
+In this exercise, you will add columns using the LHS := RHS form. In the LHS, you specify column names as a character vector and in the RHS, you specify values/expressions to be added inside list() (or the alias, .()).
+
+
+# Read and write data in data.table
+
+Fast data reading with `fread()`
+
+- `select` and `drop` in `fread()` can help choose or drops the columns you want. 
+- `skip` can be used to skip meta data.
+- `na.strings = c("###", "NA", "9999")`
+- `fill = TRUE` to fill in empty cells
+
+```{r eval = FALSE}
+data.table::fread("data.csv", nrow = 1000)
+
+# Import using fread
+import_fread <- fread("sample.csv", 
+                      colClasses = list(factor = 1:4, numeric = 7:10))
+str(import_fread)
+```
+
+Fast data writing with `fwrite()`
+
+- fwrite() provides three additional ways of writing date and datetime format - ISO, squash and epoch
+- Encourages the use of ISO standards with ISO as default
+
+
+Date and dateimes (squash)
+
+- squash writes yyyy-mm-dd hh:mm:ss as yyyymmddhhmmss, for example.
+- Read in as integer. Very useful to extract month, year etc by simply using modulo arithmetic. e.g., 20160912 %/% 10000 = 2016
+- Also handles milliseconds (ms) resolution.
+- POSIXct type (17 digits with ms resolution) is automatically read in as integer64 by fread.
+
+```{r eval = FALSE}
+fwrite(batrips_dates, file = "iso.txt", dateTimeAs = "ISO")
+fwrite(batrips_dates, file = "squash.txt", dateTimeAs = "squash")
+fwrite(batrips_dates, file = "epoch.txt", dateTimeAs = "epoch")
+```
+
+
+Date and dateimes (Epoch)
+
+- epoch counts the number of days (for dates) or seconds (for time and datetime) since relevant epoch
+- Relevant epoch is 1970-01-01, 00:00:00 and 1970-01-01T00:00:00Z for date, time and datetime, respectively
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
