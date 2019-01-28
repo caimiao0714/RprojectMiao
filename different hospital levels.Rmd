@@ -1,0 +1,579 @@
+---
+title: "Medical quality between tertiary and secordary hospitals"
+author: "Cai Miao"
+date: "2016年10月1日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r EI calculation}
+load('C:\\Users\\MIAO\\Desktop\\雕龙\\23级医院\\@results_new\\I21_23.Rdata')
+#======================Elixhauser #Comorbidities==========================
+# 1.充血性心力衰竭，Congestive heart failure, CHF_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("I09.9","I11.0","I13.0","I13.2","I25.5","I42.0","I42.5","I42.6","I42.7","I42.8","I42.9","P29.0"))|any(c(substr(I21_23$p325[i],1,4),substr(I21_23$p327[i],1,4),substr(I21_23$p3291[i],1,4),substr(I21_23$p3294[i],1,4),substr(I21_23$p3298[i],1,4),substr(I21_23$p3281[i],1,4),substr(I21_23$p3284[i],1,4),substr(I21_23$p3287[i],1,4),substr(I21_23$p3271[i],1,4),substr(I21_23$p3274[i],1,4))%in%c("I43.","I50."))) I21_23$CHF_Elix[i]=1 else I21_23$CHF_Elix[i]=0}
+ 
+# 2.心律失常 Cardiac arrhythmias, CA_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("I44.1,I44.2,I44.3,I45.6,I45.9,R00.0,R00.1,R00.8,T82.1,Z45.0,Z95.0"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("I47","I48","I49"))) I21_23$CA_Elix[i]=1 else I21_23$CA_Elix[i]=0} 
+
+# 3.瓣膜病 Valvular disease,VD_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("A52.0,I09.1,I09.8,Q23.0,Q23.1,Q23.2,Q23.3,Z95.2,Z95.3,Z95.4"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c(paste("I0",5:8,sep = ""),paste("I",34:39,sep = "")))) I21_23$VD_Elix[i]=1 else I21_23$VD_Elix[i]=0} 
+
+#4.肺循环失常 Pulmonary circulation disorders, PCD_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("I28.0","I28.8","I28.9"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("I26","I27"))) I21_23$PCD_Elix[i]=1 else I21_23$PCD_Elix[i]=0} 
+
+#5.外周血管疾病 Peripheral vascular disorders，PVD_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("I73.1,I73.8,I73.9,I77.1,I79.0,I79.2,K55.1,K55.8,K55.9,Z95.8,Z95.9"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("I70","I71"))) I21_23$PVD_Elix[i]=1 else I21_23$PVD_Elix[i]=0}
+
+#6.高血压，不复杂，Hypertension, uncomplicated， Hypertensionun_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("I10"))) I21_23$Hypertensionun_Elix[i]=1 else I21_23$Hypertensionun_Elix[i]=0}
+
+
+#7.高血压，复杂，Hypertension, complicated， Hypertension_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("I11","I12","I13","I15"))) I21_23$Hypertension_Elix[i]=1 else I21_23$Hypertension_Elix[i]=0}
+
+#8. 瘫痪 Paralysis_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c(strsplit(c("G04.1,G11.4,G80.1,G80.2,G83.9"),",")[[1]],paste("G83.",0:4,sep = "")))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("G81","G82"))) I21_23$Paralysis_Elix[i]=1 else I21_23$Paralysis_Elix[i]=0}
+
+#9.其它神经病症 Other neurological disorders, OND_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("G25.4,G25.5,G31.2,G31.8,G31.9,G93.1,G93.4,R47.0"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in% c(paste("G",10:13,sep = ""),paste("G",20:22,sep = ""),"G32",paste("G",35:37,sep = ""),"G40","G41","R56")))I21_23$OND_Elix[i]=1 else I21_23$OND_Elix[i]=0}
+
+#10.慢性肺疾病， Chronic pulmonary disease， CPD_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("I27.8,I27.9,J68.4,J70.1,J70.3"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c(paste("J",40:47,sep = ""),paste("J",60:67,sep = ""))))I21_23$CPD_Elix[i]=1 else I21_23$CPD_Elix[i]=0}
+
+#11.糖尿病,不复杂 Diabetes, uncomplicated， DMun_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("E10.0,E10.1,E10.9,E11.0,E11.1,E11.9,E12.0,E12.1,E12.9,E13.0,E13.1,E13.9,E14.0,E14.1,E14.9"),",")[[1]])) I21_23$DMun_Elix[i]=1 else I21_23$DMun_Elix[i]=0}
+
+#12. 糖尿病,复杂 Diabetes, complicated， DM_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c(paste("E10.",2:8,sep = ""),paste("E11.",2:8,sep = ""),paste("E12.",2:8,sep = ""),paste("E13.",2:8,sep = ""),paste("E14.",2:8,sep = "")))) I21_23$DM_Elix[i]=1 else I21_23$DM_Elix[i]=0}
+
+#13.甲状腺功能减退症 Hypothyroidism_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("E89.0"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("E00","E01","E02","E03")))I21_23$Hypothyroidism_Elix[i]=1 else I21_23$Hypothyroidism_Elix[i]=0}
+
+#14.肾功能不全 Renal failure， Renal_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("I12.0,I13.1,N25.0,Z49.0,Z49.1,Z49.2,Z94.0,Z99.2"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("N18","N19"))) I21_23$Renal_Elix[i]=1 else I21_23$Renal_Elix[i]=0}
+
+#15.肝病 Liver disease LD_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c(strsplit(c("I86.4,I98.2,K71.1,K71.3,K71.4,K71.5,K71.7,K76.0,Z94.4"),",")[[1]],paste("K76.",2:9,sep = "")))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%strsplit(c("B18,I85,K70,K72,K73,K74"),",")[[1]])) I21_23$LD_Elix[i]=1 else I21_23$LD_Elix[i]=0}
+
+#16.出血以外的消化性溃疡病 Peptic ulcer disease excluding bleeding, PUD_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("K25.7,K25.9,K26.7,K26.9,K27.7,K27.9,K28.7,K28.9"),",")[[1]])) I21_23$PUD_Elix[i]=1 else I21_23$PUD_Elix[i]=0}
+
+#17.艾滋病 AIDS/HIV， AIDS_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("B20","B21","B22","B24"))) I21_23$AIDS_Elix[i]=1 else I21_23$AIDS_Elix[i]=0}
+
+#18.淋巴瘤 Lymphoma_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("C90.0","C90.2"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c(paste("C",81:85,sep = "") ,"C88", "C96"))) I21_23$Lymphoma_Elix[i]=1 else I21_23$Lymphoma_Elix[i]=0}
+
+#19.转移癌 Metastatic cancer， Metastatic_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("C77","C78","C79","C80"))) I21_23$Metastatic_Elix[i]=1 else I21_23$Metastatic_Elix[i]=0}
+
+#20.实体肿瘤无转移 Solid tumor without metastasis， Solid_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c(paste("C0",0:9,sep = ""),paste("C",c(10:26,30:34,37:41,43,45:58,60:76,97),sep = "")))) I21_23$Solid_Elix[i]=1 else I21_23$Solid_Elix[i]=0}
+
+#21.类风湿性关节炎/胶原血管疾病 Rheumatoid arthritis/collagen vascular diseases， Rheumatoid_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("L94.0,L94.1,L94.3,M46.1,M46.8,M46.9,M12.0,M12.3,M31.0,M31.1,M31.2,M31.3"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%strsplit(c("M32,M33,M34,M35,M45,M05,M06,M08,M30"),",")[[1]])) I21_23$Rheumatoid_Elix[i]=1 else I21_23$Rheumatoid_Elix[i]=0}
+
+#22.凝血功能障碍 Coagulopathy_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("D69.1,D69.3,D69.4,D69.5,D69.6"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%strsplit(c("D65,D66,D67,D68"),",")[[1]])) I21_23$Coagulopathy_Elix[i]=1 else I21_23$Coagulopathy_Elix[i]=0}
+
+#23.肥胖 Obesity_Elix
+for (i in 1:45565) 
+{if(any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("E66"))) I21_23$Obesity_Elix[i]=1 else I21_23$Obesity_Elix[i]=0}
+
+#24.减肥 Weight loss,Weight_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("R63.4"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c(paste("E",40:46,sep = ""),"R64"))) I21_23$Weight_Elix[i]=1 else I21_23$Weight_Elix[i]=0}
+
+#25.液体和电解质障碍  Fluid and electrolyte disorders，  Fluid_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("E22.2"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("E86","E87"))) I21_23$Fluid_Elix[i]=1 else I21_23$Fluid_Elix[i]=0}
+
+#26.失血性贫血 Blood loss anemia, Blood_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("D50.0")))  I21_23$Blood_Elix[i]=1 else I21_23$Blood_Elix[i]=0}
+
+#27.缺铁性贫血 Deficiency anemia， Deficiency_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("D50.8", "D50.9"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("D51","D52","D53"))) I21_23$Deficiency_Elix[i]=1 else I21_23$Deficiency_Elix[i]=0}
+
+#28.酗酒  Alcohol abuse, Alcohol_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("G62.1,I42.6,K29.2,K70.0,K70.3,K70.9,Z50.2,Z71.4,Z72.1"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("F10", "E52", "T51")))  I21_23$Alcohol_Elix[i]=1 else I21_23$Alcohol_Elix[i]=0}
+
+#29.药物滥用 Drug abuse， Drug_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("Z71.5", "Z72.2"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c(paste("F",11:16,sep = ""),"F18"," F19"))) I21_23$Drug_Elix[i]=1 else I21_23$Drug_Elix[i]=0}
+
+#30.精神病 Psychoses_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%c("F30.2", "F31.2", "F31.5"))|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%strsplit(c("F20,F22,F23,F24,F25,F28,F29"),",")[[1]])) I21_23$Psychoses_Elix[i]=1 else I21_23$Psychoses_Elix[i]=0}
+
+#31.抑郁 Depression_Elix
+for (i in 1:45565)
+{if(any(c(substr(I21_23$p325[i],1,5),substr(I21_23$p327[i],1,5),substr(I21_23$p3291[i],1,5),substr(I21_23$p3294[i],1,5),substr(I21_23$p3298[i],1,5),substr(I21_23$p3281[i],1,5),substr(I21_23$p3284[i],1,5),substr(I21_23$p3287[i],1,5),substr(I21_23$p3271[i],1,5),substr(I21_23$p3274[i],1,5))%in%strsplit(c("F20.4,F31.3,F31.4,F31.5,F34.1,F41.2,F43.2"),",")[[1]])|any(c(substr(I21_23$p325[i],1,3),substr(I21_23$p327[i],1,3),substr(I21_23$p3291[i],1,3),substr(I21_23$p3294[i],1,3),substr(I21_23$p3298[i],1,3),substr(I21_23$p3281[i],1,3),substr(I21_23$p3284[i],1,3),substr(I21_23$p3287[i],1,3),substr(I21_23$p3271[i],1,3),substr(I21_23$p3274[i],1,3))%in%c("F32","F33"))) I21_23$Depression_Elix[i]=1 else I21_23$Depression_Elix[i]=0}
+
+I21_23$Elix_Index <- 7 * I21_23$CHF_Elix + 5 * I21_23$CA_Elix - 1 * I21_23$VD_Elix + 4 * I21_23$PCD_Elix + 2 * I21_23$PVD_Elix + 0 * I21_23$Hypertensionun_Elix + 0 * I21_23$Hypertension_Elix + 7 * I21_23$Paralysis_Elix + 6 * I21_23$OND_Elix + 3 * I21_23$CPD_Elix + 0 * I21_23$DMun_Elix + 0 * I21_23$DM_Elix + 0 * I21_23$Hypothyroidism_Elix + 5 * I21_23$Renal_Elix + 11 * I21_23$LD_Elix + 0 * I21_23$PUD_Elix + 0 * I21_23$AIDS_Elix + 9 * I21_23$Lymphoma_Elix + 12 * I21_23$Metastatic_Elix + 4 * I21_23$Solid_Elix + 0 * I21_23$Rheumatoid_Elix + 3 * I21_23$Coagulopathy_Elix - 4 * I21_23$Obesity_Elix + 6 * I21_23$Weight_Elix + 5 * I21_23$Fluid_Elix - 2 * I21_23$Blood_Elix - 2 * I21_23$Deficiency_Elix + 0 * I21_23$Alcohol_Elix - 7 * I21_23$Drug_Elix + 0 * I21_23$Psychoses_Elix - 3 * I21_23$Depression_Elix
+
+save(I21_23, file = "C:\\Users\\MIAO\\Desktop\\二三级医院\\@21_23.Rdata")
+write.csv(I21_23, file = "C:\\Users\\MIAO\\Desktop\\二三级医院\\@21_23.csv")
+```
+
+
+```{r Data manipulation}
+library(plyr)
+library(dplyr)
+load("C:\\Users\\MIAO\\Desktop\\二三级医院\\@21_23.Rdata")
+
+#delete the tertiary grade B samples
+I21_23 <- I21_23[!(I21_23$grade == "二级乙等"),]
+I21_23$grade <- factor(I21_23$grade)
+I21_23$grade <- revalue(I21_23$grade, c("二级甲等" = "Secondary_A", "三级乙等" = "Tertiary_B", "三级甲等" = "Tertiary_A"))
+I21_23$grade <- relevel(I21_23$grade, ref = 'Secondary_A')
+
+# create an identifier for each observation
+I21_23$NO <- as.numeric(rownames(I21_23))
+
+#recode p323 主要诊断出院情况 1 <- p323 == 4   0 <- p323 == 其他
+I21_23$death[I21_23$p323 != 4] <- 0
+I21_23$death[I21_23$p323 == 4] <- 1
+
+#recode nosocomial infection
+table(I21_23$p785, exclude = NULL)
+I21_23$nosocomial_infection[I21_23$p785 != 2] <- 0
+I21_23$nosocomial_infection[I21_23$p785 == 2] <- 1
+
+# recode p1 医疗付费方式
+# 1 <- 城镇职工基本医疗保险； 2 <- 城镇居民基本医疗保险; 3 <- 新型农村合作医疗; 4 <- 贫困救助
+# 5 <- 商业医疗保险; 6<- 全公费; 7 <- 全自费（作为参照组！！）; 8 <- 其他社会保险： 9 <- 其他
+table(I21_23$p1, exclude = NULL)
+I21_23$p1[is.na(I21_23$p1)] <- 8
+I21_23$p1[I21_23$p1 == 9] <- 8
+I21_23$insurance <- factor(I21_23$p1, levels = c(7, 1, 2, 3, 4, 5, 6, 8), labels = c('out-of-pocket', 'UEBMI', 'URBMI', 'NCMS', 'poverty-aid', 'commercial-insurance', 'government-free', 'other'))
+
+# recode p5(性别) 1 <- 男; 2 <- 女
+table(I21_23$p5, exclude = NULL)
+I21_23$gender <- factor(I21_23$p5, levels = c(2, 1), labels = c('female', 'male'))
+I21_23$gender <- relevel(I21_23$gender, ref = "female")
+# after coding, 2 refers to female, while 1 refers to male
+
+# zip code
+I21_23$zipcode <- I21_23$p803
+
+# recode p7(年龄)
+I21_23$age[I21_23$p7 <= 40 ] <- 0
+I21_23$age[I21_23$p7 < 65 & I21_23$p7 >= 40] <- 1
+I21_23$age[I21_23$p7 < 75 & I21_23$p7 >= 65] <- 2
+I21_23$age[I21_23$p7 >= 75] <- 3
+
+# recode p9(职业)
+# 11 <- 国家公务人员; 13 <- 专业技术人员; 17 <- 职员; 21 <- 企业管理人员; 24 <- 工人;
+# 27 <- 农民; 31 <- 学生; 37 <- 现役军人; 51 <- 自由职业者; 54 <- 个体经营者; 70 <- 无业人员;
+# 80 <- 离退休人员; 90 <- 其他
+I21_23$p9[I21_23$p9 == 51] <- 70
+I21_23$occupation <- factor(I21_23$p9, levels = c(70, 11, 13, 17, 21, 24, 27, 31, 37, 54, 80, 90), labels = c('unemployed', 'civil-servant', 'technician', 'clerk', 'bus_admin', 'worker', 'farmer', 'student', 'soldier',  'individual-bus', 'retired', 'other'))
+
+# recode p8 婚姻状况
+# 1 <- 未婚; 2 <- 已婚; 3 <- 丧偶; 4 <- 离婚; 9 <- 其他
+table(I21_23$p8, exclude = NULL)
+I21_23$p8[I21_23$p8 == 0] <- 9
+I21_23$marriage <- factor(I21_23$p8, levels = c(4, 1, 2, 3, 9), labels = c('divorced', 'unmarried', 'married', 'widowed', 'other'))
+
+# recode p804 入院途径 RC026
+# 1 <- 急诊; 2 <- 门诊; 3 <- 其他医疗机构转入; 4 <- 其他
+table(I21_23$p804, exclude = NULL)
+I21_23$p804[is.na(I21_23$p804)] <- 4
+I21_23$admission <- factor(I21_23$p804, levels = c(2, 1, 3, 4), labels = c('inpatient', 'emergency', 'transfer', 'other'))
+
+# recode 住院天数
+table(I21_23$p27, exclude = NULL)
+I21_23$alos <- I21_23$p27
+
+# recode 入院情况 p29 RC004
+# 1 <- 危; 2 <- 急; 3 <- 一般； 9 <- 其他
+table(I21_23$p29, exclude = NULL)
+I21_23$p29[I21_23$p29 == 0] = 9
+I21_23$p29[is.na(I21_23$p29)] = 9
+I21_23$status_admission <- factor(I21_23$p29, levels = c(3, 1, 2, 9), labels = c('normal', 'acute', 'urgent', 'other'))
+
+table(non_IM$status_admission)
+table(non_IM$disease_status)
+
+# recode 主诊断编码 p321
+I21_23$main_diag <- substr(I21_23$p321,1,5)
+I21_23$main_diag <- as.factor(I21_23$main_diag)
+I21_23$main_diag <- relevel(I21_23$main_diag, ref = 'I21.0')
+
+# recode sugery
+# including: p490, p4911, p4922, p4533, p4544, p45002, p45014
+# 若以上这些都为空 I21_23$sugery赋值为0， 否则赋值为1
+for (i in 1:45439){
+ if(is.na(I21_23$p490[i]) & is.na(I21_23$p4911[i]) & is.na(I21_23$p4922[i]) & is.na(I21_23$p4533[i]) & is.na(I21_23$p4544[i]) & is.na(I21_23$p45002[i]) & is.na(I21_23$p45014[i])) I21_23$sugery[i] <- 0
+ else I21_23$sugery[i] <- 1
+}
+
+# recode p793 是否临床路径 RC34
+# 1 <- 有; 2 <- 无; 0 <- missing
+# table(I21_23$p793)
+# 太多missing variable 取消此变量
+
+# # recode p795 是否单病种 RC34
+# table(I21_23$p795)
+# 太多missing variable 取消此变量
+
+# recode p796 是否危重 RC36
+# 1 <- 危; 2 <- 重; 3 <- 否; 0 <- missing
+table(I21_23$p796, exclude = NULL)
+I21_23$disease_status <- factor(I21_23$p796, levels = c(3, 1, 2, 0), labels = c('ordinary', 'danger', 'sever', 'missing'))
+
+# deleted patients in hospitals with less than 20 cases
+non_IM <- non_IM[non_IM$volume >= 20,]
+
+non_IM <- subset(I21_23, select = c("death", "nosocomial_infection", "NO", "insurance", "gender", "age", "occupation", "marriage", "admission", "alos", "status_admission", "main_diag", "sugery", "disease_status", "grade", "volume", "CCI_2011", "GID", "zipcode", "Elix_Index"))
+temp1 <- subset(non_IM, select = c("NO", "zipcode"))
+non_IM <- non_IM[,-which(colnames(non_IM)=="zipcode")]
+non_IM <- non_IM[complete.cases(non_IM),]
+non_IM <- non_IM %>%
+  left_join(x= non_IM, y = temp1, by = "NO")
+
+write.csv(non_IM, file ="C:\\Users\\MIAO\\Desktop\\二三级医院\\temp_data\\@individual_data.csv")
+```
+
+```{r GRAPHICS 1 // tertiary grade B deleted}
+#load packages
+library(plyr)
+require(dplyr)
+require(ggplot2)
+require(scales)
+library(gridExtra)
+library(grid)
+library(extrafont)
+font_import()
+y
+loadfonts(device="win")       #Register fonts for Windows bitmap output
+fonts() 
+
+#load data
+load("E:\\MY PAPER\\二三级医院\\@21_23.Rdata")
+
+#delete the tertiary grade B samples
+I21_23 <- I21_23[!(I21_23$grade == "二级乙等"),]
+I21_23$grade <- factor(I21_23$grade)
+
+# rename hospital level
+I21_23$grade <- revalue(I21_23$grade, c("二级甲等" = "Secondary_A", "三级乙等" = "Tertiary_B", "三级甲等" = "Tertiary_A"))
+
+# aggregate data on hospital grade & CCI_2011
+CCI_stackplot <- aggregate(I21_23$GID, by = list(grade = I21_23$grade, CCI_2011 = I21_23$CCI_2011), length)
+
+# stacked bar plot for CCI_2011
+Stacked_CCI <- ggplot(CCI_stackplot, aes(x = grade, y = x, fill = factor(CCI_2011))) + 
+  geom_bar(position = "fill", stat = "identity")+ 
+  scale_y_continuous(labels = percent_format())+ scale_x_discrete(name = "Hospital grade",limits = c( "Secondary_A", "Tertiary_B", "Tertiary_A")) + scale_y_discrete(name = "Constitutes of Charlson comorbidity index") + ggtitle("Composition of Charlson comorbidity index of AMI patients \nin different levels of hospitals,Shanxi, China") + scale_fill_manual(breaks = c("15", "14", "13", "12", "11", "10","9", "8", "7", "6", "5", "4", "3", "2", "1", "0"), values = c("#458B00","#A2CD5A", "#CAFF70", "#C1FFC1",  "#E9967A", "#EE6363", "#CD5555","#FF4500","#CD2626","#CD2626","#CD2626","#CD2626","#CD2626", "#CD2626", "#CD2626"), name = "Charlson \nComorbidity index") +  coord_flip() + theme(text=element_text(family = "Times New Roman"))
+
+# stacked bar plot for Elixhauser Index
+EI_stackplot <- aggregate(I21_23$GID, by = list(grade = I21_23$grade, Elixhauser_Index = I21_23$Elix_Index), length)
+
+Stacked_EI <- ggplot(EI_stackplot, aes(x = grade, y = x, fill = factor(Elixhauser_Index))) + 
+  geom_bar(position = "fill", stat = "identity")+ 
+  scale_y_continuous(labels = percent_format())+ scale_x_discrete(name = "Hospital grade",limits = c( "Secondary_A", "Tertiary_B", "Tertiary_A")) + scale_y_discrete("Constitutes of Elixhauser index") + ggtitle("Composition of Elixhauser index of AMI patients \nin different levels of hospitals,Shanxi, China") + coord_flip() + scale_fill_manual(values = c("#458B00","#458B00","#458B00","#458B00","#A2CD5A","#A2CD5A","#A2CD5A","#A2CD5A", "#CAFF70","#CAFF70","#CAFF70","#CAFF70", "#C1FFC1","#C1FFC1","#C1FFC1",  "#E9967A", "#E9967A", "#E9967A", "#EE6363","#EE6363", "#EE6363", "#EE6363", "#CD5555","#CD5555","#CD5555","#CD5555","#FF4500","#FF4500","#FF4500","#FF4500","#CD2626","#CD2626","#CD2626","#CD2626","#CD2626","#CD2626","#CD2626", "#CD2626", "#CD2626"), name = "Elixhauser \nIndex") + theme(text=element_text(family = "Times New Roman"))
+
+# add the plots to the same page
+grid.arrange(Stacked_CCI, Stacked_EI, ncol = 2, nrow = 1, top = textGrob("Figure 1. Compositions of Charlson Comorbidity Index and Elixhauser Index of AMI patients across different levels of hospital, Shanxi China", gp=gpar(fontsize=15,font=8)))
+print(z)
+
+
+
+# Pairwise comparison of CCI & EI across different levels of hospitals
+# method = post-hoc test after Dunn
+require(PMCMR)
+posthoc.kruskal.dunn.test(non_IM$CCI_2011 ~ non_IM$grade, p.adjust.method="bonferroni")
+posthoc.kruskal.dunn.test(non_IM$Elix_Index ~ non_IM$grade, p.adjust.method="bonferroni")
+
+```
+
+
+```{r Logistic regression of death}
+library(rms)
+
+# establish the logistic prediction model
+non_IM <- read.csv(file ="C:\\Users\\MIAO\\Desktop\\二三级医院\\temp_data\\@individual_data.csv")
+
+death2 <- lrm(death ~ gender + age + marriage + alos + status_admission  + sugery + disease_status + grade + volume + CCI_2011, data = non_IM)
+non_IM$p_mort <- predict(death2, type = "fitted")
+
+vif <- lm(death ~  gender + age + marriage + alos + status_admission  + sugery + disease_status + grade + volume + CCI_2011, data = non_IM)
+vif(vif)
+
+
+# aggregate the data on hospital level
+death_poisson <- non_IM %>%
+  group_by(GID, grade) %>%
+  summarise(adj_mort = sum(p_mort), ac_mort = sum(death), volume = length(volume), CCI_mean = mean(CCI_2011), alos = mean(alos))
+
+group_by(death_poisson, grade) %>%
+  summarise(num_hosp = length(grade))
+
+#delete observations with less than 20 hospital volume
+death_poisson <- filter(death_poisson, volume >= 20)
+
+#load hospital information
+hosp_info <- read.csv("E:\\雕龙软件公司\\201606雕龙\\@@@数据_csv\\@@20160813机构信息.csv", stringsAsFactors = FALSE)
+hosp_info1 <- read.csv("E:\\雕龙软件公司\\201606雕龙\\@@@数据_csv\\机构代码信息.csv", stringsAsFactors = FALSE)
+save(hosp_info, file = "C:\\Users\\MIAO\\Desktop\\二三级医院\\data\\hosp_info.Rdata")
+save(hosp_info1, file = "C:\\Users\\MIAO\\Desktop\\二三级医院\\data\\hosp_info1.Rdata")
+
+info_merge <- select(hosp_info, 机构代码, 时间, 平均开放床位, 医疗收入总额, 每床日平均收费水平_年初, 财政补助收入占总支出比例_年初, 管理费用占业务支出比例, 其中.医师_年初, 注册护士_年初, 病床使用率_年初)
+colnames(info_merge) <- c("GID", "Time", "num_beds", "total_revenue", "cost_per_bed", "subsidy_perc", "manage_perc", "num_doc", "num_nurse", "occupancy_perc")
+
+#merge death_poisson with hosp_info
+info_merge1 <- info_merge %>%
+  group_by (GID) %>%
+  summarise(num_beds = median(num_beds), total_revenue = median(total_revenue), cost_per_bed = median(cost_per_bed), subsidy_perc = median(subsidy_perc), manage_perc = median(manage_perc), num_doc = median(num_doc), num_nurse = median(num_nurse), occupancy_perc = median(occupancy_perc))
+
+death_poisson <- left_join(death_poisson, info_merge1, by = "GID")
+death_poisson <- left_join(death_poisson, hosp_info1, by = "GID")
+write.csv(death_poisson, file ="C:\\Users\\MIAO\\Desktop\\二三级医院\\temp_data\\@ORIGINALdeath_poisson.csv")
+death_poisson <- read.csv("C:\\Users\\MIAO\\Desktop\\二三级医院\\temp_data\\@death_poisson.csv", stringsAsFactors = FALSE)
+
+library(dplyr)
+death_poisson <- death_poisson %>%
+  select(GID, grade, adj_mort, ac_mort, volume, CCI_mean, alos, num_beds, total_revenue, cost_per_bed, subsidy_perc, manage_perc, num_doc, num_nurse, occupancy_perc)
+
+death_poisson_MI <- death_poisson %>%
+  select( grade, ac_mort, volume, CCI_mean, alos, num_beds, total_revenue, cost_per_bed, subsidy_perc, manage_perc, num_doc, num_nurse, occupancy_perc)
+```
+
+```{r multi-level logistic regression}
+# manuals on multi-level modeling by UCLA
+# http://www.ats.ucla.edu/stat/r/dae/melogit.htm
+library(gmodels)
+library(lme4)
+library(foreign)
+library(gtools)
+library(dplyr)
+
+# establish the logistic prediction model
+non_IM <- read.csv(file ="E:\\MY PAPER\\二三级医院\\temp_data\\@individual_data.csv")
+
+### multi-level logistic regression for death data
+## DEATH MODEL
+# NULL model - death & CCI
+ML_death_CCI0 <- glmer(death ~ (1|GID), family = binomial("logit"), data = non_IM)
+
+# full model - death & CCI
+ML_death_CCI3 <- glmer(death ~ gender + age + marriage + C_alos + status_admission  + sugery + disease_status + grade + C_volume + CCI_2011 + (1|GID), family = binomial("logit"), data = non_IM, control = glmerControl(optimizer = "bobyqa"), nAGQ = 10)
+
+# full model -- death -- Elixhauser Index
+ML_death_EI1 <- glmer(death ~ gender + age + marriage + C_alos + status_admission  + sugery + disease_status + grade + C_volume + Elix_Index + (1|GID), family = binomial("logit"), data = non_IM, control = glmerControl(optimizer = "bobyqa"), nAGQ = 10)
+
+# summary
+summary(ML_death_CCI0)
+summary(ML_death_CCI3)
+summary(ML_death_EI1)
+
+
+# ===ML_death_CCI3====calculating the 95% confidence interval
+se <- sqrt(diag(vcov(ML_death_CCI3)))
+# table of estimates with 95% CI
+(tab <- cbind(Est = fixef(ML_death_CCI3), LL = fixef(ML_death_CCI3) - 1.96 * se, UL = fixef(ML_death_CCI3) + 1.96 * se))
+exp(tab)
+
+# ===ML_death_EI1====calculating the 95% confidence interval
+se <- sqrt(diag(vcov(ML_death_EI1)))
+# table of estimates with 95% CI
+(tab <- cbind(Est = fixef(ML_death_EI1), LL = fixef(ML_death_EI1) - 1.96 * se, UL = fixef(ML_death_EI1) + 1.96 * se))
+exp(tab)
+
+# ===ML_death_CCI3==== predict values for 
+non_IM$pdeath_CCI <- predict(ML_death_CCI3, type = "response")
+non_IM$pdeath_EI <- predict(ML_death_EI1, type = "response")
+
+### multi-level logistic regression for nosocomial infection data
+## NOSOCOMIAL MODEL
+# NULL model - nosocomial infection & CCI
+ML_NI_CCI0 <- glmer(nosocomial_infection ~ (1|GID), family = binomial("logit"), data = non_IM)
+
+# full model - nosocomial_infection & CCI
+ML_NI_CCI3 <- glmer(nosocomial_infection ~ gender + age + marriage + C_alos + status_admission  + sugery + disease_status + grade + C_volume + CCI_2011 + (1|GID), family = binomial("logit"), data = non_IM, control = glmerControl(optimizer = "bobyqa"), nAGQ = 10)
+
+# full model -- nosocomial_infection -- Elixhauser Index
+ML_NI_EI1 <- glmer(nosocomial_infection ~ gender + age + marriage + C_alos + status_admission  + sugery + disease_status + grade + C_volume + Elix_Index + (1|GID), family = binomial("logit"), data = non_IM, control = glmerControl(optimizer = "bobyqa"), nAGQ = 10)
+
+# summary
+summary(ML_NI_CCI0)
+summary(ML_NI_CCI3)
+summary(ML_NI_EI1)
+
+# ===ML_NI_CCI3====calculating the 95% confidence interval
+se <- sqrt(diag(vcov(ML_NI_CCI3)))
+# table of estimates with 95% CI
+(tab <- cbind(Est = fixef(ML_NI_CCI3), LL = fixef(ML_NI_CCI3) - 1.96 * se, UL = fixef(ML_NI_CCI3) + 1.96 * se))
+exp(tab)
+
+# ===ML_NI_EI1====calculating the 95% confidence interval
+se <- sqrt(diag(vcov(ML_NI_EI1)))
+# table of estimates with 95% CI
+(tab <- cbind(Est = fixef(ML_NI_EI1), LL = fixef(ML_NI_EI1) - 1.96 * se, UL = fixef(ML_NI_EI1) + 1.96 * se))
+exp(tab)
+
+# ===ML_death_CCI3==== predict values for 
+non_IM$pNI_CCI <- predict(ML_NI_CCI3, type = "response")
+non_IM$pNI_EI <- predict(ML_NI_EI1, type = "response")
+```
+
+```{r RSMR/RSNR}
+non_IM$pdeath_CCI
+non_IM$pdeath_EI
+
+library(dplyr)
+Riskadj <- non_IM %>%
+  group_by(GID, grade) %>%
+  summarise(RSdeath_CCI = sum(pdeath_CCI), RSdeath_EI = sum(pdeath_EI), RSNI_CCI = sum(pNI_CCI), RSNI_EI = sum(pNI_EI), actual_death = sum(death), actual_NI = sum(nosocomial_infection))
+
+Riskadj$RSMR_CCI <- Riskadj$RSdeath_CCI / Riskadj$actual_death
+Riskadj$RSMR_EI <- Riskadj$RSdeath_EI / Riskadj$actual_death
+Riskadj$RSNR_CCI <- Riskadj$RSNI_CCI / Riskadj$actual_NI
+Riskadj$RSNR_EI <- Riskadj$RSNI_EI / Riskadj$actual_NI
+
+zz <- Riskadj[Riskadj$RSMR_EI > 100, ]
+mean(zz$RSdeath_EI)
+
+## PLOTTING WITH GGPLOT2
+library(gridExtra)
+library(grid)
+library(ggplot2)
+library(extrafont)
+font_import()
+y
+loadfonts(device="win")       #Register fonts for Windows bitmap output
+fonts() 
+
+Riskadj <- read.csv("E:\\MY PAPER\\二三级医院\\@Riskadj.csv")
+
+# without inf:
+NOinf <- Riskadj[Riskadj$RSMR_EI < 100, ]
+
+box_CCI <- ggplot(NOinf, aes(x= grade, y = RSMR_CCI, color = grade))+ geom_boxplot() + scale_x_discrete(name = "Hospital grade", limits = c("Secondary_A", "Tertiary_B", "Tertiary_A")) + ylab("Risk Standardized Mortality Rate (Charlson Comorbidity Index)") + ggtitle("Risk Standardized Mortality Rates across different levels \nof hospitals (Charlson Comorbidity Index standardized)") + theme(text=element_text(family = "Times New Roman"))
+
+box_EI <- ggplot(NOinf, aes(x= grade, y = RSMR_EI, color = grade))+ geom_boxplot() + scale_x_discrete(name = "Hospital grade", limits = c("Secondary_A", "Tertiary_B", "Tertiary_A")) + ylab("Risk Standardized Mortality Rates (Elixhauser Index)") + ggtitle("Risk Standardized Mortality Rate across different levels \nof hospitals (Elixhauser Index standardized)") + theme(text=element_text(family = "Times New Roman"))
+  
+
+Int_box <- grid.arrange(box_CCI, box_EI, ncol = 2, nrow = 1, top = textGrob("Figure 2. Boxplots of Risk Standardized Mortality Rate of AMI patients across different levels of hospitals, Shanxi China", gp=gpar(fontsize=15,font=8)))
+
+## pairwise comparison
+require(PMCMR)
+posthoc.kruskal.dunn.test(NOinf$RSMR_CCI ~ NOinf$grade, p.adjust.method="bonferroni")
+posthoc.kruskal.dunn.test(NOinf$RSMR_EI ~ NOinf$grade, p.adjust.method="bonferroni")
+```
+
+```{r save files}
+save(non_IM, file = "E:\\MY PAPER\\二三级医院\\@non_IM.Rdata")
+write.csv(non_IM, file = "E:\\MY PAPER\\二三级医院\\@non_IM.csv")
+save(Riskadj, file = "E:\\MY PAPER\\二三级医院\\@Riskadj.Rdata")
+write.csv(Riskadj, file = "E:\\MY PAPER\\二三级医院\\@Riskadj.csv")
+
+```
+
+
+```{r TRAIL -FAILED- Multiple Imputation analysis for pooled poisson regression}
+# multiple imputation with "MICE"
+library("mice")
+md.pattern(death_poisson_MI)
+md.pairs(death_poisson_MI)
+miceMI_death <- mice(death_poisson_MI, seed = 666)
+fit <- with(MI_death, glm(ac_mort ~ CCI_mean + alos + num_beds + total_revenue, cost_per_bed + subsidy_perc + manage_perc + num_doc + num_nurse + occupancy_perc, offset = volume, family = quasipoisson()))
+pooled_MI_death <- pool(fit)
+summary(pooled_MI_death)
+
+hist(log(death_poisson_MI$occupancy_perc))
+hist(death_poisson_MI$occupancy_perc)
+
+
+#multiple imputation with "Amelia"
+library(Amelia)
+set.seed(666)
+amelia_IMdeath<- amelia(death_poisson, m = 10, idvars = "GID", noms = "grade", logs = c("num_beds", "total_revenue", "cost_per_bed", "subsidy_perc", "num_doc", "num_nurse"), p2s = 2, parallel = "snow", ncpus = 4)
+sum(is.na(amelia_IMdeath$imputations))
+
+save(amelia_IMdeath, file = "C:\\Users\\MIAO\\Desktop\\二三级医院\\data\\IM_death.Rdata")
+write.amelia(obj = amelia_IMdeath, file.stem = "data")
+
+# vif(lm(ac_mort ~ grade + CCI_mean + alos + num_beds + total_revenue + cost_per_bed + subsidy_perc + manage_perc + num_doc + num_nurse + occupancy_perc + volume, data = amelia_IMdeath$imputations[[2]]))
+
+# b.out <- NULL
+# se.out <- NULL
+# for (i in 1:amelia_IMdeath$m) {
+#   if (i != 3){
+#     quasipoisson.out <- glm(ac_mort ~ grade + CCI_mean + alos + num_beds + total_revenue + cost_per_bed + subsidy_perc + manage_perc + num_doc + num_nurse + occupancy_perc, family = quasipoisson(), offset = log(volume), data = amelia_IMdeath$imputations[[i]])
+#   b.out <- rbind(b.out, quasipoisson.out$coef)
+#   se.out <- rbind(se.out, coef(summary(quasipoisson.out))[,2])
+#   }
+#   }
+# combined.results <- mi.meld(q = b.out, se = se.out)
+# df1 <- data.frame(cbind(data.frame(t(combined.results$q.mi)[,1]), data.frame(t(combined.results$se.mi))[,1]))
+# colnames(df1) <- c("coefficient", "s.e.")
+# df1[,"OR"] <- exp(df1[,"coefficient"])
+
+# delete variables that cause the problem of multi-collinearity (num_beds, num_doc, num_nurse), and just keep "total_revenue"
+
+vif(lm(ac_mort ~ grade + CCI_mean + alos + total_revenue + cost_per_bed + subsidy_perc + manage_perc + occupancy_perc + volume, data = amelia_IMdeath$imputations[[2]]))
+
+b.out <- NULL
+se.out <- NULL
+for (i in 1:amelia_IMdeath$m) {
+  if (i != 3){
+    quasipoisson.out <- glm(ac_mort ~ grade + CCI_mean + alos + total_revenue + cost_per_bed + subsidy_perc + manage_perc + occupancy_perc, family = quasipoisson(), offset = log(volume), data = amelia_IMdeath$imputations[[i]])
+  b.out <- rbind(b.out, quasipoisson.out$coef)
+  se.out <- rbind(se.out, coef(summary(quasipoisson.out))[,2])
+  }
+  }
+combined.results <- mi.meld(q = b.out, se = se.out)
+
+df2 <- data.frame(cbind(data.frame(t(combined.results$q.mi)[,1]), data.frame(t(combined.results$se.mi))[,1]))
+colnames(df2) <- c("coefficient", "s.e.")
+df2[,"OR"] <- exp(df2[,"coefficient"])
+df2[,"z"] <- df2[,"coefficient"]/df2[,"s.e."]
+df2[,"z^2"] <- (df2[,"z"])^2
+df2[,"|z|"] <- abs(df2[,"z"])
+df2[,"p > |z|"] <- pnorm(df2[,"|z|"], lower.tail = FALSE)
+df2[,"p > z^2"]<- pchisq(df2[,"z^2"], 1, lower.tail=FALSE) 
+write.csv(df2, file = "C:\\Users\\MIAO\\Desktop\\二三级医院\\data\\@poisson_result.csv")
+
+
+summary(glm(ac_mort ~ grade + CCI_mean + alos + num_beds + total_revenue + cost_per_bed + subsidy_perc + manage_perc + num_doc + num_nurse + occupancy_perc, family = quasipoisson(), offset = log(volume), data = amelia_IMdeath$imputations[[10]]))
+
+
+# library(Zelig)
+# names(amelia_IMdeath$imputations[[1]])
+# zelig(ac_mort ~ grade + CCI_mean + alos + num_beds + total_revenue/10000 + cost_per_bed + sudsidy_perc + manage_perc + num_doc + num_nurse + occupancy_perc, model = "negbin", weights = volume, data = amelia_IMdeath)
+# # calcualting the estimates with the tools in "MICE"
+# fit <- with(amelia_IMdeath, glm(ac_mort ~ grade + CCI_mean + alos + num_beds + total_revenue/10000 + cost_per_bed + sudsidy_perc + manage_perc + num_doc + num_nurse + occupancy_perc, family = quasipoisson(), offset = volume, data = amelia_IMdeath))
+# summary(pool(fit))
+
+```
+

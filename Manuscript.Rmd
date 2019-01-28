@@ -1,0 +1,401 @@
+---
+title: "Scope of Flu Shot Uptake in Chinese Community in Saint Louis and Related Factors"
+author: |
+  |
+  | Miao Cai$^1$, Xue Li$^1$, Zidong Zhang^[The three authors contributed equally to the manuscript. Correspondence: [miao.cai@slu.edu](miao.cai@slu.edu)]$^2$
+  |
+  | $^1$Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University, St. Louis, MO, USA
+  | $^2$Department of Health Management and Policy, College for Public Health and Social Justice, Saint Louis University, St. Louis, MO, USA
+  | 
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    number_sections: yes
+  word_document: default
+bibliography: Refereces.bib
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{url}
+- \usepackage{eso-pic,graphicx,transparent}
+keywords: flu shot; Chinese; attitudes; action
+link-citations: yes
+linkcolor: blue
+csl: transactions-on-accessible-computing.csl
+abstract: Influenza is a rapidly and prevalently spread disease all over the world,
+  and previous studies have reported the racial and ethnic disparities of uptaking flu
+  shots. In view of the very low flu shot uptaking rate and large community as a minority
+  among Chinese population in the United States, this study aims to explore the factors
+  associated with their behavior and intention to take flu shot. Convenient sampling
+  was used to collect survey data on  attitudes of Chinese people towards flu shots
+  in Saint Louis, Missouri. The overall flu shot uptaking rate was 46.3%  and the intention
+  rate to take flu shot in the future was 54.4% in our sample. Chinese people who
+  intended to take flu shot in the future had  a significantly higher cultural integration
+  (P = 0.048) and subjective norm (P = 0.038) scores than the no intention group.
+  However, no statistically significantly association was found between the  attitudes,
+  insurance and barriers of the respondents and their intention to flu shot. No significant
+  factors were found to be associated with the respondents' past flu shot behavior.
+  We conclude that improving Chinese people's cultural integration and the communities'
+  knowledge on flu shot can promote their willingness to take flu shots.
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=12, fig.height=5, cache = F)
+```
+
+\AddToShipoutPictureFG{
+  \AtPageCenter{% or \AtTextCenter
+    \makebox[0pt]{\rotatebox[origin=c]{45}{%
+      \scalebox{8}{\texttransparent{0.1}{DRAFT}}%
+    }}
+  }
+}
+
+# Introduction
+
+Influenza is a viral infection that spread rapidly and prevalently in the population. The virus can cause severe complications, which may end up with hospitalizations and, for some, even mortality. According to the Centers for Disease Control and Prevention (CDC), influenza-associated deaths in the United States are estimated to have ranged from 12,000 to 56,000 since 2010 [@cdc2016a]. Children under 5 years old, adults over 65 year old, pregnant women, and residents of nursing home and other long-term care facilities [@cdc2018] are at high risk of developing flu-related complications.  CDC has asserted that "The single best way to protect against the flu is to get vaccinated each year", which implied the consensus on the benefit of flu vaccination within the scientific society. Flu vaccination initiates the adaptive immunity and provides protection against the infection with influenza viruses. According to the previous epidemiological studies published by CDC, the flu vaccine prevented an estimated 5 million of flu illness and 2.5 million medical visits during 2015-2016 [@cdc2016b]. However, the flu vaccination coverage remains low in the U.S. such that only 2 out of 5 people reported flu vaccination uptake in early November 2016 [@cdc2016b]. 
+
+A number of studies have discussed the racio-ethnical disparity of health service utilization in the U.S. The variation among sub-ethnicities in the Asian population existed in the decision making and the process of seeking of healthcare services since culture from origin of country affected health behavior of immigrants [@budhwani2016disparities;@stella2004health]. Therefore, we argue that the influence of culture and principle from immigrant’s home country would affect their health behavior. Asian population in the U.S. may not be studied as a homogeneous population, and research regarding each distinct ethnic group is needed. Recent studies showed the uptake rates and the attitude towards flu shot in China was not satisfactory. According to Xinhua Media, the official news agency of China’s government,  only 2% of the population in China received flu shot in 2017 [@xinhua2018]. A study by Chinese CDC found that 45.3% of participants were not willing to take flu shot, and over 30% of participants were worried about the safety of flu vaccine, 26.5% of them showed little knowledge about flu vaccine, 17.8% of them considered the flu vaccine not effective. Moreover, the supply of flu vaccine surpassed the actual uptake [@xinhua2018]. As Chinese students and first generation Chinese have been exposed to the culture and social norm in China, and they also get exposed to the health education and culture in the U.S., they are likely to change perception and attitude towards flu vaccination. Two studies found Chinese Americans had the highest uptake rate of flu vaccination among all Asian population who were included in National Health Interview Survey study [@budhwani2016disparities; @lu2015racial]. However, relevant evidence seemed weak and incomprehensive to now due to limited number of research. Therefore, it remains unclear how well the general Chinese Americans accept the flu vaccination, and how the Chinese people in the U.S. are different in attitude and behavior regarding to the uptake of flu vaccination. 
+
+Therefore, in this paper we propose to explore whether years of living, cultural integration, and surrounding people’s opinions will affect intention to flu vaccination among Chinese population in US.
+
+
+
+
+## Conceptual framework
+
+```{r Conceptual framework, fig.cap = "The conceptual framework",fig.align='center', fig.pos='H'}
+knitr::include_graphics("Conceptual framework.pdf")
+```
+
+One study focused on the factors related to flu vaccination uptake among college students, and they found that attitude and subjective norms from the Theory of Planned Behavior (TPB) are significant predictors of intention to vaccine. Besides, barriers and benefits from Health Belief Model (HBM) also are significant predictors [@mckinley2014college].  Therefore, we developed our conceptual model and survey questions mainly based on TPB, and added additional external variables of our interests. China has a diverse regionality, as well as regional policy and healthcare budget, which influence the awareness and accessibility of flu vaccination among Chinese population [@ruan2015china; @yang2016seasonal]. 
+
+
+# Methods 
+
+This is a cross-sectional study of including a questionnaire measuring intention of flu shot, attitude towards, social norms and perception of risk and benefit of flu shot, and perceived control of flu shot uptake. We proposed the survey contents after summation of previous research about uptake of flu shot using Health Belief Model and Theory of Planned Behavior [@kumar2012social]. 
+
+One study focused on the factors related to flu vaccination uptake among college students, and they found that attitude and subjective norms from the Theory of Planned Behavior (TPB) are significant predictors of intention to vaccine. Besides, barriers and benefits from Health Belief Model (HBM) also are significant predictors [@mckinley2014college].  Therefore, we developed our conceptual model and survey questions mainly based on TPB, and added additional external variables of our interests. China has a diverse regionality, as well as regional policy and healthcare budget, which influence the awareness and accessibility of flu vaccination among Chinese population [@ruan2015china; @yang2016seasonal]. And we are interested in whether longer year living in the U.S will affect intention to flu vaccination.
+
+## Recruitment strategy
+
+We recruited subjects from Chinese students at SLU and a Chinese church group.
+
+College students at SLU: We obtained collaboration of Chinese Student and Scholar Association in Saint Louis University (SLU CSSA), which warranted their permission of survey among the Chinese International students at SLU. Upon the permission, we spread the link of the Qualtrics questionnaire via CSSA’s WeChat group announcement on the targeted students. The calculation of response rate was the percent of responses by the number of students who saw the group announcement.
+
+The Chinese church group: We delivered questionnaires, both paper-based and Qualtrics web-based, to the Mustard Seeds Group (MSG) student fellowship after we received the agreement from their executive board. The group coordinator broadcast the link of the Qualtrics questionnaire via their WeChat group announcement to the targeted population on behalf of our research team. 
+
+At the end of the questionnaire and at all occasions we broadcast the survey, we stated the incentive of lottery for a 40$ gift card from participants who made complete response within the period of survey. A discrete Google Form page was established to solicit the contact information of those who completed questionnaires and were interested in the lottery.
+
+## Sampling strategy
+
+We applied convenient sampling to collect questionnaire responses from targeted population. Our sample comprised with two portions of responses: 1) Chinese International students and visiting scholars, and 2) first-generation Chinese immigrants. To collect responses, we handed out paper questionnaires or Qualtrics links of web-based questionnaires at the MSG Group Friday meetings, by which we had responses from Chinese students and scholars, and also Chinese immigrants who participated in these events. Also, we delivered questionnaires to the college students and scholars via the group announcement of SLU CSSA. 
+
+## Data collection
+
+```{r Tracking tools, fig.cap = "The tracking tool",fig.align='center', fig.pos='H'}
+knitr::include_graphics("Tracking tool.pdf")
+```
+
+
+Most subjects (63 out of 70) completed the study questionnaires via a Qualtrics web-based link. The Qualtrics questionnaires were disseminated  on the "WeChat" mobile app. "WeChat" is the most prevalent social media mobile used in the Chinese community in the world. It has 980 million monthly active users, and is thought as China’s "App for everything". Complimentary to Qualtrics, paper questionnaires (7 out of 70) were  used when the Qualtrics links did not work with some participants with barriers to online survey. 
+
+## Calculation of response/participation rate
+
+We calculated the response rates for two sources populations respectively. In the MSG fellowship group, 37 participants were recruited via We-chat while 9 participants were recruited via contact. For this group, 16 persons refused to respond, 2 participants stopped at some questions, and 28 of them completed the survey, which made the response rate 75.6%. As for the SLU students, we contacted 52 students and 4 of them refused, 7 of them stopped at the beginning, which made the response rate 78.8%. 
+
+## Measures
+
+Key measures included: demographic characteristics, immigration status, year came to the U.S.,  cultural integration, attitude and subjective norm about influenza infection and vaccination, and perceived barrier, intention and behavior towards influenza vaccine. The questions related to attitude, subjective norm, and perceived barrier towards influenza vaccine were based on previous published literature [@ditsungnoen2016knowledge]. Particularly, four statements in the survey were related to attitude, and we calculated the sum sore over the total score to compute a single variable for attitude. Seven questions focused on subjective norm with one question specifically  on the influence of a health care provider’s opinion, and we recoded them into two scores represented the subjective norm of friends, family and of  health care providers. And two questions on perceived barrier were combined to a single variable as well. 
+
+## Statistical analysis
+
+The three concepts in the conceptual framework, attitudes, subjective norms, and perceived controls, were compared on the respondents’ flu shot behavior in the past year and future intention to flu shot respectively. Student’s t-tests were used to test the difference of continuous variables, such as attitude scores and subjective norm scores, on past behavior groups and future intention groups. Fisher’s exact tests were used to compare the barriers towards the flu shot on past behavior groups and future intention groups since small values existed in the cells. All statistical analyses were conducted in statistical software R 3.4.1 [@team2013r]. 
+
+
+
+# Results
+
+## Missing data
+
+```{r missing, fig.cap = "missing patterns in the data",fig.align='center', fig.pos='H'}
+knitr::include_graphics("missing pattern.pdf")
+```
+
+As shown in figure 3, the top 3 variables that have the most percent of missing in collected data were age (35%), residency (17%) and barrier (10%). Only 48.6% of the data in this study is complete, with a random pattern of missing according the right part of figure 3. 
+
+```{r cars, echo = FALSE}
+dat = readxl::read_excel("FLU70.xlsx")
+
+# Q2: age
+dat$Q2[dat$Q2 == 1] = "Male"
+dat$Q2[dat$Q2 == 2] = "Female"
+
+# Q3: education level
+dat$Q3[dat$Q3 == 1] = "Less than high school"
+dat$Q3[dat$Q3 == 2] = "High school complete"
+#dat$Q3[dat$Q3 == 3] = "Vocational/technical school"
+dat$Q3[dat$Q3 == 4] = "Some college"
+dat$Q3[dat$Q3 == 5] = "Bachelor's degree"
+dat$Q3[dat$Q3 == 6] = "Higher than college"
+
+
+# Q4: current marital status
+dat$Q4[dat$Q4 == 1] = "Never married"
+dat$Q4[dat$Q4 == 2] = "Married or living with a partner"
+#dat$Q4[dat$Q4 == 3] = "Divorced, Separated or widowed"
+
+
+# Q5: Pregnant
+dat$Q5[dat$Q5 == 1] = "Yes"
+dat$Q5[dat$Q5 == 2] = "No"
+dat$Q5 = factor(dat$Q5, levels = c("No", "Yes"))
+
+# Q6: education level
+dat$Q6[dat$Q6 == 1] = "Employed"
+#dat$Q6[dat$Q6 == 2] = "Self-employed"
+dat$Q6[dat$Q6 == 3] = "Out of work for 1 year or more"
+dat$Q6[dat$Q6 == 4] = "Out of work for less than 1 year"
+#dat$Q6[dat$Q6 == 5] = "Homemaker"
+dat$Q6[dat$Q6 == 6] = "Student"
+# dat$Q6[dat$Q6 == 7] = "Retired"
+# dat$Q6[dat$Q6 == 8] = "Unable to work"
+
+
+# Q7: Regionality
+dat$Q7[dat$Q7 == 1] = "Rural"
+dat$Q7[dat$Q7 == 2] = "Urban"
+dat$Q7[dat$Q7 == 3] = "Suburban"
+dat$Q7[dat$Q7 == 4] = "Other"
+
+# Q9: years coming to US
+dat$YeartoUS = 2018 - dat$Q9_10_year
+
+# Q10: residency of the sample
+dat$Q9_10_i[dat$Q9_10_i == 0] = "US citizen/Permanent resident"
+dat$Q9_10_i[dat$Q9_10_i == 1] = "Chinese resident"
+dat$Q9_10_i = factor(dat$Q9_10_i, levels = c("US citizen/Permanent resident", "Chinese resident"))
+
+# Q11-12: cultural integration
+dat$`Cultural integration` = dat$Q11 + dat$Q12
+
+# Q13
+dat$Q13 = dat$Q13 - 1
+dat$Q14 = dat$Q14 - 1
+dat$Q15 = dat$Q15 - 1
+dat$Q16_1 = dat$Q16_1 - 1
+dat$Q16_2 = dat$Q16_2 - 1
+dat$Q17 = dat$Q17 - 1
+dat$Q18 = dat$Q18 - 1
+dat$Q19 = dat$Q19 - 1
+dat$Q20 = dat$Q20 - 1
+dat$Q21 = dat$Q21 - 1
+dat$Q22 = 5 - dat$Q22
+dat$Q23 = 4 - dat$Q23
+dat$Q24[dat$Q24 == 3] = NA
+dat$Q24 = 2 - dat$Q24
+
+dat$Q25_1[is.na(dat$Q25_1)] = 0
+dat$Q25_2[is.na(dat$Q25_2)] = 0
+dat$Q25_3[is.na(dat$Q25_3)] = 0
+dat$Q25_4[is.na(dat$Q25_4)] = 0
+dat$Q25_5[is.na(dat$Q25_5)] = 0
+dat$Q25_6[is.na(dat$Q25_6)] = 0
+
+dat$Q26[dat$Q26 == 1] = "Distant to clinic"
+dat$Q26[dat$Q26 == 2] = "Time of appointment"
+dat$Q26[dat$Q26 == 3] = "Time needed to get to clinic"
+dat$Q26[dat$Q26 == 4] = "Time waiting"
+dat$Q26[dat$Q26 == 5] = "Costs"
+dat$Q26[dat$Q26 == 6] = "Other"
+
+dat$Q27 = 2 - dat$Q27
+dat$Q28 = 2 - dat$Q28
+
+origin_recode = dat
+readr::write_csv(origin_recode, "origin_recode.csv")
+```
+
+```{r regression variables, message=F, fig.height=7}
+dat$Age = dat$Q1
+dat$Gender = dat$Q2
+dat$Education = dat$Q3
+dat$Marital = dat$Q4
+dat$Job = dat$Q6
+dat$Regionality = dat$Q7
+
+# yeartoUS
+dat$Residency = dat$Q9_10_i
+# Cultural integration
+Q13 = dat$Q13
+Q13[is.na(Q13)] = 0
+Q14 = dat$Q14
+Q14[is.na(Q14)] = 0
+Q15 = dat$Q15
+Q15[is.na(Q15)] = 0
+Q16_1 = dat$Q16_1
+Q16_1[is.na(Q16_1)] = 0
+dat$Attitude = (Q13 - Q14 + Q15 + Q16_1)/(as.integer(!is.na(dat$Q13)) + as.integer(!is.na(dat$Q14)) + as.integer(!is.na(dat$Q15)) + as.integer(!is.na(dat$Q16_1))) # -1 ~ 3
+dat$Attitude = dat$Attitude + 1 # attitude [0, 4]
+
+# subjective norms in community
+Q16_2 = dat$Q16_2
+Q16_2[is.na(Q16_2)] = 0
+Q17 = dat$Q17
+Q17[is.na(Q17)] = 0
+Q18 = dat$Q18
+Q18[is.na(Q18)] = 0
+Q19 = dat$Q19
+Q19[is.na(Q19)] = 0
+Q20 = dat$Q20
+Q20[is.na(Q20)] = 0
+Q21 = dat$Q21
+Q21[is.na(Q21)] = 0
+
+dat$SN_community = (Q16_2 + Q17 + Q18 + Q19 - Q20 + Q21)*dat$Q22/4/(as.integer(!is.na(dat$Q16_2)) + as.integer(!is.na(dat$Q17)) + as.integer(!is.na(dat$Q18)) + as.integer(!is.na(dat$Q19)) + as.integer(!is.na(dat$Q20)) + as.integer(!is.na(dat$Q21))) # -1 ~ 3.33
+
+dat$SN_community = dat$SN_community*4/4.3333 # SN_community 0 ~ 4
+
+dat$SN_doctor = dat$Q23
+dat$Insurance = dat$Q24
+dat$Barrier = dat$Q26
+
+dat$Y_intent = dat$Q27
+dat$Y_behav = dat$Q28
+
+dat_reg = subset(dat, select = c("Age", "Gender", "Education", "Marital", "Job", "Regionality", "YeartoUS", "Residency", "Cultural integration", "Attitude", "SN_community", "SN_doctor", "Insurance", "Barrier", "Y_intent", "Y_behav"))
+
+comp = dat_reg[complete.cases(dat_reg),]
+
+# pdf("missing pattern.pdf", width = 10, height = 8)
+# aggr_plot <- VIM::aggr(dat_reg, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(dat_reg), cex.axis=.7, gap=3, ylab=c("Histogram of missing data","Pattern"))
+# dev.off()
+
+```
+
+## Socioeconomic status of the respondents
+
+```{r table one, message=FALSE, warning=F,}
+library(tableone)
+library(kableExtra)
+
+t1 = CreateTableOne(data = dat_reg, vars = c("Age", "Gender", "Education", "Marital", "Job", "Regionality", "YeartoUS", "Residency"), strata = "Y_intent")
+
+t2 = CreateTableOne(data = dat_reg, vars = c("Age", "Gender", "Education", "Marital", "Job", "Regionality", "YeartoUS", "Residency"), strata = "Y_behav")
+
+knitr::kable(print(t2, exact = "stage", testExact = fisher.test, quote = FALSE, noSpaces = TRUE, printToggle = FALSE)[,1:3], caption = "Summary statistics of demographics, stratified by past behavior", longtable = FALSE, format = "latex", booktabs = T, col.names = c("Past flu shot: No", "Past flu shot: Yes", "P-values"), linesep = "") %>% 
+  kable_styling(latex_options = "hold_position") %>% 
+add_indent(c(5:9, 12:15, 17:20))
+```
+
+Table 1 showed the demographic status of the respondents stratified by past flu shot behavior. The overall flu shot uptaking rate was 46.3% in our sample. The mean age in the no past flu shot group was 28.19, compared with the mean age of 34.06 in past flu shot group, but this difference was not statistically different, which may attribute to low statistical power. Other socioeconomic status including education, marital status, employment, regionality, years to the US and residency did not differ across the two flu shot groups. It was to be noted that the percent of employed respondents in no past flu shot group was substantially higher than that of the past flu shot group.
+
+```{r t2}
+knitr::kable(print(t1, exact = "stage", testExact = fisher.test, quote = FALSE, noSpaces = TRUE, printToggle = FALSE)[,1:3], caption = "Summary statistics of demographics, stratified by future intention", longtable = FALSE, format = "latex", booktabs = T, col.names = c("Intention to flu shot: No", "Intention to flu shot: Yes", "P-values"), linesep = "")  %>% 
+  kable_styling(latex_options = "hold_position") %>%  
+add_indent(c(5:9, 12:15, 17:20))
+```
+
+Table 2 showed the demographic status of the respondents stratified by future intention to flu shot. The overall intention rate to take flu shot in the future was 54.4%, which is was higher than the past flu shot uptaking rate. The mean age difference across the intention group was  narrower than the difference in the past behavior group. Demographic characteristics including education, marital status, employment, regionality, years to the U.S and residency did not have significant differences across the intent groups at 5% significance level.
+
+
+## Attitudes, subjective norms and barriers
+
+```{r table 3, message=FALSE, warning=F}
+t3 = CreateTableOne(data = dat_reg, vars = c("Cultural integration", "Attitude", "SN_community", "SN_doctor", "Insurance", "Barrier"), strata = "Y_intent")
+
+t4 = CreateTableOne(data = dat_reg, vars = c("Cultural integration", "Attitude", "SN_community", "SN_doctor", "Insurance", "Barrier"), strata = "Y_behav")
+
+knitr::kable(print(t4, exact = "stage", testExact = fisher.test, quote = FALSE, noSpaces = TRUE, printToggle = FALSE)[,1:3], caption = "Summary statistics of attitudes, stratified by past behavior", longtable = FALSE, format = "latex", booktabs = T, col.names = c("Past flu shot: No", "Past flu shot: Yes", "P-values"), linesep = "") %>% 
+  kable_styling(latex_options = "hold_position") %>% 
+add_indent(c(8:13)) %>%
+footnote(general = "SN_community: subjective norms in the community; SN_doctor: subjective norms from the doctors."
+)
+
+```
+
+
+Table 3 showed the attitudes of the respondents stratified by their past flu shot behavior. People uptaking flu shot in the past year on average had higher cultural integration scale, attitude score, and subjective norms score compared with people without past year flu shot, although they were not statistically significant. However, people who took flu shot in the past year were less likely to be insured. Most people without past year flu shot encountered time waiting as the most barrier, while their counterparts faced more barriers, like costs and time of appointment.
+
+```{r t4}
+knitr::kable(print(t3, exact = "stage", testExact = fisher.test, quote = FALSE, noSpaces = TRUE, printToggle = FALSE)[,1:3], caption = "Summary statistics of attitudes, stratified by future intention", longtable = FALSE, format = "latex", booktabs = T, col.names = c("Intention to flu shot: No", "Intention to flu shot: Yes", "P-values"), linesep = "")  %>% 
+  kable_styling(latex_options = "hold_position") %>% 
+add_indent(c(8:13)) %>%
+footnote(general = "SN_community: subjective norms in the community; SN_doctor: subjective norms from the doctors."
+)
+```
+
+Table 4 showed the attitudes of the respondents stratified by their future flu shot intention. People intent to uptake flu shot in the future on average had higher cultural integration scale, attitude score, subjective norms score, and insurance rate compared with people without such intention, although only culture integration and subjective norm score regarding family and friends is significant. Most people without past year flu shot encountered time waiting, time of appointment and others as important barriers, while their counterparts faced more barriers, like costs.
+
+
+# Discussion
+
+In our current study, we found that the health behavior constructs in the conceptual model were merely different between subjects who had flu shot in the past experience and those who did not, but their intention to receive flu vaccine were associated with cultural integration and social norm measures. It is interesting to see that our study found significant differences in cultural integration and subjective norms among different intention groups, even with such a small sample size. 
+
+Flu vaccination is the public health approach to prevent flu infection, prevent subsequent complications and build herd immunity endorsed by the public health consensus[@cdc2016a]. Both the governmental public health authorities in the U.S. and China announced the value of flu vaccination in the general population for seasonal influenza. However, the flu vaccination rate in China was as low as 2%[@xinhua2018]. This could be related to the social reality in China that public health education was under-appreciated by the general public. In the studies by Chinese Center for Disease Control and Prevention and Peking University, lack of knowledge of flu vaccination was negatively associated with flu shot uptake in the Chinese older urban and suburban adult population[@wang2013; @xinhua2018]. We thought this would also apply to the Chinese immigrants in the U.S. since the influence from previous experience and knowledge may still affect health behaviors. However, as these immigrants are being integrated into local culture in the U.S., it is understandable that such influence may fade out as they live longer in the U.S. 
+
+It is interesting to see that there were about 6 years difference in the years of living in the U.S. between those who had intention to take flu shot in the future and those who had no intention. Although there was no statistically significant difference, but this absolute difference in years still indicates the influence of years living in the U.S. on people's intention towards flu shot. As immigrants stay longer in the U.S., their acculturation and social integration get to form subject norms to influence their health behaviors. Our study shows immigrant’s intention of receiving flu shot is positively associated with the social integration perceived from self and people around.  Such integration to the U.S. society may build social capital for the immigrants, indicating social network, with which the positive relationship can be formed  between cultural integration and health status [@tegegne2018linguistic]. 
+
+Besides individual’s cultural integration and social capital, our data also suggest that the health behaviors of Chinese people in the U.S. may be different by social environments. Chinese people who live in a community that value highly the effectiveness of flu shot are more likely to take flu shots in the future. Their doctors' suggestions also have a significantly positive effect on their flu shot intention. Both of the two results suggest that Chinese people are open and receptive to ideas and suggestions from others. In that sense, health education and promotion could have a synergistic effect in this community. Chinese people who are health literate on flu vaccination are likely to persuade their peers into believe in the effectiveness of flu shot. We will need to more evidence from research about Asian Americans to compare and contrast the impact of social norms to individual member’s attitude and decision making.
+
+Our future direction of this field is to identify health determinants responsible for potential association between health behavior and the transit from past behavior to future intention. By this means, we can better decode the process of decision making and action to vaccination in the immigrant community with accounting for the factors that have been identified in the mainstream population.
+
+We considered several limitations in our study. First, the study has a small sample. The study team collected 70 respondents, so study may be statistically underpowered and could have made Type II errors. Yet, some variables, such as age and regionality, have considerable difference in magnitude between subjects who had different past experience and intention regarding to flu vaccine. Second, we did not inquire about employer’s requirement of flu vaccination and exemption. Employer’s requirement may be an obstacle from opting out flu vaccine so survey subject can have a positive influence to uptake flu shot. However, vaccination exempt can counteract the effect of vaccination requirement to the health behavior. Last, the small sample and convenience sampling can leave our sample less representative and likely to had Type II error.
+
+Despite the limitation due to sample size, we have seen several strengths of the study. First, our data collected information of individual’s social and perceived norms towards flu vaccination. The research in the past as we have examined either analyzed the behavior and constructs of a specific population, namely elder Chinese[@fang2015; @wang2013], pregnant women in Thailand [@kumar2012social], which cannot apply to the scenario of general Chinese American population. Second, the research about the social norms and attitude of ethnic sub-population in Asian Americans was rarely reported. Although some research looked into general adult Asians and at children of Asian American heritage [@budhwani2016disparities; @stella2004health], these researches did not discuss either social norms or attitude to health behavior. Hereby, we collected information directly to answer our research question by surveying general Chinese population as we can reach. Lastly, research about the uptake of vaccination in the Asian American population seemed to be over-represented by studies using subjects in the health care settings, such as data from healthcare worker subjects, hospital record and from National Healthcare Interview Survey [@kumar2012social; @lu2015racial; @stella2004health]. We recognized the bias of research about these populations so we thought a primary data collection from the overall Chinese Americans may better control the bias of selecting subjects from healthcare setting.
+
+In conclusion, we found attitude and intention of uptaking flu vaccination in the Chinese American and Chinese residents in the St Louis area may be influenced by the social environment. Integration of the American society and attitude and influence from the community may be associated with intention to vaccination.
+
+# Potential journals for submission
+
+## Vaccine
+
+- Official link: https://www.journals.elsevier.com/vaccine
+- Impact factor in 2016: 3.235
+- Vaccine is unique in publishing the highest quality science across all disciplines relevant to the field of vaccinology - all original article submissions across basic and clinical research, vaccine manufacturing, history, public policy, behavioral science and ethics, social sciences, safety, and many other related areas are welcomed. Our submission categories indicate where we receive the most papers. Papers outside these major areas are also welcome and authors are encouraged to contact us with specific questions. We also invite authors to submit relevant basic science and clinical reviews, methodological articles, opinion and commentary pieces, visual pieces, and letters.
+
+## Ethnicity & Disease
+
+- Official link: https://www.ethndis.org/edonline/index.php/ethndis/index
+- Impact factor in 2015: 1.11
+- Ethnicity & Disease is an international journal that exclusively publishes information on the causal and associative relationships in the etiology of common illnesses through the study of ethnic patterns of disease. Topics focus on: ethnic differentials in disease rates;impact of migration on health status; social and ethnic factors related to health care access and health; and metabolic epidemiology. A major priority of the journal is to provide a forum for exchange between the United States and the developing countries of Europe, Africa, Asia, and Latin America.
+
+
+## American Journal of Preventive Medicine
+
+- Official link: https://www.ajpmonline.org/content/aboutinfo
+- Impact factor in 2015: 4.212
+- The American Journal of Preventive Medicine publishes articles in the areas of prevention research, teaching, practice and policy. Original research is published on interventions aimed at the prevention of chronic and acute disease and the promotion of individual and community health. Of particular emphasis are papers that address the primary and secondary prevention of important clinical, behavioral and public health issues such as injury and violence, infectious disease, women's health, smoking, sedentary behaviors and physical activity, nutrition, diabetes, obesity, and alcohol and drug abuse. Papers also address educational initiatives aimed at improving the ability of health professionals to provide effective clinical prevention and public health services. Papers on health services research pertinent to prevention and public health are also published.
+
+## Journal of Infectious Diseases
+
+- Official link: https://academic.oup.com/jid
+- Impact factor in 2015: 6.273
+- Published continuously since 1904, The Journal of Infectious Diseases (JID) is the premier global journal for original research on infectious diseases. The editors welcome Major Articles and Brief Reports describing research results on microbiology, immunology, epidemiology, and related disciplines, on the pathogenesis, diagnosis, and treatment of infectious diseases; on the microbes that cause them; and on disorders of host immune responses. JID is an official publication of the Infectious Diseases Society of America.
+
+# Acknowledgement
+
+The authors thank Dr. Enbal Shacham for giving us thoughtful suggestions on conceptual framework and data collection. We also thank Dr. Mario Schootman for providing us the 40$ Amazon gift card as the incentives for recruitment respondents.
+
+# References
+
+
+
+
+
+
+
+
