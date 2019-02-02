@@ -23,6 +23,8 @@ require(purrr)
 
 # Simplify iterations and lists with purrr
 
+A very useful link for all the tricks on using the purrr package. [link](https://www.brodrigues.co/blog/2017-03-24-lesser_known_purrr/)
+
 `map(object, function)`
 
 - object: can be a vector or list
@@ -114,6 +116,15 @@ list_of_files_pmap
 ## How to safely() use purrr
 
 
+```{r}
+dat = data.frame(
+  x = c(1:5, NA, 6:9),
+  y = c(1:10),
+  z = 6:-3
+)
+
+purrr::map_dbl(seq_len(nrow(dat)), function(i) sum(dat$x[i] + dat$y[i])/ dat$z[i])
+```
 
 
 

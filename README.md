@@ -14,3 +14,10 @@ kotex-oblivoir:
 ```
 
 Then we can find out that `amsfonts` is the package you want to install using the `tlmgr` command. The above code is from [a GitHub issue](https://github.com/MareoRaft/MATH-Calc/issues/2)
+
+
+Let Git delete all unpushed commits:
+
+```
+git reset origin/master
+```
