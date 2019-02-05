@@ -1,0 +1,322 @@
+---
+title: "Python for R users"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University. Email: [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "1/10/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+link-color: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Basic difference
+
+Basic data types:
+
+R:
+- `numeric`: integers
+- `logical`: TRUE or FALSE
+- `character`
+
+Python:
+- `int`: integers
+- `float`: floating point numbers
+- `bool`: True or False (difference between R and Python)
+- `str`: strings
+
+The equal sign is the only way to assign variables in Python.
+
+```
+class(mtcars$mgp) in R -->  type(mtcars$mgp) in Python
+paste0("1", "1") in R --> "1" + "1" in Python
+paste0("1", "1") in R --> "1" "1" in Python
+rep("1", 5) in R --> "1"*5 in Python
+```
+
+## containers
+
+> Python is a 0-indexed language
+
+Extract the first element from R and Python
+
+```
+x[[1]] in R --> x[1] in Python
+```
+
+`x[::2]` extract every 2 elements from the list x.
+
+**Dictionaries**
+
+- Lists are unlabeled
+- Dictionaries provide key:value pairs
+
+R relies heavily on functions, while Python relies on both functions and methods.
+
+- **Methods** are functions that an object can call on itself
+- **Functions** are called on an object
+
+# Control flows and loops
+
+Python defines code blocks with blanks.
+
+## `if-else` control flows:
+
+```
+if x <= 0:
+  print("error")
+elif x <= 4:
+  print("non-binge")
+else:
+  print("binge")
+
+num_drink = [0, 3, -1, 4, 8, 10]  
+for drinks in num_drink:
+  if x <= 0:
+    print("error")
+  elif x <= 4:
+    print("non-binge")
+  else:
+    print("binge")
+```
+
+## loops
+
+You have to explicitly use `return` to return some object in Python.
+
+```
+def my_mean(x, y):
+   num = x + y
+   dem = 2
+   return num / dem
+   
+a1_lam = lambda x: x + 1
+```
+
+## Comprehension
+
+```
+data = [1, 2, 3, 4, 5]
+new = [x**2 for x in data]
+print(new)
+```
+
+Python: `map` function and `apply` method.
+
+# Pandas
+
+Subsetting rows in pandas. You can either use `[]` or dot `.` to select columns in Python pandas.
+
+```
+# filtering rows using indexes
+df.iloc[[0:3],]
+df.iloc[[0:3], :]
+
+# filtering rows using row labels
+df.loc[['a', 'b', 'c']]
+
+# filtering rows and columns at the same time
+df.loc['x', 'A']
+df.loc[['x', 'y'], ['A', 'B']]
+
+# conditional subsetting
+df[(df.A >= 50)|(df.B <= 7)]
+```
+
+## Attributes
+
+You can call an attribute over an object without using a parenthesis.
+
+```
+tips[(tips.sex == 'Female') & (tips.total_bill > 15)]
+tips.loc[(tips.sex == 'Female'), ['total_bill', 'tip', 'sex']]
+tips.iloc[0:3, 0:3]
+```
+
+**info** method
+
+```
+df.info() --> str(df) in R
+df['A'] = df['A'].astype(str) --> df$A <- as.character(df$A) in R
+```
+
+- `df['zz'].dtypes`: get the data types of a column
+- `df['A'] = df['A'].astype(str)` : convert data types
+- `df['A'] = df['A'].str.strip()`: remove all white spaces before and after the string.
+- `tips['sex'] = tips['sex'].str.lower()`: convert to lower cases.
+- `tips['time'] = tips['time'].astype('category')`: convert to categorical types.
+- `tips['time'].cat.categories`: get the categories in a column.
+- `tips['time2'] = tips['time'].cat.reorder_categories(['Lunch', 'Dinner'], ordered=True)`: reorder the categories.
+- `ebola['Date'] = pd.to_datetime(ebola['Date'], format='%m/%d/%Y')`: convert a column into date-time formatting
+- `ebola = pd.read_csv('country_timeseries.csv', parse_dates=['Date'])`: specify the date time type of a column in pandas.read_csv()
+- `ebola['year'] = ebola.Date.dt.year`: extract the year variable from the datetime column.
+- `ebola['year'].fillna()`
+
+
+## Advanced Pandas
+
+```
+import pandas as pd
+
+df.apply(np.mean, axis = 1)
+df_melt = pd.melt(df, id_vars = 'name')
+df_melt_pivot = pd.pivot_table(df_melt, index='name',
+columns='variable',values='value')
+df_melt_pivot.reset_index() # hierarchical index
+```
+
+Fill na values
+```
+# Print the rows where total_bill is missing
+print(tips.loc[pd.isnull(tips['total_bill'])])
+
+# Mean of the total_bill column
+tbill_mean = tips['total_bill'].mean()
+
+# Fill in missing total_bill
+print(tips['total_bill'].fillna(tbill_mean))
+```
+
+melt datasets
+```
+airquality_melted = pd.melt(airquality, id_vars=['Day', 'Month'])
+print(airquality_melted)
+
+airquality_pivoted = airquality_melted.pivot_table(index=['Month', 'Day'], columns='variable', values='value')
+print(airquality_pivoted)
+
+```
+
+groupby
+
+- `groupby`: split-apply-combine
+- split data into separate partitions
+- apply a function on each partition
+- combine the results
+
+group by example
+```
+df_melt.groupby('name')['value'].mean()
+
+# Mean tip by sex and time
+print(tips.groupby(['sex', 'time'])['tip'].mean())
+```
+
+# Plotting in Python
+
+- matplotlib
+- seaborn
+- 
+
+## matplotlib
+### histogram
+```
+import matplotlib.pyplot as plt
+
+iris['sepal_length'].plot(kind='hist')
+plt.show9)
+
+tips.tip.plot(kind='hist')
+plt.show()
+```
+
+### bar plot
+```
+cts = iris['specis'].value_counts()
+cts.plot(kind='bar')
+plt.show()
+```
+
+### Scatter plot
+```
+iris.plot(kind='scatter', x='Sepal.Width', y='Sepal.Length')
+plt.show()
+```
+
+### Boxplots
+
+```
+# comparing a continuous variable among different categories of another variable
+tips.tip.plot(kind='box')
+iris.boxplot(by='Species', column='Sepal.Length')
+plt.show()
+```
+
+## seaborn
+
+- barplots: `barplot`
+- histogram: `displot`
+- boxplot: `boxplot`
+- scatter plot: `regplot`
+- seaborn benefits:
+  - colored points by data
+  - facet plots by data
+  
+```
+import searborn as sns
+import matplotlib.pyplot as plt
+sns.distplot(iris['sepal_length'])
+plt.show()
+
+sns.countplot('species', data = iris)
+plt.show()
+
+sns.boxplot(x='species', y='sepal_length', data=iris)
+plt.show()
+
+sns.regplot(x='x_var',y = 'y_var',data=,fit_reg=False)
+sns.regplot(x=,y = , color=,data=,fit_reg=False)#color creates facets
+
+g = sns.FacetGrid(iris, col='species')
+g = g.map(plt.hist, 'sepal_length')
+plt.show()
+```
+
+faceting
+```
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# FacetGrid of time and smoker colored by sex
+facet = sns.FacetGrid(tips, col="time", row='smoker', hue='sex')
+
+# Map the scatter plot of total_bill and tip to the FacetGrid
+facet.map(plt.scatter, x='total_bill', y='tip')
+plt.show()
+```
+
+Adding different subfigures on one single plot by using axes.
+```
+In [7]: fig, ax = plt.subplots()
+   ...: ax.scatter(iris['sepal_length'], iris['sepal_width'])
+   ...: ax.set_title('Sepal Length')
+   ...: ax.set_xlabel('Sepal Length')
+   ...: ax.set_ylabel('Sepal Width')
+   ...: plt.show()
+   
+In [9]: fig, (ax1, ax2) = plt.subplots(1, 2)
+   ...: ax1.scatter(iris['sepal_length'], iris['sepal_width'])
+   ...: ax2.hist(iris['sepal_length'])
+   ...: plt.show()
+```
+
+Examples of using matplotlib
+```
+import matplotlib.pyplot as plt
+
+# Univariate histogram
+plt.hist(tips.total_bill)
+plt.show()
+```
+
+# Capstone
