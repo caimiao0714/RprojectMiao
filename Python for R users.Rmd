@@ -1,0 +1,119 @@
+---
+title: "Python for R users"
+author: "Miao Cai^[Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University. Email: [miao.cai@slu.edu](miao.cai@slu.edu)]"
+date: "1/10/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+link-citations: yes
+link-color: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Basic difference
+
+Basic data types:
+
+R:
+- `numeric`: integers
+- `logical`: TRUE or FALSE
+- `character`
+
+Python:
+- `int`: integers
+- `float`: floating point numbers
+- `bool`: True or False (difference between R and Python)
+- `str`: strings
+
+The equal sign is the only way to assign variables in Python.
+
+```
+class(mtcars$mgp) in R -->  type(mtcars$mgp) in Python
+paste0("1", "1") in R --> "1" + "1" in Python
+paste0("1", "1") in R --> "1" "1" in Python
+rep("1", 5) in R --> "1"*5 in Python
+```
+
+## containers
+
+> Python is a 0-indexed language
+
+Extract the first element from R and Python
+
+```
+x[[1]] in R --> x[1] in Python
+```
+
+`x[::2]` extract every 2 elements from the list x.
+
+**Dictionaries**
+
+- Lists are unlabeled
+- Dictionaries provide key:value pairs
+
+R relies heavily on functions, while Python relies on both functions and methods.
+
+- **Methods** are functions that an object can call on itself
+- **Functions** are called on an object
+
+# Control flows and loops
+
+Python defines code blocks with blanks.
+
+## `if-else` control flows:
+
+```
+if x <= 0:
+  print("error")
+elif x <= 4:
+  print("non-binge")
+else:
+  print("binge")
+
+num_drink = [0, 3, -1, 4, 8, 10]  
+for drinks in num_drink:
+  if x <= 0:
+    print("error")
+  elif x <= 4:
+    print("non-binge")
+  else:
+    print("binge")
+```
+
+## loops
+
+You have to explicitly use `return` to return some object in Python.
+
+```
+def my_mean(x, y):
+   num = x + y
+   dem = 2
+   return num / dem
+   
+a1_lam = lambda x: x + 1
+```
+
+## Comprehension
+
+```
+data = [1, 2, 3, 4, 5]
+new = [x**2 for x in data]
+print(new)
+```
+
+
+
+
+# Pandas
+
+
