@@ -21,3 +21,17 @@ Let Git delete all unpushed commits:
 ```
 git reset origin/master
 ```
+
+
+Switching between strings and objects in R
+```
+# string -> object
+x <- 42
+eval(parse(text = "x"))
+[1] 42
+
+# object -> string
+x <- 42
+deparse(substitute(x))
+[1] "x"
+```
