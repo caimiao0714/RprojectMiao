@@ -2,6 +2,14 @@
 
 This repository records useful R and other codes.
 
+The OSC code upon startup:
+
+```
+module load cxx17/7.3.0 intel/18.0.3
+module load R/3.5.2
+R
+```
+
 When using `tlmgr` to install LaTeX dependencies, the package name does not necessary be the same as the `.sty` file called in `\usepackage{}`. In that case, we can use the following code to find out the name of corresponding package names:
 
 ```
@@ -28,6 +36,7 @@ Switching between strings and objects in R
 # string -> object
 x <- 42
 eval(parse(text = "x"))
+get("x")
 [1] 42
 
 # object -> string

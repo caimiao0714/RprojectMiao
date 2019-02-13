@@ -348,6 +348,9 @@ When you use multiple boolean expressions to filter observations, you need to su
 
 ```
 df_melt.groupby('name')['value'].agg(['mean', 'max'])
+
+df.groupby('col1', as_index=False).agg({'col2': 'max', 'col3': 'min'})
+df.groupby('col1').agg({'col2': 'max', 'col3': 'min'}).reset_index()
 ```
 
 ## creating dummy variables for categorical variables
@@ -415,4 +418,82 @@ flights_dummies = pd.get_dummies(flights_sub)
 # Look at the head of flights_dummies
 print(flights_dummies.head())
 ```
+
+# My own notes
+
+```
+# get the names of a dataframe
+list(dat)
+list(dat.columns.values)
+# recode values
+Patient['Gender'].replace(['male', 'female', 'MISSING'], 
+       ['Male', 'Female', 'Missing'], inplace = True)
+# get the dimensions of a dataframe
+dat.shape
+```
+
+read all .csv in a folder
+```
+import pandas as pd
+import re
+import itertools
+
+import glob
+csvFiles = glob.glob("healthcare2/" + "/*.csv")
+csvNames = [re.findall(r"^.*/(.*)\.csv$", csvfile) for csvfile in csvFiles]
+csvNames = list(itertools.chain(*csvNames))
+
+datlist = [pd.read_csv(i) for i in csvFiles]
+print([x.shape for x in datlist])# look at each element in the list
+```
+
+merge data and count the percent of non-missing values in each category
+```
+p1 = pd.merge(Patient, Mortality, on = 'PatientID', how = 'left')
+p1.groupby('Gender')['DateOfDeath'].apply(lambda x: x.notnull().sum()/len(x))
+```
+
+recode a new variable based on whether another variable is null or not
+```
+p1['death'] = np.where(p1['DateOfDeath'].isnull(), 0, 1)
+```
+
+`rbind` two dataframes in Python
+```
+q2_final = q2_1.append(q2_2, ignore_index = True)
+```
+
+Altering long format and wide format data in pandas Python
+```
+# Wide format to long format data
+OutpatientVisitlong = pd.melt(OutpatientVisit, id_vars = 'PatientID', 
+        var_name = 'DiagNum', value_name = 'ICD10', 
+        value_vars = ['ICD10_1', 'ICD10_2', 'ICD10_3'])
+# Long format to wide format data
+q2_final.pivot(index='Condition', columns='Gender', values='mortality')
+```
+
+Change a column to date format in Python
+```
+outpat['VisitDate'] =  outpat['VisitDate'].astype('datetime64[ns]')
+
+pat_min_vis = outpat[outpat.VisitDate.notnull()].groupby(['PatientID']).agg({'VisitDate':'min'}).reset_index()
+pat_min_vis['VisitYear'] = pat_min_vis['VisitDate'].dt.year
+```
+
+`group_by` `summarize()` in Python
+```
+df_melt.groupby('name')['value'].agg(['mean', 'max'])
+
+df.groupby('col1', as_index=False).agg({'col2': 'max', 'col3': 'min'})
+df.groupby('col1').agg({'col2': 'max', 'col3': 'min'}).reset_index()
+```
+
+`substr()` in Python
+```
+df.col = df.col.str.slice(0, 9)
+df.col = df.col.str[:9]
+```
+
+
 
