@@ -1,0 +1,418 @@
+\documentclass[ijerph,article,submit,moreauthors,pdftex,10pt,a4paper]{mdpi} 
+
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother 
+\articlenumber{x}
+\doinum{10.3390/------}
+\pubvolume{xx}
+\pubyear{2018}
+\copyrightyear{2018}
+\externaleditor{Academic Editor: name}
+\history{Received: date; Accepted: date; Published: date}
+%------------------------------------------------------------------
+% The following line should be uncommented if the LaTeX file is uploaded to arXiv.org
+%\pdfoutput=1
+
+%=================================================================
+% Add packages and commands here. The following packages are loaded in our class file: fontenc, calc, indentfirst, fancyhdr, graphicx, lastpage, ifthen, lineno, float, amsmath, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, amsthm, hyphenat, natbib, hyperref, footmisc, geometry, caption, url, mdframed
+\usepackage{tablefootnote}
+
+%=================================================================
+%% Please use the following mathematics environments:
+ \theoremstyle{mdpi}
+ \newcounter{thm}
+ \setcounter{thm}{0}
+ \newcounter{ex}
+ \setcounter{ex}{0}
+ \newcounter{re}
+ \setcounter{re}{0}
+
+ \newtheorem{Theorem}[thm]{Theorem}
+ \newtheorem{Lemma}[thm]{Lemma}
+ \newtheorem{Corollary}[thm]{Corollary}
+ \newtheorem{Proposition}[thm]{Proposition}
+
+ \theoremstyle{mdpidefinition}
+ \newtheorem{Characterization}[thm]{Characterization}
+ \newtheorem{Property}[thm]{Property}
+ \newtheorem{Problem}[thm]{Problem}
+ \newtheorem{Example}[ex]{Example}
+ \newtheorem{ExamplesandDefinitions}[ex]{Examples and Definitions}
+ \newtheorem{Remark}[re]{Remark}
+ \newtheorem{Definition}[thm]{Definition}
+%% For proofs, please use the proof environment (the amsthm package is loaded by the MDPI class).
+
+%=================================================================
+% Full title of the paper (Capitalized)
+\Title{Rural Versus Urban Patients: Benchmarking the Outcomes of Patients with Acute Myocardial Infarction in Shanxi, China from 2013 to 2017}
+
+
+
+\Author{Miao Cai $^{1}$, Echu Liu $^{2}$, Wei Li $^{3,*}$}
+% Authors, for metadata in PDF
+\AuthorNames{Miao Cai and Wei Li}
+
+% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
+\address{%
+$^{1}$ \quad Department of Epidemiology and Biostatistics, College for Public Health and Social Justice, Saint Louis University, USA; miao.cai@slu.edu\\
+$^{2}$ \quad Department of Health Management and Policy, College for Public Health and Social Justice, Saint Louis University, USA; echu.liu@slu.edu\\
+$^{3}$ \quad Dongfang College, Zhejiang University of Finance and Economics, Hangzhou, China; appleliwei0220@163.com}
+
+% Contact information of the corresponding author
+\corres{Correspondence: appleliwei0220@163.com; Tel.: +(86)134-8635-9689}
+
+% Current address and/or shared authorship
+%\firstnote{Current address: Affiliation 3} 
+%\secondnote{These authors contributed equally to this work.}
+
+% Simple summary
+%\simplesumm{}
+
+% Abstract (Do not use inserted blank lines, i.e. \\) 
+\abstract{Rural-urban disparity in China attracts special international attention in view of the imbalance of economic development between rural and urban areas. Yet, few studies used patient level data to explore the disparity of health outcomes between rural and urban patients. This study aims to evaluate the trend of health outcomes between rural and urban  patients hospitalized with acute myocardial infarction (AMI) in China. Using electronic medical records (EMRs) database in Shanxi, China, we identified 87,219 AMI patients hospitalized between 2013 and 2017. We used multivariable binary logistic regressions and two-part models  to estimate the association between region of origin (rural/urban) and two outcomes, in-hospital mortality and out-of-pocket (OOP) expenses. Rural patients were associated with lower in-hospital mortality and the adjusted ORs were 0.173, 0.34, 0.605, 0.522, 0.556 (P-values < 0.001) from 2013 to 2017, respectively. For the OOP expenses, rural patients were experiencing increasing risk of having OOP expenses, with the ORs of 0.159, 0.573, 1.278, 1.281, 1.65. The coefficients for the log-linear models in the five years were 0.075 (P = 0.352), 0.61, 0.565, 0.439, 0.46 (P-values < 0.001). Policy makers in China should notice and narrow the gap of health outcomes between rural and urban patients.}
+
+% Keywords
+\keyword{rural-urban disparity; in-hospital mortality; out-of-pocket expense; acute myocardial infarction; electronic medical records}
+
+\begin{document}
+
+
+\section{Introduction}
+
+Health inequality between rural and urban areas has been a widely studied topic in the field of public health all over the world \cite{pong2009rural, riva2009unravelling, srin2013,  nennecke2014survival, singh2014widening, sonnappa2015disparities, choi2016investigation, amoah2018social}. According to the statistics by the World Bank, the percent of people living in the rural areas has been constantly declining between 1960 and 2017, but it still remained at 45.3\% in 2017 \cite{worldbank}. Compared to their urban counterparts, rural residents generally have limited financial incomes and access to healthcare resources, but lower levels of environmental pollution and stress. Understanding the health disparity between rural and urban areas allows health managers and policy makers to optimize healthcare resource allocation and target areas of need \cite{hartley2004rural, kulshreshtha2014urban}, and therefore improve population health outcomes.
+
+
+Rural-urban disparity with regards to health outcomes in China is an established field of debate \cite{fang2009explaining, jian2010china, gong2012urbanisation}. Over six million Chinese people were residing in the rural areas, accounting for about a half of the total population \cite{zzzchina}. Eliminating the gap in health outcomes between rural and urban residents is a central target for health departments in China \cite{jian2010china}. However, the government has been widely criticized for being limited in reducing the imbalance of healthcare resources between rural and urban residents \cite{liu2007rural, anand2008china, jian2010china}. Large academic medical centers, tertiary hospitals, and skilled medical practitioners are concentrated in urban areas, which could benefit urban residents in terms of health outcomes. High concentration of high quality medical resources, together with advanced modern transportation, substantially improves geographic accessibility and availability of healthcare resources for urban residents in China. They can usually reach a nearby trustworthy medical provider within half an hour via public transportation, but the time cost for rural residents could double or triple in the same case. 
+
+
+Since the Chinese national medical reform was implemented in 2009, the healthcare coverage and accessibility have been greatly improved in both rural and urban areas of China \cite{yip2012early, yip2014harnessing}. However, the benefits brought by economic growth and healthcare coverage are not necessarily homogeneous across rural and urban areas. A study by Yao and his colleagues reported an overall reduction in average prescription costs, but the rural-urban disparities of parenteral administration use and expenditure per prescription were still increasing \cite{yao2015urban}. Ge and his colleagues suggested rural elderly patients had significantly a lower annual physical examination rate after adjusting for a number of covariates \cite{ge2017rural}. Another nationwide prospective study by Bragg et al. indicated significantly higher excess diabetes mortality rates among rural participants \cite{bragg2017association}. This evidence suggests that eliminating the rural-urban disparity in health resource utilization and health outcomes still has a long way to go.
+
+
+To understand the trend of rural-urban disparity in China, studies with a longer sampling period are ususally preferred. Several studies have presented the changing patterns of this disparity over a period of time \cite{zhang2007disparity, fu2014trend, hu2014national, sun2017trends}. However, these studies  all used either survey data or aggregated registry data. To our knowledge, no study has used structured patient records to illustrate the trend of rural-urban disparity in terms of healthcare outcomes in China. To bridge the gap in existing literature, this study aims to evaluate the health outcomes between rural and urban AMI patients in Shanxi, China between 2013 and 2017.
+
+
+\section{Methods}
+\subsection{Data source}
+This study was based on the EMRs provided by the Health and Family Planning Commission in Shanxi, China. This database was standardized by the former Ministry of Health in 2011, and it was then required as a part of health information systems in hospitals in the entire country. The database includes over 200 patient level variables, with each patient hospitalization counting as a unique observation. These variables included patients’ demographic characteristics (age, gender, marital status, employment status), length of stay in hospital, up to 10 secondary diagnoses coded using the International Classification of Disease, Tenth Revision (ICD-10), up to seven procedures coded using the International Classification of Disease, Ninth Revision (ICD-9), gravity of disease (normal, severe or dangerous),  outcomes upon discharge (death, total medical expenses and out-of-pocket expenses). All patient unique identifiers such as names and ID card numbers were excluded prior to the authors' access.
+
+\subsection{Study Population}
+Using patients' primary diagnosis codes (ICD-10 code: I21), we identified 87,219 AMI patients hospitalized in Shanxi between 2013 and 2017. We also excluded patients who were less than 18 years old and those with key variables missing. This study focused on AMI patients for three reasons. First, AMI is a very commonly diagnosed disease and leads to hospitalization. It has been reported as the major cause of death among cardiovascular disease patients all over the world \cite{chung2015comparison}. Second, the mortality of AMI patients has been adopted as a measure of overall medical quality by various researchers \cite{kessler2000hospital, gaynor2013death}. Third, AMI patients typically experience tremendous pain within a short amount of time and they will generally be sent to hospitals right after they exhibit symptoms. This reduces the chance of selection bias for this study.
+
+\subsection{Variables of Interest}
+
+The two outcomes of interest in this study were in-hospital mortality and out-of-pocket costs for AMI patients. In-hospital mortality was defined as all-cause death during the patient's hospitalization, which was a proxy of the medical quality of that hospital. OOP was defined as the direct financial expenses of the patient to the hospital, which was a proxy of the patient's direct financial burden.
+
+We identified patients' region of origin (rural/urban) using a two-stage classification method. 
+
+In the first stage, we used their insurance types to identify their region of origin. Patients with the insurance type of the New Cooperative Medical Scheme (NCMS) were classified as rural patients, while those with the Urban Resident-based Basic Medical Insurance Scheme (URBMI) or the Urban Employee-based Basic Medical Insurance scheme (UEBMI) were classified as urban residents. In the Chinese healthcare system, these three insurances are government-based and they cover over 95\% of  residents. URBMI and UEBMI are only available to urban residents while NCMS only covers rural residents. Therefore, these three insurance types are the golden standards to identify whether the patients were from rural or urban areas. In this first stage, we identified 83.9\% of all patients' region of origin.
+
+In the second stage, we used regular expressions to identify the key words in patients' current residency address. Patients whose current residency address contained county, town or village were classified as rural residents, while those whose current address contained city and district were classified as urban patients. In contrast to the first stage, this stage was a suboptimal method of classification. Some immigrant workers who came from rural areas may live and work in the urban areas, but they may not be covered by the three government-based medical insurance. For these patients, our two-stage classification method will misclassify them as urban residents. However, this bias is minimized since the first stage identified 83.9\% of all patients and Shanxi province is not famous for immigrant workers.
+
+A total of 96.7\% of patients' region of origin in this study were identified using this two-stage classification method. The patients whose region of origin were not identifiable using this classification method were excluded from this study.
+
+
+\subsection{Patient and Hospital Level Covariates}
+Patient level covariates included age, gender, marital status, occupation, length of stay, gravity of disease, whether percutaneous coronary intervention (PCI) was conducted, and Elixhauser score. Hospital level covariate included whether the hospital was tertiary or not. Patients' ages were categorized into four groups (18-45, 46-65, 66-75, and over 75 years), with the 18-45 years as the reference group. Marital status was categorized into married, unmarried, widowed, divorced and other, with married as the reference. Occupation was categorized into public institution, private institution, farmer, unemployed, retired and other, with public institution as the reference. The length of stay in hospitals was categorized using the quartiles, with the lowest quartile as the reference. The gravity of disease had three categories, normal (Reference), severe and dangerous. PCIs were identified using the ICD-9 procedure codes 36.01, 36.02, 36.05, 36.06 or 36.07. Comorbidity scores have been widely applied in risk adjustment and predicting the outcomes of hospitalized patients. In this study, we used the Elixhauser comorbidity score updated by the Agency for Healthcare Research and Quality (AHRQ) in 2017 \cite{moore2017identifying}. This comorbidity score was a numeric value with the greater number indicating worse comorbidities and serving as a measure of patient mix. The summary statistics stratified by years and rural-urban status are shown in Table~\ref{tab1}.
+
+\subsection{Statistical Models}
+We used multivariable logistic regressions for the binary mortality outcome in this study. In terms of patient's OOP expense, since it was extremely right skewed and had mass density at zero, we adopted a two-part model as suggested by Deb and Norton \cite{deb2018modeling}. In the first part, the probability that the patient had any OOP expenses (higher than zero) was estimated with a logistic regression using the full sample. In the second part, we used log-linear regressions to model those non-zero OOP expenses. Since the outcome OOP expenses were log transformed, the coefficients were interpreted as the ratio of the geometric mean of OOP expenses for rural patients over the geometric mean of OOP expenses for urban patients. To put it simply, the OOP expenses for rural patients were higher when the coefficient was positive, while they were lower when the coefficient was negative.
+
+Since each independent variable may have different effects on the patients' outcomes across the five years, we conducted the regression models separately for each year's data. All data management, statistical modeling and data visualization were conducted in statistical computing environment R 3.4.1 \cite{team2013r}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\subsection{Patient characteristics}
+A total of 87,219 hospital patient records with the primary diagnosis of AMI were identified in this study. These patients were admitted in 168 hospitals in Shanxi between 2013 and 2017, resulting in an average of 519.2 discharged patients in each hospital. It was to be noted that the proportion of rural patients continuously increased from 45.3\% in 2013 to 58.6\% in 2015. The proportion remained stable at 58\% between 2015 and 2017 (Table \ref{tab1}).
+
+The mortality rates of AMI patients in rural and urban areas remained the same at 0.1\% and 0.3\% respectively throughout the study period. On the contrary, the OOP expenses in the two areas have been fluctuating over the five years. The percent of urban patients who had no OOP expenses had been increasing while a reversed trend could be observed among rural patients. The median of non-zero OOP expenses among rural patients was less than those among urban patients in 2013. However, starting from 2014, rural patients had much more OOP expenses than their urban counterparts as shown by the medians, although the gap had been shrunk over the four years. The sharpest contrast between the rural and urban patients in Table \ref{tab1} was their occupation. The proportion of rural patients who were farmers consistently increased from 67.4\% in 2013 to 83.6\% in 2017. However, the same measure for urban patients decreased from 16.5\% in 2013 to 6.7\% in 2017 and never exceeding 20\%. Table \ref{tab1} also showed that rural patients consistently had less severe disease than urban patients, based on the percent of rural patients over 75 years old, the percent of rural patients graded as dangerous, and the average Elixhauser scores of rural patients.
+
+
+\subsection{In-hospital mortality}
+As shown in Table \ref{tablogistic}, the odds ratios of rural AMI patients were consistently less than 1 across the study period, after adjusting for demographics, length of stay, gravity of disease, Elixhauser score, PCI and level of hospital. The trend can also be observed from Figure \ref{fig1}. Although the ORs were constantly significant and less than 1, the gap between rural and urban AMI patients had been shrunk across the five years. Patients' marital status and occupation were not significantly associated with the patients' probability of in-hospital death since most of these categories were not significant at the level of 0.05.
+
+\subsection{OOP expenses}
+In contrast to the in-hospital mortality, the coefficients for OOP expenses experienced more fluctuations. Table \ref{tablogitoop} and Figure \ref{fig2} displayed the trend of ORs to have non-zero OOP expense among rural AMI patients compared with urban AMI patients. The probabilities to have non-zero OOP expenses among rural AMI patients had been continously increasing compared with their urban counterparts. Moreover, the non-zero OOP expenses among rural patients had been higher than their urban counterparts as shown in Table \ref{tablm} and Figure \ref{fig3}. The differences in non-zero expenses had been reduced over the study period, as indicated by the absolute distance from the point estimates to the reference line.
+
+
+
+%%%%%%%%%%%% TABLE 1 Demographics %%%%%%%%%%%%
+
+\begin{landscape}
+\begin{table}[]
+\caption{Descriptive statistics of sample AMI patient characteristics, 2013 - 2017}
+\label{tab1}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{2013}}  &   \multicolumn{2}{c}{\textbf{2014}}  &  \multicolumn{2}{c}{\textbf{2015}}  &   \multicolumn{2}{c}{\textbf{2016}}  &    \multicolumn{2}{c}{\textbf{2017}}  \\ 
+\textbf{Urban/Rural} & \textbf{Urban} & \textbf{Rural}  & \textbf{Urban} & \textbf{Rural} & \textbf{Urban} & \textbf{Rural} & \textbf{Urban} & \textbf{Rural} & \textbf{Urban} & \textbf{Rural} \\
+\midrule
+\textbf{n (\%)}  & 2243 (54.7) & 1854 (45.3) & 7073 (50.4) & 6966 (49.6) & 9092 (41.4) & 12882 (58.6) & 10349 (41.7) & 14458 (58.3) & 9233 (41.4) & 13069 (58.6) \\
+\textbf{Death}   & 0.03 (0.18)  & 0.01 (0.10)  & 0.03 (0.17)  & 0.01 (0.12)  & 0.03 (0.17)  & 0.01 (0.12)  & 0.03 (0.18)  & 0.01 (0.12)  & 0.03 (0.17)  & 0.01 (0.12)  \\
+\textbf{OOP expenses} &    &    &    &    &    &    &    &    &    &    \\
+\quad \% of 0 values & 68.9	& 86.7 & 72.4 & 76.4 & 71.8 & 76.1 & 76.2 & 80.1 & 71.8 & 75.3 \\
+\quad median & 12331 & 10953 & 12591 & 22714 & 12701 & 17602 & 11939 & 13694 & 12582 & 15664 \\
+\quad 1st quartile & 4652 & 6168 & 4796 & 9260 & 4677 & 8216 & 4911 & 7749 & 5542 & 8015	 \\
+\quad 3rd quartile & 24837 & 33465 & 22864 & 45539 & 25065 & 42488 & 22304 & 35545 & 24338 & 37474\\
+\textbf{Female}  & 0.22 (0.42)  & 0.29 (0.45)  & 0.22 (0.41)  & 0.29 (0.45)  & 0.22 (0.41)  & 0.31 (0.46)  & 0.21 (0.41)  & 0.30 (0.46)  & 0.21 (0.41)  & 0.30 (0.46)  \\
+\textbf{Age (\%)}&    &    &    &    &    &    &    &    &    &    \\
+\quad 18-45   & 226 (10.1)   & 246 (13.3)   & 651 (9.2)    & 892 (12.8)   & 831 (9.1)    & 1392 (10.8)  & 910 (8.8)    & 1476 (10.2)  & 711 (7.7)    & 1252 (9.6)   \\
+\quad 46-65   & 993 (44.3)   & 981 (52.9)   & 3205 (45.3)  & 3836 (55.1)  & 4145 (45.6)  & 6552 (50.9)  & 4632 (44.8)  & 7390 (51.1)  & 4143 (44.9)  & 6755 (51.7)  \\
+\quad 66-75   & 559 (24.9)   & 386 (20.8)   & 1592 (22.5)  & 1457 (20.9)  & 2021 (22.2)  & 3033 (23.5)  & 2248 (21.7)  & 3402 (23.5)  & 2069 (22.4)  & 3190 (24.4)  \\
+\quad 75+     & 465 (20.7)   & 241 (13.0)   & 1625 (23.0)  & 781 (11.2)   & 2095 (23.0)  & 1905 (14.8)  & 2559 (24.7)  & 2190 (15.1)  & 2310 (25.0)  & 1872 (14.3)  \\
+\textbf{Marriage (\%)}  &    &    &    &    &    &    &    &    &    &    \\
+\quad Married & 2101 (93.7)  & 1680 (90.6)  & 6578 (93.0)  & 6439 (92.4)  & 8355 (91.9)  & 11853 (92.0) & 9525 (92.0)  & 13343 (92.3) & 8330 (90.2)  & 11932 (91.3) \\
+\quad Unmarried& 26 (1.2)     & 79 (4.3)     & 94 (1.3)     & 213 (3.1)    & 94 (1.0)     & 216 (1.7)    & 97 (0.9)     & 253 (1.7)    & 223 (2.4)    & 360 (2.8)    \\
+\quad Widowed & 60 (2.7)     & 51 (2.8)     & 194 (2.7)    & 156 (2.2)    & 372 (4.1)    & 471 (3.7)    & 401 (3.9)    & 496 (3.4)    & 373 (4.0)    & 431 (3.3)    \\
+\quad Divorced& 48 (2.1)     & 23 (1.2)     & 167 (2.4)    & 112 (1.6)    & 159 (1.7)    & 145 (1.1)    & 173 (1.7)    & 155 (1.1)    & 176 (1.9)    & 140 (1.1)    \\
+\quad Other   & 8 (0.4)& 21 (1.1)     & 40 (0.6)     & 46 (0.7)     & 112 (1.2)    & 197 (1.5)    & 153 (1.5)    & 211 (1.5)    & 131 (1.4)    & 206 (1.6)    \\
+\textbf{Occupation (\%)}&    &    &    &    &    &    &    &    &    &    \\
+\quad Public institution & 194 (8.6)    & 33 (1.8)     & 902 (12.8)   & 127 (1.8)    & 1273 (14.0)  & 145 (1.1)    & 1421 (13.7)  & 157 (1.1)    & 1258 (13.6)  & 105 (0.8)    \\
+\quad Private institution& 617 (27.5)   & 97 (5.2)     & 1989 (28.1)  & 346 (5.0)    & 2041 (22.4)  & 386 (3.0)    & 2321 (22.4)  & 462 (3.2)    & 1998 (21.6)  & 448 (3.4)    \\
+\quad Farmer  & 370 (16.5)   & 1249 (67.4)  & 385 (5.4)    & 5553 (79.7)  & 634 (7.0)    & 10526 (81.7) & 680 (6.6)    & 12158 (84.1) & 621 (6.7)    & 10928 (83.6) \\
+\quad Jobless & 110 (4.9)    & 47 (2.5)     & 383 (5.4)    & 223 (3.2)    & 560 (6.2)    & 236 (1.8)    & 640 (6.2)    & 294 (2.0)    & 563 (6.1)    & 268 (2.1)    \\
+\quad Retired & 601 (26.8)   & 90 (4.9)     & 2581 (36.5)  & 292 (4.2)    & 3437 (37.8)  & 350 (2.7)    & 4203 (40.6)  & 412 (2.8)    & 3872 (41.9)  & 286 (2.2)    \\
+\quad Other   & 351 (15.6)   & 338 (18.2)   & 833 (11.8)   & 425 (6.1)    & 1147 (12.6)  & 1239 (9.6)   & 1084 (10.5)  & 975 (6.7)    & 921 (10.0)   & 1034 (7.9)   \\
+\textbf{Length of stay (\%)}&    &    &    &    &    &    &    &    &    &    \\
+\quad 1st quartile   & 432 (19.3)   & 484 (26.1)   & 1380 (19.5)  & 1768 (25.4)  & 2082 (22.9)  & 3882 (30.1)  & 2519 (24.3)  & 4470 (30.9)  & 2370 (25.7)  & 4458 (34.1)  \\
+\quad 2nd quartile   & 536 (23.9)   & 521 (28.1)   & 1807 (25.5)  & 2018 (29.0)  & 2467 (27.1)  & 3665 (28.5)  & 3076 (29.7)  & 4534 (31.4)  & 3007 (32.6)  & 4340 (33.2)  \\
+\quad 3rd quartile   & 525 (23.4)   & 406 (21.9)   & 1650 (23.3)  & 1544 (22.2)  & 2074 (22.8)  & 2885 (22.4)  & 2180 (21.1)  & 3037 (21.0)  & 1899 (20.6)  & 2454 (18.8)  \\
+\quad 4th quartile   & 750 (33.4)   & 443 (23.9)   & 2236 (31.6)  & 1636 (23.5)  & 2469 (27.2)  & 2450 (19.0)  & 2574 (24.9)  & 2417 (16.7)  & 1957 (21.2)  & 1817 (13.9)  \\
+\textbf{Gravity of disease (\%)}  &    &    &    &    &    &    &    &    &    &    \\
+\quad Dangerous& 488 (21.8)   & 337 (18.2)   & 1719 (24.3)  & 1181 (17.0)  & 2106 (23.2)  & 2253 (17.5)  & 2193 (21.2)  & 2843 (19.7)  & 1915 (20.7)  & 2560 (19.6)  \\
+\quad Severe& 628 (28.0)   & 499 (26.9)   & 1873 (26.5)  & 2141 (30.7)  & 2074 (22.8)  & 2771 (21.5)  & 2610 (25.2)  & 3642 (25.2)  & 2321 (25.1)  & 3267 (25.0)  \\
+\quad Normal  & 1127 (50.2)  & 1018 (54.9)  & 3481 (49.2)  & 3644 (52.3)  & 4912 (54.0)  & 7858 (61.0)  & 5546 (53.6)  & 7973 (55.1)  & 4997 (54.1)  & 7242 (55.4)  \\
+\textbf{PCI}     & 0.14 (0.34)  & 0.15 (0.36)  & 0.17 (0.38)  & 0.15 (0.36)  & 0.19 (0.39)  & 0.13 (0.33)  & 0.23 (0.42)  & 0.17 (0.38)  & 0.31 (0.46)  & 0.24 (0.43)  \\
+\textbf{Tertiary hospitals (\%)} & 2215 (98.8)  & 1840 (99.2)  & 7013 (99.2)  & 6841 (98.2)  & 7773 (85.5)  & 7855 (61.0)  & 8634 (83.4)  & 8889 (61.5)  & 7859 (85.1)  & 8195 (62.7)  \\
+\textbf{Elixhauser score}   & 4.91 (5.90)  & 4.99 (5.68)  & 6.10 (6.11)  & 6.08 (5.91)  & 6.46 (6.21)  & 5.90 (6.26)  & 7.17 (6.18)  & 6.46 (6.17)  & 7.42 (6.30)  & 6.63 (6.28)  \\ \bottomrule
+\end{tabular} 
+}
+\raggedright The percent of 0 values for OOP expenses were based on the full sample, while the median, the 1st and the 3rd quartiles were based on non-zero OOP expenses.
+\end{table}
+\end{landscape}
+
+
+%%%%%%%%%%%% TABLE 2 Logistic regression %%%%%%%%%%%%
+\begin{landscape}
+\begin{table}[ht]
+\caption{Logistic regression results for in-hospital death, 2013 - 2017}
+\label{tablogistic}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccccccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{2013}}  &   \multicolumn{2}{c}{\textbf{2014}}  &  \multicolumn{2}{c}{\textbf{2015}}  &   \multicolumn{2}{c}{\textbf{2016}}  &\multicolumn{2}{c}{\textbf{2017}}\\
+& \textbf{OR}& \textbf{P-value}& \textbf{OR}& \textbf{P-value}& \textbf{OR}& \textbf{P-value} & \textbf{OR}& \textbf{P-value} & \textbf{OR}& \textbf{P-value} \\
+\midrule
+\textbf{(Intercept)}& 0.211 & 0.097  & 0.04  & \textless{}0.001 & 0.035 & \textless{}0.001 & 0.017 & \textless{}0.001 & 0.009 & \textless{}0.001 \\
+\textbf{Rural (Ref. = Urban)}  & 0.173 & \textless{}0.001 & 0.34  & \textless{}0.001 & 0.605 & 0.001  & 0.522 & \textless{}0.001 & 0.556 & 0.001  \\
+\textbf{Female (Ref. = Male)}& 1.82  & 0.023  & 1.153 & 0.305  & 1.164 & 0.179  & 1.404 & 0.001  & 1.392 & 0.003  \\
+\textbf{Age (Ref. = 18 - 45)}\\
+\quad 46-65  & 0.661 & 0.373  & 2.291 & 0.038  & 1.398 & 0.218  & 1.662 & 0.067  & 1.313 & 0.348  \\
+\quad 66-75  & 0.961 & 0.935  & 4.059 & 0.001  & 2.915 & \textless{}0.001 & 2.863 & \textless{}0.001 & 2.069 & 0.014  \\
+\quad $\geq 76$& 2.344 & 0.072  & 6.347 & \textless{}0.001 & 3.307 & \textless{}0.001 & 4.358 & \textless{}0.001 & 3.08  & \textless{}0.001 \\
+\textbf{Marriage (Ref. = Married)}\\
+\quad Unmarried  & 2.875 & 0.067  & 1.363 & 0.483  & 0.768 & 0.61   & 0.478 & 0.215  & 1.059 & 0.886  \\
+\quad Widowed& 0.376 & 0.136  & 1.119 & 0.686  & 1.22  & 0.297  & 1.015 & 0.93   & 1.293 & 0.171  \\
+\quad Divorced   & 3.281 & 0.014  & 1.941 & 0.012  & 2.09  & 0.006  & 0.691 & 0.308  & 0.854 & 0.662  \\
+\quad Other  & 5.028 & 0.141  & 1.642 & 0.438  & 0.882 & 0.767  & 1.501 & 0.18   & 2.387 & 0.003  \\
+\textbf{Occupation (Ref. = Public institution)}\\
+\quad Private institution  & 0.824 & 0.729  & 1.608 & 0.193  & 0.877 & 0.627  & 1.107 & 0.73   & 1.908 & 0.104  \\
+\quad Farmer & 1.411 & 0.526  & 2.382 & 0.022  & 0.67  & 0.128  & 1.174 & 0.575  & 2.145 & 0.055  \\
+\quad Jobless& 0.478 & 0.305  & 0.731 & 0.509  & 0.738 & 0.357  & 1.209 & 0.559  & 2.059 & 0.09   \\
+\quad Retired& 1.082 & 0.882  & 2.273 & 0.017  & 1.399 & 0.15   & 2.052 & 0.006  & 3.615 & 0.001  \\
+\quad Other  & 0.556 & 0.32   & 0.891 & 0.776  & 0.604 & 0.065  & 1.082 & 0.788  & 1.459 & 0.361  \\
+\textbf{Length of stay (Ref. 1st quartile)} \\
+\quad 2nd quartile & 0.112 & \textless{}0.001 & 0.136 & \textless{}0.001 & 0.13  & \textless{}0.001 & 0.103 & \textless{}0.001 & 0.116 & \textless{}0.001 \\
+\quad 3rd quartile & 0.023 & \textless{}0.001 & 0.062 & \textless{}0.001 & 0.085 & \textless{}0.001 & 0.048 & \textless{}0.001 & 0.076 & \textless{}0.001 \\
+\quad 4th quartile & 0.107 & \textless{}0.001 & 0.118 & \textless{}0.001 & 0.149 & \textless{}0.001 & 0.119 & \textless{}0.001 & 0.225 & \textless{}0.001 \\
+\textbf{Gravity of disease (Ref. Normal)} \\
+\quad Dangereous & 1.655 & 0.041  & 1.707 & \textless{}0.001 & 1.553 & \textless{}0.001 & 2.305 & \textless{}0.001 & 2.323 & \textless{}0.001 \\
+\quad Severe & 0.48  & 0.032  & 0.825 & 0.23   & 0.866 & 0.308  & 0.968 & 0.794  & 0.97  & 0.831  \\
+\textbf{PCI} & 0.566 & 0.292  & 0.137 & \textless{}0.001 & 0.296 & \textless{}0.001 & 0.339 & \textless{}0.001 & 0.423 & \textless{}0.001 \\
+\textbf{Level of hospitals (Ref. =  Secondary)} \\
+\quad Tertiary   & 0.377 & 0.181  & 0.352 & 0.001  & 0.953 & 0.686  & 1.185 & 0.11   & 1.474 & 0.002  \\
+\textbf{Elixhauser score}& 1.053 & 0.002  & 1.023 & 0.011  & 1.023 & 0.002  & 1.018 & 0.008  & 1.016 & 0.025 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+\end{landscape}
+
+
+%%%%%%%%%%%% TABLE 3 Log-linear model %%%%%%%%%%%%
+\begin{landscape}
+\begin{table}[]
+\caption{Logistic regression results for whether OOP expenses were zero, 2013 - 2017}
+\label{tablogitoop}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule 
+& \multicolumn{2}{c}{\textbf{2013}}  &   \multicolumn{2}{c}{\textbf{2014}}  &  \multicolumn{2}{c}{\textbf{2015}}  &   \multicolumn{2}{c}{\textbf{2016}}  &    \multicolumn{2}{c}{\textbf{2017}}   \\
+& \textbf{Coefficient}    & \textbf{P-value} & \textbf{Coefficient}    & \textbf{P-value} & \textbf{Coefficient}    & \textbf{P-value}  & \textbf{Coefficient}    & \textbf{P-value}  & \textbf{Coefficient}    & \textbf{P-value}  \\ 
+\midrule
+\textbf{(Intercept)} & 0.33 & 0.012 & 0.515 & 0.001 & 0.163 & \textless{}0.001 & 0.147 & \textless{}0.001 & 0.154 & \textless{}0.001 \\
+\textbf{Rural (Ref. = Urban)} & 0.159 & \textless{}0.001 & 0.573 & \textless{}0.001 & 1.278 & \textless{}0.001 & 1.281 & \textless{}0.001 & 1.65 & \textless{}0.001 \\
+\textbf{Female (Ref. = Male)} & 0.895 & 0.282 & 0.968 & 0.524 & 1.013 & 0.753 & 1.082 & 0.056 & 1.147 & 0.001 \\
+\textbf{Age (Ref. = 18 - 45)} &  &  &  &  &  &  &  &  &  &  \\
+\quad 46-65 & 1.006 & 0.964 & 0.965 & 0.588 & 1.003 & 0.956 & 1.015 & 0.803 & 1.184 & 0.006 \\
+\quad 66-75 & 1.208 & 0.22 & 1.083 & 0.298 & 1.088 & 0.191 & 1.001 & 0.991 & 1.278 & \textless{}0.001 \\
+\quad 75+ & 1.508 & 0.014 & 0.999 & 0.994 & 1.009 & 0.898 & 1.158 & 0.042 & 1.405 & \textless{}0.001 \\
+\textbf{Marriage (Ref. = Married)}  &  &  &  &  &  &  &  &  &  &  \\
+\quad Unmarried & 0.151 & \textless{}0.001 & 0.343 & \textless{}0.001 & 0.627 & 0.004 & 1.114 & 0.437 & 0.882 & 0.219 \\
+\quad Widowed & 0.839 & 0.509 & 0.975 & 0.849 & 0.646 & \textless{}0.001 & 0.753 & 0.005 & 0.676 & \textless{}0.001 \\
+\quad Divorced & 0.24 & 0.003 & 0.254 & \textless{}0.001 & 0.691 & 0.015 & 0.973 & 0.852 & 1.91 & \textless{}0.001 \\
+\quad Other & 0.206 & 0.124 & 0.163 & \textless{}0.001 & 0.147 & \textless{}0.001 & 0.223 & \textless{}0.001 & 0.34 & \textless{}0.001 \\
+\textbf{Occupation (Ref. = Public institution)} &  &  &  &  &  &  &  &  &  &  \\
+\quad Private institution & 2.46 & \textless{}0.001 & 0.878 & 0.11 & 0.871 & 0.059 & 1.339 & \textless{}0.001 & 1.317 & \textless{}0.001 \\
+\quad Farmer & 6.43 & \textless{}0.001 & 1.134 & 0.175 & 0.575 & \textless{}0.001 & 0.776 & 0.003 & 0.585 & \textless{}0.001 \\
+\quad Jobless & 2.625 & 0.001 & 1.101 & 0.411 & 0.902 & 0.303 & 1.486 & \textless{}0.001 & 1.257 & 0.026 \\
+\quad Retired & 1.011 & 0.96 & 0.549 & \textless{}0.001 & 0.603 & \textless{}0.001 & 1.188 & 0.025 & 1.037 & 0.634 \\
+\quad Other & 1.784 & 0.008 & 0.203 & \textless{}0.001 & 0.348 & \textless{}0.001 & 0.318 & \textless{}0.001 & 0.551 & \textless{}0.001 \\
+\textbf{Length of stay (Ref. 1st quartile)}  &  &  &  &  &  &  &  &  &  &  \\
+\quad 2nd quartile & 1.261 & 0.054 & 1.279 & \textless{}0.001 & 1.085 & 0.077 & 0.914 & 0.044 & 0.766 & \textless{}0.001 \\
+\quad 3rd quartile & 1.279 & 0.047 & 1.383 & \textless{}0.001 & 1.142 & 0.006 & 0.854 & 0.002 & 0.704 & \textless{}0.001 \\
+\quad 4th quartile & 1.093 & 0.452 & 1.192 & 0.003 & 1.328 & \textless{}0.001 & 0.977 & 0.637 & 0.918 & 0.079 \\
+\textbf{Gravity of disease (Ref. Normal)} &  &  &  &  &  &  &  &  &  &  \\
+\quad Dangereous & 0.984 & 0.883 & 1.207 & \textless{}0.001 & 1.368 & \textless{}0.001 & 1.598 & \textless{}0.001 & 1.504 & \textless{}0.001 \\
+\quad Severe & 1 & 0.997 & 1.058 & 0.236 & 1.075 & 0.078 & 0.623 & \textless{}0.001 & 0.62 & \textless{}0.001 \\
+\textbf{PCI} & 3.083 & \textless{}0.001 & 1.923 & \textless{}0.001 & 2.875 & \textless{}0.001 & 4.389 & \textless{}0.001 & 2.886 & \textless{}0.001 \\
+\textbf{Level of hospital (Ref. =  Secondary hospital)} &  &  &  &  &  &  &  &  &  &  \\
+\quad Tertiary & 0.508 & 0.077 & 0.638 & 0.008 & 2.375 & \textless{}0.001 & 1.74 & \textless{}0.001 & 2.004 & \textless{}0.001 \\
+\textbf{Elixhauser score}  & 0.966 & \textless{}0.001 & 1.027 & \textless{}0.001 & 1.005 & 0.048 & 0.97 & \textless{}0.001 & 0.985 & \textless{}0.001\\ \bottomrule 
+\end{tabular}
+}
+\end{table}
+\end{landscape}
+
+% Table OOP part two - log linear model for non-zero OOP expenses
+
+\begin{landscape}
+\begin{table}[]
+\caption{Log-linear model results for non-zero OOP expenses, 2013 - 2017}
+\label{tablm}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lcccccccccc@{}}
+\toprule 
+& \multicolumn{2}{c}{\textbf{2013}}  &   \multicolumn{2}{c}{\textbf{2014}}  &  \multicolumn{2}{c}{\textbf{2015}}  &   \multicolumn{2}{c}{\textbf{2016}}  &    \multicolumn{2}{c}{\textbf{2017}}   \\
+& \textbf{OR}    & \textbf{P-value} & \textbf{OR}    & \textbf{P-value} & \textbf{OR}    & \textbf{P-value}  & \textbf{OR}    & \textbf{P-value}  & \textbf{OR}    & \textbf{P-value}  \\ 
+\midrule
+\textbf{(Intercept)} & 8.278 & \textless{}0.001 & 7.913 & \textless{}0.001 & 7.91 & \textless{}0.001 & 7.998 & \textless{}0.001 & 7.883 & \textless{}0.001 \\
+\textbf{Rural (Ref. = Urban)} & 0.075 & 0.352 & 0.61 & \textless{}0.001 & 0.565 & \textless{}0.001 & 0.439 & \textless{}0.001 & 0.46 & \textless{}0.001 \\
+\textbf{Female (Ref. = Male)} & -0.034 & 0.69 & -0.101 & 0.012 & -0.072 & 0.017 & -0.01 & 0.741 & -0.006 & 0.845 \\
+\textbf{Age (Ref. = 18 - 45)} &  &  &  &  &  &  &  &  &  &  \\
+\quad 46-65 & -0.204 & 0.054 & -0.021 & 0.69 & -0.111 & 0.006 & -0.07 & 0.094 & -0.143 & 0.001 \\
+\quad 66-75 & -0.25 & 0.042 & -0.237 & \textless{}0.001 & -0.222 & \textless{}0.001 & -0.182 & \textless{}0.001 & -0.189 & \textless{}0.001 \\
+75+ & -0.533 & \textless{}0.001 & -0.493 & \textless{}0.001 & -0.474 & \textless{}0.001 & -0.379 & \textless{}0.001 & -0.385 & \textless{}0.001 \\
+\textbf{Marriage (Ref. = Married)} &  &  &  &  &  &  &  &  &  &  \\
+\quad Unmarried & 0.9 & 0.065 & 0.169 & 0.336 & 0.009 & 0.945 & -0.158 & 0.107 & -0.424 & \textless{}0.001 \\
+\quad Widowed & 0.281 & 0.185 & -0.168 & 0.109 & 0.01 & 0.9 & -0.183 & 0.019 & -0.051 & 0.499 \\
+\quad Divorced & 0.045 & 0.917 & 0.026 & 0.894 & 0.082 & 0.486 & 0.074 & 0.476 & -0.108 & 0.177 \\
+\quad Other & -0.071 & 0.941 & 0.007 & 0.987 & -0.015 & 0.956 & -0.056 & 0.799 & -0.396 & 0.022 \\
+\textbf{Occupation (Ref. = Public institution)}  &  &  &  &  &  &  &  &  &  &  \\
+\quad Private institution & -0.586 & 0.001 & -0.603 & \textless{}0.001 & -0.349 & \textless{}0.001 & -0.196 & \textless{}0.001 & -0.055 & 0.314 \\
+\quad Farmer & 0.582 & 0.001 & -0.106 & 0.145 & 0.065 & 0.243 & 0.046 & 0.434 & 0.205 & \textless{}0.001 \\
+\quad Jobless & -0.195 & 0.407 & -0.142 & 0.107 & 0.039 & 0.572 & -0.046 & 0.526 & 0.16 & 0.026 \\
+\quad Retired & -0.199 & 0.292 & -0.362 & \textless{}0.001 & -0.045 & 0.374 & 0.01 & 0.859 & 0.069 & 0.204 \\
+\quad Other & -0.015 & 0.935 & -0.214 & 0.048 & 0.021 & 0.769 & 0.042 & 0.607 & 0.313 & \textless{}0.001 \\
+\textbf{Length of stay (Ref. 1st quartile)} &  &  &  &  &  &  &  &  &  &  \\
+\quad 2nd quartile & 0.4 & \textless{}0.001 & 0.501 & \textless{}0.001 & 0.509 & \textless{}0.001 & 0.396 & \textless{}0.001 & 0.41 & \textless{}0.001 \\
+\quad 3rd quartile & 0.584 & \textless{}0.001 & 0.689 & \textless{}0.001 & 0.749 & \textless{}0.001 & 0.625 & \textless{}0.001 & 0.577 & \textless{}0.001 \\
+\quad 4th quartile & 1.047 & \textless{}0.001 & 1.139 & \textless{}0.001 & 1.224 & \textless{}0.001 & 1.115 & \textless{}0.001 & 1.035 & \textless{}0.001 \\
+\textbf{Gravity of disease} &  &  &  &  &  &  &  &  &  &  \\
+\quad Dangereous & -0.201 & 0.019 & 0.079 & 0.055 & 0.005 & 0.855 & 0.213 & \textless{}0.001 & 0.091 & 0.001 \\
+\quad Severe & -0.171 & 0.028 & -0.027 & 0.465 & -0.1 & 0.001 & -0.131 & \textless{}0.001 & -0.094 & 0.003 \\
+\textbf{PCI} & 1.233 & \textless{}0.001 & 0.887 & \textless{}0.001 & 0.752 & \textless{}0.001 & 0.844 & \textless{}0.001 & 0.869 & \textless{}0.001 \\
+\textbf{Level of hospital (Ref. =  Secondary hospital)} &  &  &  &  &  &  &  &  &  &  \\
+\quad Tertiary & 0.418 & 0.173 & 0.875 & \textless{}0.001 & 0.722 & \textless{}0.001 & 0.535 & \textless{}0.001 & 0.603 & \textless{}0.001 \\
+\textbf{Elixhauser score} & -0.01 & 0.076 & 0.005 & 0.045 & 0.008 & \textless{}0.001 & -0.002 & 0.274 & 0.011 & \textless{}0.001 \\ \bottomrule 
+\end{tabular}
+}
+\end{table}
+\end{landscape}
+
+
+
+
+\begin{figure}[H]
+\caption{Odds ratios of rural patients with regard to in-hospital mortality, 2013 - 2017}
+\centering
+\includegraphics[width=\textwidth]{figure1ORdeath}\label{fig1}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Odds ratios of rural patients with regard to whether OOP expenses were zero, 2013 - 2017}
+\centering
+\includegraphics[width=\textwidth]{figure2ORoop}\label{fig2}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Coefficients of rural patients in terms of non-zero OOP expenses, 2013 - 2017}
+\centering
+\includegraphics[width=\textwidth]{figure3coeflm}\label{fig3}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+
+The administrative hospitalized AMI patient data in this study indicated that the disparity of health outcomes between rural and urban patients have been reduced from 2013 to 2017. Despite the closing gap, the in-hospital mortality rates of rural patients were consistently lower than those of urban patients after adjusting for a set of patient and hospital level variables. Rural AMI patients had increasing risk of having OOP expenses compared with their urban counterparts. The adjusted non-zero OOP expenses of rural AMI patients had been consistently higher than urban patients. In view of the fact that cardiovascular disease is the leading cause of death globally and in China \cite{abubakar2015global, chung2015comparison}, these trends and changing patterns deserve special attention from health policy makers and administrators in China.
+
+Our results highlighted that urban patients had higher in-hospital mortality rates after controlling for the covariates. These results agree with several previous studies \cite{fang2009explaining, chen2018geographic, zhang2014urban}. For example, a study based on China Health and Nutrition Survey between 1997 and 2006 suggested that rural residents had better overall health status and healthcare utilization \cite{fang2009explaining}. Another nationwide sample of hospitalized Chinese AMI patients in 2015 found that patients covered by the NCMS had significantly lower adjusted in-hospital mortality rates than patients with the UEBMI \cite{chen2018geographic}. These results, together with this study, all signify a higher mortality among urban residents, compared to rural residents. High pollution level and unhealthy lifestyle may explain this disparity. With the rapid economic development in recent years, urban residents are subject to higher air and water pollution compared with rural residents \cite{gong2012urbanisation}. In addition, Western-style diets have been widely adopted and accepted as a routine eating pattern in the urban areas, but it is less far-reaching in the rural areas because of lower economic growth and less population density \cite{pingali2007westernization}. Lee and her colleagues reported that Westernized fast food was linked with poorer psychological health status among the Chinese population \cite{lee2018assessing}. With Western-style diets being more and more integrated into daily lives of urban residents, we are expecting an enlarging gap of mortality between rural and urban patients in the future.
+
+
+The probability that rural AMI patients had OOP expenses revealed an unceasingly increasing pattern compared to urban patients. This trend agrees with several studies from other developing countries. For example, Garg and Karan reported that residents in rural areas had higher proportion of OOP expenditure than their urban counterparts in India \cite{garg2008reducing}. Another study reported substantial OOP expenditure for women delivery in rural Tanzania, although there was no comparison between rural and urban women \cite{kruk2008user}. It seems unusual that over 60\% of AMI patients in this study had no OOP expenditure during their hospitalisation. This mass zero density may be associated with local medical insurance policies, with no costs for veterans and some civil servants. The most concerning result in this study is that the OOP expenses of rural residents have been consistently higher than those of urban residents. This may stem from different reimbursement rates of rural and urban insurance schemes and local policies \cite{lin2017insurance, meng2015consolidating}. The reimbursement level of the NCMS for rural residents was 10\% lower and its coverage of medical service was narrower than those of either URBMI and UEBMI for urban residents or employees\cite{meng2015consolidating}. Since the NCMS funds are pooled at the county level while the UEBMI and URBMI fund are pooled at the city level. The reimbursement and benefit packages were decided by local policy makers, which could contribute to the enlarging gap of OOP expenses between rural and urban patients. The fragmentation and inequity in social health insurances in China have been widely criticized recently \cite{meng2015consolidating,wang2012integration, wang2014integration}. Researchers have been calling for an integration into a universal healthcare insurance scheme in China. However, the integration process is difficult and slow, mostly because of diverse funding levels and a lack of national guideline \cite{meng2015consolidating}. The ideal pattern should be a narrowing trend between rural and urban residents. Additionally, rural residents should have less OOP expenses in view of their lower incomes. The Chinese government aims to achieve universal health coverage by 2020, but the progress seems to be behind.
+
+
+The other interesting result in this study is the level of hospitals. The ORs of tertiary hospitals maintained a growing trend and it exceeded 1 in 2017, which indicated that tertiary hospitals had higher adjusted mortality rates than secondary hospitals. Similar results have been revealed in other studies \cite{cai2018does, xu2015variations}. Tertiary hospitals in China are large academic centers with the most skillful and experienced doctors and nurses, and they are expected to provide the best medical services in the country. However, our study suggested tertiary hospitals underperform with regards to in-hospital mortality. The underlying reason behind this unexpected result in not clear, but patient overload may have contributed to it. Doctors and nurses in China, especially in tertiary hospitals, have constantly been experiencing patient overload. On average, a doctor in China will have to serve 735 patients annually, which is substantially higher than the number in Western countries (280 to 640 patients) \cite{wu2013factors}. Job overload and burnout could have threatened the quality of care in Chinese tertiary hospitals.
+
+We noticed that the number of AMI patients experienced an expansion between 2013 and 2015, but the trend seemed to disappear after 2015. This is because the EMR system in Shanxi was initiated and piloted in a few large medical centers in 2013, the number of hospitals applying this EMR system continued to increase until 2015, when the EMR system was applied to hospitals in the entire province. Although the number of AMI patients in 2013 and 2014 was relatively few compared with that in 2015, 2016 and 2017, thousands of patient records could have sufficient statistical power to make inference about the parameter for rural-urban disparity.
+
+
+This study has several limitations. First, since this study is based on administrative medical records, it does not contain information of  patients' follow-ups. Patient outcomes can only be observed during their hospitalisation, and we do not have their follow-ups after discharge. Second, the patients were divided into rural or urban regions according to their insurance status and current residency address. However, the second stage classification may lead to misclassification bias. The second stage was a suboptimal method of classification since some immigrant workers who came from rural areas may live and work in the urban areas, but they may not be covered by the insurances mentioned in this paper. For these patients, our two-stage classification method will misclassify them as urban residents. A more robust method may be using the patients' registry information, which were not collected in our database. Third, as an observational study, this study is subject to omitted variable bias. Door-to-balloon time is a crucial variable that can influence the outcomes of patients \cite{menees2013door}, but it is not recorded in hospital EMRs in Shanxi, China. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions}
+
+The disparities with regard to in-hospital mortality and OOP expenses between rural and urban patients are shrinking. The adjusted in-hospital mortality rates of rural patients were significantly lower than those of urban patients, but the adjusted OOP expenses of rural patients were significantly higher than those of urban patients. Policy makers are recommended to narrow the gap of health outcomes between rural and urban patients.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{6pt} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% optional
+%\supplementary{The following are available online at www.mdpi.com/link, Figure S1: title, Table S1: title, Video S1: title.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\acknowledgments{The authors thank the Health and Family Planning Commission, Shanxi, China for providing the data used in this study.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\authorcontributions{M.C. and W.L. conceived and designed the study; M.C. collected and cleaned the data; E.L. and W.L. analyzed the data; M.C. and W.L. wrote the paper, E.L. review and edited it.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\conflictofinterests{The authors declare no conflict of interest.} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% optional
+\abbreviations{The following abbreviations are used in this manuscript:\\
+
+\noindent AMI: Acute Myocardial Infarction\\
+EMR: Electronic Medical Records\\
+ICD-9: The International Classification of Disease, Ninth Revision\\
+ICD-10: The International Classification of Disease, Tenth Revision\\
+NCMS: New Cooperative Medical Scheme\\
+OR: Odds Ratio\\
+OOP: Out-of-pocket\\
+PCI: Percutaneous Coronary Intervention\\
+URBMI: Urban Resident-based Basic Medical Insurance Scheme \\
+UEBMI: Urban Employee-based Basic Medical Insurance Scheme}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{mdpi}
+\bibliography{lite}
+
+\end{document}
+

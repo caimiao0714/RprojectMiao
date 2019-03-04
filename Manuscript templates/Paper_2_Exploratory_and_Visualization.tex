@@ -1,0 +1,533 @@
+\documentclass[]{elsarticle} %review=doublespace preprint=single 5p=2 column
+%%% Begin My package additions %%%%%%%%%%%%%%%%%%%
+\usepackage[hyphens]{url}
+
+  \journal{Journal of Quality Technology} % Sets Journal name
+
+
+\usepackage{lineno} % add
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\bibliographystyle{elsarticle-harv}
+\biboptions{sort&compress} % For natbib
+\usepackage{graphicx}
+\usepackage{booktabs} % book-quality tables
+%%%%%%%%%%%%%%%% end my additions to header
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{longtable}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=blue,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+\setcounter{secnumdepth}{5}
+% Pandoc toggle for numbering sections (defaults to be off)
+% Pandoc header
+\usepackage{soulutf8}
+\usepackage{color}
+\usepackage{setspace}
+
+\doublespacing
+\usepackage{svg}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+
+
+\begin{document}
+\begin{frontmatter}
+
+  \title{Truck Transportation Safety, Fatigue, Driver Characteristics and Weather:\\
+An Exploratory Data Analysis and Visualization}
+    \author[SLU]{Miao Cai}
+   \ead{miao.cai@slu.edu} 
+  
+    \author[JHU]{Mohammad Ali Alamdar Yazdi}
+   \ead{mza0052@auburn.edu} 
+  
+    \author[AU]{Qiong Hu}
+   \ead{qzh0011@auburn.edu} 
+  
+    \author[AU]{\mbox{Amir Mehdizadeh}}
+   \ead{azm0127@auburn.edu} 
+  
+    \author[AU]{\mbox{Alexander Vinel}}
+   \ead{alexander.vinel@auburn.edu} 
+  
+    \author[MU]{\mbox{Karen Davis}}
+   \ead{davisk4@miamioh.edu} 
+  
+    \author[MU]{\mbox{Fadel Megahed}}
+   \ead{fmegahed@miamioh.edu} 
+  
+    \author[SLU]{\mbox{Steven E. Rigdon}\corref{c1}}
+   \ead{steve.rigdon@slu.edu} 
+   \cortext[c1]{Corresponding Author}
+      \address[SLU]{Saint Louis University, Saint Louis, MO, 63108}
+    \address[JHU]{Johns Hopkins University, Baltimore, MD, 21218}
+    \address[AU]{Auburn University, Auburn, AL, 36849}
+    \address[MU]{Miami University, Oxford, OH, 45056}
+  
+  \begin{abstract}
+  \singlespacing This is the abstract.
+  
+  It consists of two paragraphs.
+  \end{abstract}
+  
+ \end{frontmatter}
+
+\linenumbers
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+\hypertarget{background}{%
+\subsection{Background}\label{background}}
+
+Traffic safety is a pressing public health issue that involves huge lives losses and financial burden across the world and in the United States. As reported by the World Health Organization (WHO \protect\hyperlink{ref-who2018}{2018}\protect\hyperlink{ref-who2018}{b}), road injury was the eighth cause of death globally in 2016, killing approximately 1.4 million people, which consisted of about 2.5\% of all deaths in the world. If no sustained action is taken, road injuries were predicted to be the seventh leading cause of death across the world by 2030 (WHO \protect\hyperlink{ref-who2018b}{2018}\protect\hyperlink{ref-who2018b}{a}). In the United States, transportation contributed to the highest number of fatal occupational injuries, leading to 2,077 deaths and accounting for over 40\% of all fatal occupational injuries in 2017 (The United States, Bureau of Labor Statistics \protect\hyperlink{ref-bols}{2017}). Traffic safety could also influence the economic growth of a country. Developing countries such as China and India could have suffered from 7-22\% loss of per capita Gross Domestic Product over a 24-year period (Fumagalli et al. \protect\hyperlink{ref-fumagalli2017high}{2017}).
+
+Among all vehicles, large trucks are the primary concern of traffic safety since they are associated with more catastrophic accidents. In 2016, the Federal Motor Carrier Safety Administration (FMCSA) reported that 27\% fatal crashes in work zones involved large trucks (FMCSA \protect\hyperlink{ref-fmcsareport2016}{2018}). Among all 4,079 crashes involving large trucks or buses in 2016, 4,564 lives (1.12 lives per crash) were claimed in the accidents (FMCSA \protect\hyperlink{ref-fmcsafacts2016}{2016}). The economic losses associated with large truck crashes are also higher than those with passenger vehicles, with an estimated average cost of 91,000 US dollars per crash (Zaloshnja, Miller, and others \protect\hyperlink{ref-zaloshnja2008unit}{2008}). The high risk of large trucks is attributed to two aspects of reasons (Huang et al. \protect\hyperlink{ref-huang2013development}{2013}). First, large truck drivers generally need to drive alone for long routes, under on-time demands, challenging weather and traffic conditions. On the other hand, trucks are huge weighted and potentially carrying hazardous cargoes.
+
+To reduce the lives and economic losses associated with trucks, numerous studies attempted to screen the risk factors for truck-related traffic crashes or predict the crashes. The most common study design is a case-control study, matching a crash with one to up to ten non-crashes, and use statistical models such as logistic regressions to explain the causes or predict the crashes (Braver et al. \protect\hyperlink{ref-braver1997tractor}{1997}; Chen and Xie \protect\hyperlink{ref-chen2014modeling}{2014}; Meuleners et al. \protect\hyperlink{ref-meuleners2015obstructive}{2015}; Née et al. \protect\hyperlink{ref-nee2019road}{2019}). This widespread case-control design is due to the fact that large truck crashes are very rare compared to the amount of time on road. However, a case-control study is limited in estimating the incidence data and may be contentious in selecting the control groups (Grimes and Schulz \protect\hyperlink{ref-grimes2005compared}{2005}; Sedgwick \protect\hyperlink{ref-sedgwick2014case}{2014}).
+
+Past truck safety literature almost exclusively focused on crashes, while ignoring the precursors to crashes. A precursor, or critical event, is a pattern or signature associated with an increasing chance of truck crash (Saleh et al. \protect\hyperlink{ref-saleh2013accident}{2013}; Janakiraman, Matthews, and Oza \protect\hyperlink{ref-janakiraman2016discovery}{2016}). Truck critical events deserve more attention since they occur more frequently than crashes, suggest fatigue and a lapse in performance, and they can lead to giant crashes (Dingus et al. \protect\hyperlink{ref-dingus2006development}{2006}). Although critcal events do not always result in an accident, they could be used as an early warning system to mitigate or prevent truck crashes (Kusano and Gabler \protect\hyperlink{ref-kusano2012safety}{2012}). \hl{describing the value of using real-time truck data and linking this background to quality since we are trying to submit to JQT.}
+
+\hypertarget{data-description-and-the-business-problem}{%
+\subsection{Data Description and the Business Problem}\label{data-description-and-the-business-problem}}
+
+\hypertarget{data-source}{%
+\subsubsection{Data source}\label{data-source}}
+
+The J.B. Hunt Transport Services, a trucking and transportation company in the United States, provided real-time ping data on 498 truck drivers who conducted regional work (REG, JBI00) from April 1st, 2015 to March 29th, 2016. A small device was installed in each truck in the company, which will ping irregularly (typically every 5-30 minutes). As Table \ref{tab:pingdata} shows, each ping will collect data on the vehicle number, date and time, latitude, longitude, driver identity number, and speed at that second. In total, 13,187,289 pings were provided to the research team. Besides, the company also regularly collected real-time GPS location and time-stamped critical events data for all their trucks. There were 12,458 critical events occurred to these 498 truck drivers during the study period. Four types of critical events were recorded in this critical events data.
+
+\begin{itemize}
+\tightlist
+\item
+  Headway
+\item
+  Hard brake
+\item
+  Collision mitigation
+\item
+  Rolling stability
+\end{itemize}
+
+\hl{We need a detailed description on how the JB Hunt define these critical events.}
+
+\begin{table}[!h]
+
+\caption{\label{tab:pingdata}A sample of ping data}
+\centering
+\begin{tabular}{ccccccc}
+\toprule
+TruckID & Driver1 & Driver2 & Date time & Speed & Latitude & Longitude\\
+\midrule
+1 & d1 & d2 & 2015-11-16 13:56:00 & 9 & 33.42166 & -84.14372\\
+1 & d1 & d2 & 2015-11-16 13:57:00 & 0 & 33.41865 & -84.14429\\
+1 & d1 & d2 & 2015-11-16 13:57:00 & 0 & 33.41846 & -84.14436\\
+1 & d1 & d2 & 2015-11-16 13:59:00 & 28 & 33.41954 & -84.14460\\
+1 & d1 & d2 & 2015-11-16 14:05:00 & 2 & 33.41852 & -84.14435\\
+\bottomrule
+\multicolumn{7}{l}{\textsuperscript{*} The truck ID, driver1, driver2 have been anonymized to ensure privacy.}\\
+\end{tabular}
+\end{table}
+
+Apart from driver's characteristics and driving condition, weather also poses a threat on truck crashes and injuries (Zhu and Srinivasan \protect\hyperlink{ref-zhu2011comprehensive}{2011}; Naik et al. \protect\hyperlink{ref-naik2016weather}{2016}; Uddin and Huynh \protect\hyperlink{ref-uddin2017truck}{2017}). We obtained historic weather data from the DarkSky Application Programming Interface (API), which allows us to query real-time and hour-by-hour nationwide historic weather conditions according to latitude, longitude, date, and time (The Dark Sky Company, LLC \protect\hyperlink{ref-darksky}{2019}). The variables included visibility, precipitation probability\footnote{Ideally, the historic precipitation at a specific location and time should be yes or not. However, since the weather stations are distributed not densely enough to record the exact weather conditions in every latitude and longitude in the US, the DarkSky API uses some algorithms to infer the probability of precipitation in each location.} and intensity, temperature, wind and others.
+
+\hypertarget{research-questions}{%
+\subsection{Research questions}\label{research-questions}}
+
+We use exploratory data analysis, primarily data visualization, to address the following questions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  How are different measures of fatigue (cumulative driving time, rest time before a trip, rest time before a shift) associated with critical events?
+\item
+  Will time of driving influence the chances of critical events?
+\item
+  Are driver's characteristics (years of experience and age) associated with the chances of critical events
+\item
+  What is the relationship between weather conditions and critical events?
+\end{enumerate}
+
+\hypertarget{innovation}{%
+\subsection{Innovation}\label{innovation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Assessing the precursors instead of crashes
+\item
+  Real-time ping data
+\item
+  Looking at all 498 drivers in a business section in a company instead of a road segment
+\end{itemize}
+
+\hypertarget{modeling-framework}{%
+\section{Modeling Framework}\label{modeling-framework}}
+
+\hypertarget{data-preparation}{%
+\subsection{Data preparation}\label{data-preparation}}
+
+\begin{itemize}
+\tightlist
+\item
+  ping data
+\item
+  critical events data
+\item
+  driver's data
+\item
+  weather data
+\end{itemize}
+
+To shrink the large size of over 10 million ping data, we rounded the GPS coordinates to the second decimal places, which are worth up to 1.1 kilometers, and we also round the time to the nearest hour. We then queried weather variables from the DarkSky API using the approximated latitudes, longitudes, date and hour. The weather variables used in this study include precipitation probability, precipitation intensity, and visibility.
+
+For each of the truck drivers, if the ping data showed that the truck was not moving for more than 20 minutes, the ping data were separated into two different trips. These ping data were then aggregated into different trips. A \textbf{trip} is therefore defined as a continuous period of driving without stop. As Table \ref{tab:tripsdata} demonstrates, each row is a trip. The average length of a trip in this study is 2.31 hours with the standard deviation of 1.8 hours.
+
+After the ping data were aggregated into trips, these trips data were then further divded into different shifts according to an eight-hour rest time for each driver. A \textbf{shift} is defined as a long period of driving with potentially less than 8 hours' stops. The Shift\_ID column in Table \ref{tab:tripsdata} shows different shifts, separated by an eight-hour threshold. The average length of a shift in this study is 8.42 hours with the standard deviation of 2.45 hours.
+
+\begin{landscape}\begin{table}[!h]
+
+\caption{\label{tab:tripsdata}A sample of trips data}
+\centering
+\begin{tabular}{ccccccccccc}
+\toprule
+DriverID & TripID & Shift\_ID & rest\_time & start\_time & end\_time & Distance & trip\_time & cumu\_drive & CE\_num & CE\_type\\
+\midrule
+1 & 1 & 1 & 10.50 & 2015-08-12T07:19:00Z & 2015-08-12T12:47:00Z & 279.45 & 5.47 & 5.47 & 2 & 1;1\\
+1 & 2 & 1 & 1.40 & 2015-08-12T14:11:14Z & 2015-08-12T14:22:14Z & 7.11 & 0.18 & 5.65 & 0 & \\
+1 & 3 & 1 & 0.75 & 2015-08-12T15:07:40Z & 2015-08-12T19:17:40Z & 239.07 & 4.17 & 9.82 & 2 & 1;1\\
+1 & 4 & 2 & 10.65 & 2015-08-13T05:57:34Z & 2015-08-13T06:28:34Z & 24.57 & 0.52 & 0.52 & 0 & \\
+1 & 5 & 2 & 0.37 & 2015-08-13T06:50:40Z & 2015-08-13T11:03:40Z & 233.22 & 4.22 & 4.73 & 1 & 1\\
+\addlinespace
+1 & 6 & 2 & 1.18 & 2015-08-13T12:14:40Z & 2015-08-13T12:40:40Z & 22.00 & 0.43 & 5.17 & 2 & 1;1\\
+1 & 7 & 2 & 1.22 & 2015-08-13T13:53:50Z & 2015-08-13T17:05:50Z & 133.05 & 3.20 & 8.37 & 3 & 1;1;1\\
+1 & 8 & 2 & 0.40 & 2015-08-13T17:30:06Z & 2015-08-13T20:08:06Z & 93.37 & 2.63 & 11.00 & 1 & 1\\
+1 & 9 & 3 & 10.18 & 2015-08-14T06:19:08Z & 2015-08-14T06:44:08Z & 7.67 & 0.42 & 0.42 & 1 & 1\\
+1 & 10 & 3 & 0.38 & 2015-08-14T07:07:10Z & 2015-08-14T10:47:10Z & 188.72 & 3.67 & 4.08 & 0 & \\
+\addlinespace
+1 & 11 & 3 & 0.35 & 2015-08-14T11:08:48Z & 2015-08-14T12:26:48Z & 37.43 & 1.30 & 5.38 & 0 & \\
+1 & 12 & 3 & 0.75 & 2015-08-14T13:12:08Z & 2015-08-14T18:02:08Z & 204.50 & 4.83 & 10.22 & 2 & 1;1\\
+1 & 13 & 4 & 10.43 & 2015-08-15T04:28:50Z & 2015-08-15T10:11:50Z & 234.92 & 5.72 & 5.72 & 1 & 1\\
+1 & 14 & 4 & 49.37 & 2015-08-17T11:34:00Z & 2015-08-17T12:42:00Z & 31.56 & 1.13 & 6.85 & 0 & \\
+1 & 15 & 4 & 2.23 & 2015-08-17T14:56:36Z & 2015-08-17T19:18:36Z & 190.38 & 4.37 & 11.22 & 6 & 1;1;1;1;1;1\\
+\addlinespace
+1 & 16 & 5 & 10.62 & 2015-08-18T09:19:16Z & 2015-08-18T11:44:16Z & 130.84 & 2.42 & 2.42 & 1 & 1\\
+1 & 17 & 5 & 1.02 & 2015-08-18T12:45:40Z & 2015-08-18T12:54:40Z & 1.83 & 0.15 & 2.57 & 0 & \\
+1 & 18 & 5 & 0.95 & 2015-08-18T13:51:48Z & 2015-08-18T15:17:48Z & 75.75 & 1.43 & 4.00 & 0 & \\
+1 & 19 & 5 & 0.83 & 2015-08-18T16:07:52Z & 2015-08-18T18:47:52Z & 126.18 & 2.67 & 6.67 & 2 & 1;1\\
+1 & 20 & 5 & 0.55 & 2015-08-18T19:21:12Z & 2015-08-18T19:29:12Z & 1.08 & 0.13 & 6.80 & 0 & \\
+\addlinespace
+1 & 21 & 6 & 10.92 & 2015-08-19T06:24:40Z & 2015-08-19T11:36:40Z & 214.04 & 5.20 & 5.20 & 0 & \\
+1 & 22 & 6 & 0.37 & 2015-08-19T11:59:30Z & 2015-08-19T12:09:30Z & 4.84 & 0.17 & 5.37 & 0 & \\
+1 & 23 & 6 & 0.73 & 2015-08-19T12:53:40Z & 2015-08-19T19:27:40Z & 222.78 & 6.57 & 11.93 & 3 & 1;1;1\\
+1 & 24 & 7 & 10.78 & 2015-08-20T06:14:52Z & 2015-08-20T12:29:52Z & 299.36 & 6.25 & 6.25 & 1 & 1\\
+1 & 25 & 7 & 0.72 & 2015-08-20T13:13:28Z & 2015-08-20T16:00:28Z & 146.06 & 2.78 & 9.03 & 1 & 1\\
+\addlinespace
+1 & 26 & 8 & 10.48 & 2015-08-21T02:29:32Z & 2015-08-21T05:03:32Z & 80.74 & 2.57 & 2.57 & 0 & \\
+1 & 27 & 8 & 1.50 & 2015-08-21T06:34:12Z & 2015-08-21T09:40:12Z & 147.17 & 3.10 & 5.67 & 1 & 1\\
+1 & 28 & 8 & 0.63 & 2015-08-21T10:19:10Z & 2015-08-21T11:18:10Z & 30.65 & 0.98 & 6.65 & 0 & \\
+1 & 29 & 8 & 2.05 & 2015-08-21T13:22:02Z & 2015-08-21T13:29:02Z & 3.39 & 0.12 & 6.77 & 0 & \\
+1 & 30 & 8 & 0.42 & 2015-08-21T13:54:20Z & 2015-08-21T14:32:20Z & 33.51 & 0.63 & 7.40 & 0 & \\
+\addlinespace
+1 & 31 & 9 & 10.85 & 2015-08-22T01:23:46Z & 2015-08-22T04:39:46Z & 144.60 & 3.27 & 3.27 & 2 & 1;1\\
+1 & 32 & 9 & 0.58 & 2015-08-22T05:15:26Z & 2015-08-22T07:38:26Z & 85.45 & 2.38 & 5.65 & 1 & 3\\
+1 & 33 & 9 & 1.88 & 2015-08-22T09:31:40Z & 2015-08-22T11:57:40Z & 116.32 & 2.43 & 8.08 & 0 & \\
+1 & 34 & 9 & 1.35 & 2015-08-22T13:19:12Z & 2015-08-22T14:18:12Z & 40.58 & 0.98 & 9.07 & 1 & 1\\
+\bottomrule
+\multicolumn{11}{l}{\textsuperscript{*} CE denotes critical events.}\\
+\multicolumn{11}{l}{\textsuperscript{\dag} The truck ID, driver1, driver2 have been anonymized to ensure privacy.}\\
+\end{tabular}
+\end{table}
+\end{landscape}
+
+\hypertarget{exploratory-data-analysis}{%
+\subsection{Exploratory data analysis}\label{exploratory-data-analysis}}
+
+All the data analyses and visualization were conducted in statistical computing environment \texttt{R} (R Core Team \protect\hyperlink{ref-Rcitation}{2018}). Specifically, data importing, cleaning and exporting were performed using the \texttt{data.table} and \texttt{dplyr} packages (Dowle and Srinivasan \protect\hyperlink{ref-Rdatatable}{2019}; Wickham et al. \protect\hyperlink{ref-Rdplyr}{2018}), the date and time objects were handled using the \texttt{lubridate} package (Grolemund and Wickham \protect\hyperlink{ref-Rlubridate}{2011}), and all the visualizations were conducted using the \texttt{ggplot2} package (Wickham \protect\hyperlink{ref-Rggplot2}{2016}).
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+\hypertarget{fatigue}{%
+\subsection{Fatigue}\label{fatigue}}
+
+Fatigue has been reported to be the most important predictor to truck crashes, considering that truck drivers are exposed to long routes and lone working environment Stern et al. (\protect\hyperlink{ref-stern2018data}{2018}).
+
+Driver's fatigue is difficult to measure in real life. In this study, we attempt to use three proxies to measure the fatigue of the truck drivers: cumulative driving time in a shift, the rest time before a shift, and the rest time before a trip.
+
+\hypertarget{cumulative-driving-time-in-a-shift}{%
+\subsubsection{Cumulative driving time in a shift}\label{cumulative-driving-time-in-a-shift}}
+
+\begin{figure}[!hb]
+
+{\centering \includegraphics[width=.8\linewidth]{figs/CErate} 
+
+}
+
+\caption{The number of critical events per 100 hours in each hour of the shift}\label{fig:unnamed-chunk-1}
+\end{figure}
+
+\hypertarget{rest-time-before-a-shift}{%
+\subsubsection{Rest time before a shift}\label{rest-time-before-a-shift}}
+
+\begin{figure}[!hb]
+
+{\centering \includegraphics[width=.8\linewidth]{figs/RestShift} 
+
+}
+
+\caption{The number of critical events per 100 hours in a shift and the rest time before the shift}\label{fig:unnamed-chunk-2}
+\end{figure}
+
+\hypertarget{rest-time-before-a-trip}{%
+\subsubsection{Rest time before a trip}\label{rest-time-before-a-trip}}
+
+\begin{figure}[!hb]
+
+{\centering \includegraphics[width=.8\linewidth]{figs/RestTrip} 
+
+}
+
+\caption{The number of critical events per 100 hours in a trip and the rest time before the trip}\label{fig:unnamed-chunk-3}
+\end{figure}
+
+\hypertarget{the-time-of-driving}{%
+\subsection{The time of driving}\label{the-time-of-driving}}
+
+\hypertarget{day-of-the-week}{%
+\subsubsection{Day of the week}\label{day-of-the-week}}
+
+It was estimated that 84\% of fatal crashes and 88\% of nonfatal crashes related to large trucks occurred on weekdays (FMCSA \protect\hyperlink{ref-fmcsareport2016}{2018}).
+
+\hypertarget{hour-of-the-day}{%
+\subsubsection{Hour of the day}\label{hour-of-the-day}}
+
+FMCSA (\protect\hyperlink{ref-fmcsareport2016}{2018}) reported that 37\%, 23\% of injury-related crashes, and 20\% of property damage only crashes associated with large trucks were from 6 p.m. to 6 a.m., which suggested that day or night may be a risk factor for crashes or critical events.
+
+\hypertarget{sunrise-and-sunset-times}{%
+\subsubsection{Sunrise and sunset times}\label{sunrise-and-sunset-times}}
+
+During sunrise and sunset time, the visibility of the truck drivers are transitioning from clear to dark or the other way.
+
+\hypertarget{driver-characteristics}{%
+\subsection{Driver characteristics}\label{driver-characteristics}}
+
+\hypertarget{age}{%
+\subsubsection{Age}\label{age}}
+
+The age of the truck driver could potentially influence their performance. Pinho et al. (\protect\hyperlink{ref-de2006hypersomnolence}{2006}) reported excessive sleepness among young truck drivers potentially caused by homeostatic pressure, poor sleep habits. De Craen et al. (\protect\hyperlink{ref-de2011young}{2011}). Gershon et al. (\protect\hyperlink{ref-gershon2019distracted}{2019}) reported that manual cellphone use and reaching for objects were associated with crash risk among teenage drivers.
+
+\begin{figure}[!hb]
+
+{\centering \includegraphics[width=.8\linewidth]{figs/AGE} 
+
+}
+
+\caption{Truck driver's age and the rate of critical events}\label{fig:unnamed-chunk-4}
+\end{figure}
+
+\hypertarget{years-of-experience}{%
+\subsubsection{Years of experience}\label{years-of-experience}}
+
+\begin{figure}[!hb]
+
+{\centering \includegraphics[width=.8\linewidth]{figs/YEARS_OF_EXP} 
+
+}
+
+\caption{Truck driver's years of experience and the rate of critical events}\label{fig:unnamed-chunk-5}
+\end{figure}
+
+\hypertarget{weather}{%
+\subsection{Weather}\label{weather}}
+
+\hypertarget{precipitation-probability}{%
+\subsubsection{Precipitation probability}\label{precipitation-probability}}
+
+\hypertarget{precipitation-intensity}{%
+\subsubsection{Precipitation intensity}\label{precipitation-intensity}}
+
+\hypertarget{visibility}{%
+\subsubsection{Visibility}\label{visibility}}
+
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+\hypertarget{main-contributions}{%
+\subsection{Main contributions}\label{main-contributions}}
+
+\hypertarget{relevance-to-quality}{%
+\subsection{Relevance to quality}\label{relevance-to-quality}}
+
+\hypertarget{limitations}{%
+\subsection{Limitations}\label{limitations}}
+
+\hypertarget{acknowledgement}{%
+\section*{Acknowledgement}\label{acknowledgement}}
+\addcontentsline{toc}{section}{Acknowledgement}
+
+This work was supported in part by the National Science Foundation (CMMI-1635927 and CMMI-1634992), the Ohio Supercomputer Center (PMIU0138 and PMIU0162), the American Society of Safety Professionals (ASSP) Foundation, the University of Cincinnati Education and Research Center Pilot Research Project Training Program, and the Transportation Informatics Tier I University Transportation Center (TransInfo). We also thank the DarkSky company for providing us five million free calls to their historic weather API.
+
+\hypertarget{appendice}{%
+\section*{Appendice}\label{appendice}}
+\addcontentsline{toc}{section}{Appendice}
+
+\hypertarget{sample-data}{%
+\subsection{Sample data}\label{sample-data}}
+
+\hypertarget{r-code}{%
+\subsection{R code}\label{r-code}}
+
+\hypertarget{github-repository}{%
+\subsection{GitHub repository}\label{github-repository}}
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-braver1997tractor}{}%
+Braver, Elisa R, Paul L Zador, Denise Thum, Eric L Mitter, Herbert M Baum, and Frank J Vilardo. 1997. ``Tractor-Trailer Crashes in Indiana: A Case-Control Study of the Role of Truck Configuration.'' \emph{Accident Analysis \& Prevention} 29 (1). Elsevier: 79--96.
+
+\leavevmode\hypertarget{ref-chen2014modeling}{}%
+Chen, Chen, and Yuanchang Xie. 2014. ``Modeling the Safety Impacts of Driving Hours and Rest Breaks on Truck Drivers Considering Time-Dependent Covariates.'' \emph{Journal of Safety Research} 51. Elsevier: 57--63.
+
+\leavevmode\hypertarget{ref-de2011young}{}%
+De Craen, S, DAM Twisk, Marjan Paula Hagenzieker, Hy Elffers, and Karel A Brookhuis. 2011. ``Do Young Novice Drivers Overestimate Their Driving Skills More Than Experienced Drivers? Different Methods Lead to Different Conclusions.'' \emph{Accident Analysis \& Prevention} 43 (5). Elsevier: 1660--5.
+
+\leavevmode\hypertarget{ref-dingus2006development}{}%
+Dingus, Thomas A, Vicki L Neale, Sheila G Klauer, Andrew D Petersen, and Robert J Carroll. 2006. ``The Development of a Naturalistic Data Collection System to Perform Critical Incident Analysis: An Investigation of Safety and Fatigue Issues in Long-Haul Trucking.'' \emph{Accident Analysis \& Prevention} 38 (6). Elsevier: 1127--36.
+
+\leavevmode\hypertarget{ref-Rdatatable}{}%
+Dowle, Matt, and Arun Srinivasan. 2019. \emph{Data.table: Extension of `Data.frame`}. \url{https://CRAN.R-project.org/package=data.table}.
+
+\leavevmode\hypertarget{ref-fmcsafacts2016}{}%
+FMCSA. 2016. ``Fatal occupational injuries by event, 2016.'' \url{https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/docs/safety/data-and-statistics/84856/cmvtrafficsafetyfactsheet2016-2017.pdf}.
+
+\leavevmode\hypertarget{ref-fmcsareport2016}{}%
+---------. 2018. ``Large Truck and Bus Crash Facts 2016.'' \url{https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/docs/safety/data-and-statistics/398686/ltbcf-2016-final-508c-may-2018.pdf}.
+
+\leavevmode\hypertarget{ref-fumagalli2017high}{}%
+Fumagalli, E, Dipan Bose, Patricio Marquez, Lorenzo Rocco, Andrew Mirelman, Marc Suhrcke, and Alexander Irvin. 2017. ``The High Toll of Traffic Injuries: Unacceptable and Preventable.'' World Bank.
+
+\leavevmode\hypertarget{ref-gershon2019distracted}{}%
+Gershon, Pnina, Kellienne R Sita, Chunming Zhu, Johnathon P Ehsani, Sheila G Klauer, Tom A Dingus, and Bruce G Simons-Morton. 2019. ``Distracted Driving, Visual Inattention, and Crash Risk Among Teenage Drivers.'' \emph{American Journal of Preventive Medicine}. Elsevier.
+
+\leavevmode\hypertarget{ref-grimes2005compared}{}%
+Grimes, David A, and Kenneth F Schulz. 2005. ``Compared to What? Finding Controls for Case-Control Studies.'' \emph{The Lancet} 365 (9468). Elsevier: 1429--33.
+
+\leavevmode\hypertarget{ref-Rlubridate}{}%
+Grolemund, Garrett, and Hadley Wickham. 2011. ``Dates and Times Made Easy with lubridate.'' \emph{Journal of Statistical Software} 40 (3): 1--25. \url{http://www.jstatsoft.org/v40/i03/}.
+
+\leavevmode\hypertarget{ref-huang2013development}{}%
+Huang, Yueng-hsiang, Dov Zohar, Michelle M Robertson, Angela Garabet, Jin Lee, and Lauren A Murphy. 2013. ``Development and Validation of Safety Climate Scales for Lone Workers Using Truck Drivers as Exemplar.'' \emph{Transportation Research Part F: Traffic Psychology and Behaviour} 17. Elsevier: 5--19.
+
+\leavevmode\hypertarget{ref-janakiraman2016discovery}{}%
+Janakiraman, Vijay Manikandan, Bryan Matthews, and Nikunj Oza. 2016. ``Discovery of Precursors to Adverse Events Using Time Series Data.'' In \emph{Proceedings of the 2016 Siam International Conference on Data Mining}, 639--47. SIAM.
+
+\leavevmode\hypertarget{ref-kusano2012safety}{}%
+Kusano, Kristofer D, and Hampton C Gabler. 2012. ``Safety Benefits of Forward Collision Warning, Brake Assist, and Autonomous Braking Systems in Rear-End Collisions.'' \emph{IEEE Transactions on Intelligent Transportation Systems} 13 (4). IEEE: 1546--55.
+
+\leavevmode\hypertarget{ref-meuleners2015obstructive}{}%
+Meuleners, Lynn, Michelle L Fraser, Matthew H Govorko, and Mark R Stevenson. 2015. ``Obstructive Sleep Apnea, Health-Related Factors, and Long Distance Heavy Vehicle Crashes in Western Australia: A Case Control Study.'' \emph{Journal of Clinical Sleep Medicine} 11 (04). American Academy of Sleep Medicine: 413--18.
+
+\leavevmode\hypertarget{ref-naik2016weather}{}%
+Naik, Bhaven, Li-Wei Tung, Shanshan Zhao, and Aemal J Khattak. 2016. ``Weather Impacts on Single-Vehicle Truck Crash Injury Severity.'' \emph{Journal of Safety Research} 58. Elsevier: 57--65.
+
+\leavevmode\hypertarget{ref-nee2019road}{}%
+Née, Mélanie, Benjamin Contrand, Ludivine Orriols, Cédric Gil-Jardiné, Cedric Galéra, and Emmanuel Lagarde. 2019. ``Road Safety and Distraction, Results from a Responsibility Case-Control Study Among a Sample of Road Users Interviewed at the Emergency Room.'' \emph{Accident Analysis \& Prevention} 122. Elsevier: 19--24.
+
+\leavevmode\hypertarget{ref-de2006hypersomnolence}{}%
+Pinho, Rachel SN de, Francisco P da Silva-Júnior, Joao Paulo C Bastos, Werllen S Maia, Marco Tulio de Mello, Veralice MS de Bruin, and Pedro Felipe C de Bruin. 2006. ``Hypersomnolence and Accidents in Truck Drivers: A Cross-Sectional Study.'' \emph{Chronobiology International} 23 (5). Taylor \& Francis: 963--71.
+
+\leavevmode\hypertarget{ref-Rcitation}{}%
+R Core Team. 2018. \emph{R: A Language and Environment for Statistical Computing}. Vienna, Austria: R Foundation for Statistical Computing. \url{https://www.R-project.org/}.
+
+\leavevmode\hypertarget{ref-saleh2013accident}{}%
+Saleh, Joseph H, Elizabeth A Saltmarsh, Francesca M Favaro, and Loic Brevault. 2013. ``Accident Precursors, Near Misses, and Warning Signs: Critical Review and Formal Definitions Within the Framework of Discrete Event Systems.'' \emph{Reliability Engineering \& System Safety} 114. Elsevier: 148--54.
+
+\leavevmode\hypertarget{ref-sedgwick2014case}{}%
+Sedgwick, Philip. 2014. ``Case-Control Studies: Advantages and Disadvantages.'' \emph{Bmj} 348. British Medical Journal Publishing Group: f7707.
+
+\leavevmode\hypertarget{ref-stern2018data}{}%
+Stern, Hal S, Daniel Blower, Michael L Cohen, Charles A Czeisler, David F Dinges, Joel B Greenhouse, Feng Guo, et al. 2018. ``Data and Methods for Studying Commercial Motor Vehicle Driver Fatigue, Highway Safety and Long-Term Driver Health.'' \emph{Accident Analysis \& Prevention}. Elsevier.
+
+\leavevmode\hypertarget{ref-darksky}{}%
+The Dark Sky Company, LLC. 2019. ``Dark Sky API --- Overview.'' \url{https://darksky.net/dev/docs}.
+
+\leavevmode\hypertarget{ref-bols}{}%
+The United States, Bureau of Labor Statistics. 2017. ``Fatal occupational injuries by event, 2017.'' \url{https://www.bls.gov/charts/census-of-fatal-occupational-injuries/fatal-occupational-injuries-by-event-drilldown.htm}.
+
+\leavevmode\hypertarget{ref-uddin2017truck}{}%
+Uddin, Majbah, and Nathan Huynh. 2017. ``Truck-Involved Crashes Injury Severity Analysis for Different Lighting Conditions on Rural and Urban Roadways.'' \emph{Accident Analysis \& Prevention} 108. Elsevier: 44--55.
+
+\leavevmode\hypertarget{ref-who2018b}{}%
+WHO. 2018a. ``Road traffic injuries.'' \url{http://www.who.int/mediacentre/factsheets/fs358/en/}.
+
+\leavevmode\hypertarget{ref-who2018}{}%
+---------. 2018b. ``The Top 10 Causes of Death.'' \url{http://www.who.int/news-room/fact-sheets/detail/the-top-10-causes-of-death}.
+
+\leavevmode\hypertarget{ref-Rggplot2}{}%
+Wickham, Hadley. 2016. \emph{Ggplot2: Elegant Graphics for Data Analysis}. Springer-Verlag New York. \url{http://ggplot2.org}.
+
+\leavevmode\hypertarget{ref-Rdplyr}{}%
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2018. \emph{Dplyr: A Grammar of Data Manipulation}. \url{https://CRAN.R-project.org/package=dplyr}.
+
+\leavevmode\hypertarget{ref-zaloshnja2008unit}{}%
+Zaloshnja, Eduard, Ted Miller, and others. 2008. ``Unit Costs of Medium and Heavy Truck Crashes.'' The United States. Federal Motor Carrier Safety Administration.
+
+\leavevmode\hypertarget{ref-zhu2011comprehensive}{}%
+Zhu, Xiaoyu, and Sivaramakrishnan Srinivasan. 2011. ``A Comprehensive Analysis of Factors Influencing the Injury Severity of Large-Truck Crashes.'' \emph{Accident Analysis \& Prevention} 43 (1). Elsevier: 49--57.
+
+\end{document}
+
+

@@ -30,6 +30,12 @@ Let Git delete all unpushed commits:
 git reset origin/master
 ```
 
+Dirichlet process in R/3
+
+```
+shiny::runGitHub('jasonroy0/BNP-short-course/', username = 'jasonroy0', subdir = 'DP ShinyApp/DPMixApp/')
+```
+
 
 Switching between strings and objects in R
 ```

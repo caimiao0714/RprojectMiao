@@ -9,3 +9,11 @@ readallcsv = function(i){
   )
 }
 for (i in seq_along(csv_files))  readallcsv(i)
+
+
+
+# read all csv and merge as one dataframe
+data_dir <- "data/ie-general-referrals-by-hospital"
+dat <- data_dir %>% 
+  dir_ls(regexp = "\\.csv$") %>% 
+  map_dfr(read_csv, .id = "source")

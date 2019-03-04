@@ -1,0 +1,278 @@
+---
+title: |
+  | Truck Transportation Safety, Fatigue, Driver Characteristics and Weather: 
+  | An Exploratory Data Analysis and Visualization
+author:
+  - name: Miao Cai
+    email: miao.cai@slu.edu
+    affiliation: SLU
+  - name: Mohammad Ali Alamdar Yazdi
+    email: mza0052@auburn.edu
+    affiliation: JHU
+  - name: Qiong Hu
+    email: qzh0011@auburn.edu
+    affiliation: AU
+  - name: \mbox{Amir Mehdizadeh}
+    email: azm0127@auburn.edu
+    affiliation: AU
+  - name: \mbox{Alexander Vinel}
+    email: alexander.vinel@auburn.edu
+    affiliation: AU
+  - name: \mbox{Karen Davis}
+    email: davisk4@miamioh.edu
+    affiliation: MU
+  - name: \mbox{Fadel Megahed}
+    email: fmegahed@miamioh.edu
+    affiliation: MU
+  - name: \mbox{Steven E. Rigdon}
+    email: steve.rigdon@slu.edu
+    affiliation: SLU
+    footnote: Corresponding Author
+address:
+  - code: SLU
+    address: Saint Louis University, Saint Louis, MO, 63108
+  - code: JHU
+    address: Johns Hopkins University, Baltimore, MD, 21218
+  - code: AU
+    address: Auburn University, Auburn, AL, 36849
+  - code: MU
+    address: Miami University, Oxford, OH, 45056
+header-includes:
+  - \usepackage{soulutf8}
+  - \usepackage{color}
+  - \usepackage{setspace}\doublespacing
+  - \usepackage{svg}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+journal: "Journal of Quality Technology"
+date: "`r Sys.Date()`"
+bibliography: P2VISref.bib
+output:
+  bookdown::pdf_book:
+    base_format: rticles::elsevier_article
+link-citations: true
+linkcolor: blue
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+fig_caption: yes
+indent: true
+abstract: |
+  \singlespacing This is the abstract.
+  
+  It consists of two paragraphs.
+---
+
+\linenumbers
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.pos = '!hb', out.width = '.8\\linewidth', fig.align = 'center')
+```
+
+
+Introduction
+============
+
+## Background
+Traffic safety is a pressing public health issue that involves huge lives losses and financial burden across the world and in the United States. As reported by the World Health Organization [@who2018], road injury was the eighth cause of death globally in 2016, killing approximately 1.4 million people, which consisted of about 2.5% of all deaths in the world. If no sustained action is taken, road injuries were predicted to be the seventh leading cause of death across the world by 2030 [@who2018b]. In the United States, transportation contributed to the highest number of fatal occupational injuries, leading to 2,077 deaths and accounting for over 40% of all fatal occupational injuries in 2017 [@bols]. Traffic safety could also influence the economic growth of a country. Developing countries such as China and India could have suffered from 7-22% loss of per capita Gross Domestic Product over a 24-year period [@fumagalli2017high].
+
+Among all vehicles, large trucks are the primary concern of traffic safety since they are associated with more catastrophic accidents. In 2016, the Federal Motor Carrier Safety Administration (FMCSA) reported that 27% fatal crashes in work zones involved large trucks [@fmcsareport2016]. Among all 4,079 crashes involving large trucks or buses in 2016, 4,564 lives (1.12 lives per crash) were claimed in the accidents [@fmcsafacts2016]. The economic losses associated with large truck crashes are also higher than those with passenger vehicles, with an estimated average cost of 91,000 US dollars per crash [@zaloshnja2008unit]. The high risk of large trucks is attributed to two aspects of reasons [@huang2013development]. First, large truck drivers generally need to drive alone for long routes, under on-time demands, challenging weather and traffic conditions. On the other hand, trucks are huge weighted and potentially carrying hazardous cargoes.
+
+To reduce the lives and economic losses associated with trucks, numerous studies attempted to screen the risk factors for truck-related traffic crashes or predict the crashes. The most common study design is a case-control study, matching a crash with one to up to ten non-crashes, and use statistical models such as logistic regressions to explain the causes or predict the crashes [@braver1997tractor; @chen2014modeling; @meuleners2015obstructive; @nee2019road]. This widespread case-control design is due to the fact that large truck crashes are very rare compared to the amount of time on road. However, a case-control study is limited in estimating the incidence data and may be contentious in selecting the control groups [@grimes2005compared; @sedgwick2014case]. 
+
+Past truck safety literature almost exclusively focused on crashes, while ignoring the precursors to crashes. A precursor, or critical event, is a pattern or signature associated with an increasing chance of truck crash [@saleh2013accident; @janakiraman2016discovery]. Truck critical events deserve more attention since they occur more frequently than crashes, suggest fatigue and a lapse in performance, and they can lead to giant crashes [@dingus2006development]. Although critcal events do not always result in an accident, they could be used as an early warning system to mitigate or prevent truck crashes [@kusano2012safety]. \hl{describing the value of using real-time truck data and linking this background to quality since we are trying to submit to JQT.}
+
+[comment]: <> (Technology as an early warning system and link to quality character)
+
+
+## Data Description and the Business Problem
+
+### Data source
+The J.B. Hunt Transport Services, a trucking and transportation company in the United States, provided real-time ping data on 498 truck drivers who conducted regional work (REG, JBI00) from April 1st, 2015 to March 29th, 2016. A small device was installed in each truck in the company, which will ping irregularly (typically every 5-30 minutes). As Table \@ref(tab:pingdata) shows, each ping will collect data on the vehicle number, date and time, latitude, longitude, driver identity number, and speed at that second. In total, 13,187,289 pings were provided to the research team. Besides, the company also regularly collected real-time GPS location and time-stamped critical events data for all their trucks. There were 12,458 critical events occurred to these 498 truck drivers during the study period. Four types of critical events were recorded in this critical events data.
+
+- Headway
+- Hard brake
+- Collision mitigation
+- Rolling stability
+
+\hl{We need a detailed description on how the JB Hunt define these critical events.}
+
+```{r pingdata}
+pacman::p_load(tidyverse, data.table, kableExtra)
+sampleping = fread('data/Sample Ping.csv') %>% 
+  select(
+    TruckID = VEHICLE_NUMBER, Driver1 = LOGINDRIVER1, 
+    Driver2 = LOGINDRIVER2, `Date time` = DATIME, 
+    Speed = SPEED, Latitude = LATITUDE, Longitude = LONGITUDE) %>% 
+  filter(Driver1 == 'morc13') %>% 
+  slice(1:5) %>% 
+  mutate(TruckID = 1, Driver1 = 'd1', Driver2 = 'd2')
+
+knitr::kable(sampleping, "latex", booktabs = T, align = 'c',
+             caption = 'A sample of ping data') %>% 
+  kable_styling(latex_options = c("hold_position")) %>% 
+  add_footnote("The truck ID, driver1, driver2 have been anonymized to ensure privacy.",
+               notation = "symbol")
+```
+
+
+
+Apart from driver's characteristics and driving condition, weather also poses a threat on truck crashes and injuries [@zhu2011comprehensive; @naik2016weather; @uddin2017truck]. We obtained historic weather data from the DarkSky Application Programming Interface (API), which allows us to query real-time and hour-by-hour nationwide historic weather conditions according to latitude, longitude, date, and time [@darksky]. The variables included visibility, precipitation probability^[Ideally, the historic precipitation at a specific location and time should be yes or not. However, since the weather stations are distributed not densely enough to record the exact weather conditions in every latitude and longitude in the US, the DarkSky API uses some algorithms to infer the probability of precipitation in each location.] and intensity, temperature, wind and others.
+
+## Research questions
+
+We use exploratory data analysis, primarily data visualization, to address the following questions:
+
+1. How are different measures of fatigue (cumulative driving time, rest time before a trip, rest time before a shift) associated with critical events?
+2. Will time of driving influence the chances of critical events?
+3. Are driver's characteristics (years of experience and age) associated with the chances of critical events
+4. What is the relationship between weather conditions and critical events?
+
+## Innovation
+
+- Assessing the precursors instead of crashes
+- Real-time ping data
+- Looking at all 498 drivers in a business section in a company instead of a road segment 
+
+
+
+
+Modeling Framework
+==================
+
+## Data preparation
+- ping data
+- critical events data
+- driver's data
+- weather data
+
+To shrink the large size of over 10 million ping data, we rounded the GPS coordinates to the second decimal places, which are worth up to 1.1 kilometers, and we also round the time to the nearest hour. We then queried weather variables from the DarkSky API using the approximated latitudes, longitudes, date and hour. The weather variables used in this study include precipitation probability, precipitation intensity, and visibility.
+
+For each of the truck drivers, if the ping data showed that the truck was not moving for more than 20 minutes, the ping data were separated into two different trips. These ping data were then aggregated into different trips. A **trip** is therefore defined as a continuous period of driving without stop. As Table \@ref(tab:tripsdata) demonstrates, each row is a trip. The average length of a trip in this study is 2.31 hours with the standard deviation of 1.8 hours.
+
+After the ping data were aggregated into trips, these trips data were then further divded into different shifts according to an eight-hour rest time for each driver. A **shift** is defined as a long period of driving with potentially less than 8 hours' stops. The Shift_ID column in Table \@ref(tab:tripsdata) shows different shifts, separated by an eight-hour threshold. The average length of a shift in this study is 8.42 hours with the standard deviation of 2.45 hours.
+
+```{r tripsdata}
+sampletrip = fread('data/Sample Trip.csv') %>% 
+  mutate(DriverID = as.integer(as.factor(DriverID)), 
+         TripID = as.integer(as.factor(TripID)), 
+         Shift_ID = as.integer(as.factor(Shift_ID)))
+
+knitr::kable(sampletrip, "latex", booktabs = T, align = 'c',
+             caption = 'A sample of trips data') %>% 
+  kable_styling(latex_options = c("hold_position")) %>% 
+  add_footnote(c("CE denotes critical events.",
+                 "The truck ID, driver1, driver2 have been anonymized to ensure privacy."),
+               notation = "symbol") %>%
+  landscape()
+```
+
+
+## Exploratory data analysis
+
+All the data analyses and visualization were conducted in statistical computing environment `R` [@Rcitation]. Specifically, data importing, cleaning and exporting were performed using the `data.table` and `dplyr` packages [@Rdatatable;@Rdplyr], the date and time objects were handled using the `lubridate` package [@Rlubridate], and all the visualizations were conducted using the `ggplot2` package [@Rggplot2].
+
+Results
+=======
+
+## Fatigue
+
+Fatigue has been reported to be the most important predictor to truck crashes, considering that truck drivers are exposed to long routes and lone working environment @stern2018data.
+
+Driver's fatigue is difficult to measure in real life. In this study, we attempt to use three proxies to measure the fatigue of the truck drivers: cumulative driving time in a shift, the rest time before a shift, and the rest time before a trip.
+
+### Cumulative driving time in a shift
+
+```{r fig.cap='The number of critical events per 100 hours in each hour of the shift'}
+knitr::include_graphics('figs/CErate.pdf')
+```
+
+
+### Rest time before a shift
+
+```{r fig.cap='The number of critical events per 100 hours in a shift and the rest time before the shift'}
+knitr::include_graphics('figs/RestShift.pdf')
+```
+
+
+### Rest time before a trip
+
+```{r fig.cap='The number of critical events per 100 hours in a trip and the rest time before the trip'}
+knitr::include_graphics('figs/RestTrip.pdf')
+```
+
+
+## The time of driving
+### Day of the week
+
+It was estimated that 84% of fatal crashes and 88% of nonfatal crashes related to large trucks occurred on weekdays [@fmcsareport2016].
+
+### Hour of the day
+
+@fmcsareport2016 reported that 37%, 23% of injury-related crashes, and 20% of property damage only crashes associated with large trucks were from 6 p.m. to 6 a.m., which suggested that day or night may be a risk factor for crashes or critical events.
+
+### Sunrise and sunset times
+
+During sunrise and sunset time, the visibility of the truck drivers are transitioning from clear to dark or the other way.
+
+[comment1]: <> (### Average Speed)
+
+
+
+## Driver characteristics
+
+### Age
+The age of the truck driver could potentially influence their performance. @de2006hypersomnolence reported excessive sleepness among young truck drivers potentially caused by homeostatic pressure, poor sleep habits. @de2011young. @gershon2019distracted reported that manual cellphone use and reaching for objects were associated with crash risk among teenage drivers.
+
+```{r fig.cap='Truck driver\'s age and the rate of critical events'}
+knitr::include_graphics('figs/AGE.pdf')
+```
+
+### Years of experience
+
+```{r fig.cap='Truck driver\'s years of experience and the rate of critical events'}
+knitr::include_graphics('figs/YEARS_OF_EXP.pdf')
+```
+
+
+## Weather
+
+### Precipitation probability
+
+### Precipitation intensity
+
+### Visibility
+
+Conclusion
+==========
+
+## Main contributions
+
+## Relevance to quality
+
+## Limitations
+
+Acknowledgement {-}
+===============
+This work was supported in part by the National Science Foundation (CMMI-1635927 and CMMI-1634992), the Ohio Supercomputer Center (PMIU0138 and PMIU0162), the American Society of Safety Professionals (ASSP) Foundation, the University of Cincinnati Education and Research Center Pilot Research Project Training Program, and the Transportation Informatics Tier I University Transportation Center (TransInfo). We also thank the DarkSky company for providing us five million free calls to their historic weather API.
+
+Appendice {-}
+=========
+
+## Sample data
+
+## R code
+
+## GitHub repository
+
+References {#references .unnumbered}
+==========
