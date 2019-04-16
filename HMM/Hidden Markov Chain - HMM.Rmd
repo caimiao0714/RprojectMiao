@@ -1,0 +1,11 @@
+---
+title: "Hidden Markov Chain - HMM"
+author: "Miao Cai"
+date: "4/16/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

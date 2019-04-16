@@ -1,5 +1,17 @@
 # R projects
 
+install packges in Python console instead of in terminals:
+
+```
+import subprocess
+import sys
+
+def install(package):
+    subprocess.call([sys.executable, "-m", "pip", "install", package])
+
+install('h2o')
+```    
+
 This repository records useful R and other codes.
 
 The OSC code upon startup:
