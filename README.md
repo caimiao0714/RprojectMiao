@@ -62,3 +62,20 @@ x <- 42
 deparse(substitute(x))
 [1] "x"
 ```
+
+
+Add a specific python version to jupyter notebook kernel
+
+```
+conda create -n p36workshop python=3.6 ipykernel jupyter anaconda
+source activate p36workshop
+ipython kernel install --name p36workshop --user
+```
+
+Be sure to `conda activate p36workshop` before you use `conda install` or `pip install`
+
+source from [https://sites.northwestern.edu/summerworkshops/resources/software-installation/adding-python-3-to-jupyter-notebooks/](https://sites.northwestern.edu/summerworkshops/resources/software-installation/adding-python-3-to-jupyter-notebooks/)
+
+- `conda env list`: a list of environments
+- `conda list`: a list of all packages installed in the current environment
+- `conda list 'tensorflow|pytorch'`: a list of all different versions of packges
