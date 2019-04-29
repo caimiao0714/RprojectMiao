@@ -62,7 +62,12 @@ x <- 42
 deparse(substitute(x))
 [1] "x"
 ```
-
+```
+devtools::install_github('pzhaonet/pinyin')
+require('pinyin')
+mypy = pydic(method = 'toneless', dic = 'pinyin2')
+> py(c("我", "一定", "是个", "天才"),  dic = mypy, sep = '')
+```
 
 Add a specific python version to jupyter notebook kernel
 
