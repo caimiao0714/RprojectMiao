@@ -1,0 +1,288 @@
+---
+title: "Examine the Association between Temperature Variation and Cardiovascular Disease Hospitalization"
+subtitle: "A Case Study in Shanxi, China"
+author: Miao Cai
+institute: |
+  | Department of Epidemiology & Biostatistics, 
+  | Saint Louis University
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation:
+    theme: "boxes"
+    colortheme: "whale"
+    fonttheme: "structurebold"
+    toc: false
+    slide_level: 2
+csl: numbered.csl
+bibliography: refs/ref.bib
+header-includes:
+  - \usepackage{soulutf8}
+  - \usepackage{color}
+  - \usepackage{float}
+  - \usepackage{booktabs}
+  - \usepackage{lscape}
+  - \usepackage{setspace}
+  - \usepackage{dcolumn}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Introduction
+============
+Theoretical background
+----------------------
+### Global climate change
+
+- Frequent heat shocks and cold spells [@ryti2015global; @huber2017global]
+- 12.6 M deaths are attributable to climate change [@watts2017lancet]
+
+### CVD
+
+- Cardiovascular disease (CVD) is the leading cause of death worldwide and in China 
+- 15.2 M killed by CVD, which accoutns for 26.7% of all deaths [@who2018]
+
+
+Research Question
+-----------------
+
+Is **\textcolor{red}{temperature variation}** associated with **\textcolor{red}{CVD hospitalizations}**?
+
+- biological association
+
+- research gap: no epidemiological evidence
+
+Data source
+===========
+Shanxi Province, China
+----------------------
+
+```{r fig.cap="The location of Shanxi Province in China"}
+knitr::include_graphics("figs/shanxi.pdf")
+```
+
+Shanxi inpatient database
+-------------------------
+::: columns
+:::: column
+
+### CVD inpatients
+  + 175 hospitals
+  + 95% of administrative districts (ADs)
+  + ~ 1.2 million CVD patients
+  + 2015 - 2017
+::::
+
+:::: column
+```{r fig.cap="Geographic distribution of 175 hospitals in Shanxi, China"}
+knitr::include_graphics("figs/hospitals.pdf")
+```
+::::
+:::
+
+The number of CVD patients by month
+-----------------------------------
+
+```{r fig.cap="The number of CVD patients by year and month"}
+knitr::include_graphics("figs/Npat_by_month.pdf")
+```
+
+
+
+
+## Temperature variation definition
+
+- Vertical variation: $V_v = T_{max} - T_{min}$
+- Horizontal variation: $V_h = \sum_{i = \text{d} - 7}^{\text{d}} \Big|T_i - T_{i - 1}\Big|$
+
+```{r fig.cap="Maximum and minimum temperature in 118 ADs in Shanxi, 2015 - 2017"}
+knitr::include_graphics("figs/temperature_in_groups.pdf")
+```
+
+## Temperature variation trend
+
+```{r fig.cap="Temperature variation trend in 118 ADs in Shanxi, 2015 - 2017", fig.width=5}
+knitr::include_graphics("figs/two_tem_variation.pdf")
+```
+
+Shanxi Statistical Yearbook
+---------------------------
+
+::: columns
+:::: column
+### County/city level
+  + 118 ADs
+  
+### Variables available
+  + Population
+  + Gender
+  + Rural
+  + GDP
+  + Others
+::::
+
+:::: column
+```{r fig.cap="Choropleth map patient distribution in each county and city in Shanxi, China"}
+knitr::include_graphics("figs/choropleth_patients.pdf")
+```
+::::
+:::
+
+## Final sample
+
+- 109 ADs
+- 12 months in 3 years
+- $109*12*3 = 3,924$ rows
+
+Data cleaning, visualization, statistical models, and reporting are conducted in \textcolor{blue}{\texttt{R 3.6.0}}.
+
+# Statistical models
+## Model selection
+
+The outcome is the count of CVD patients: 
+
+- Must be \textcolor{red}{non-negative}, 
+- \textcolor{red}{integers}, 
+- \textcolor{red}{highly righ-skewed}.
+
+OLS assumpts are **\textcolor{red}{not met}**!
+
+\textcolor{blue}{Poisson regression} is a natural model for count data. We consider:
+
+1. non-spatial Poisson regression
+2. random effects Poisson regression
+3. spatial Poisson regressions
+
+
+## Non-spatial Poisson model
+
+$$
+\begin{aligned}
+Y_i & \sim \text{Poisson}(\text{Pop}_i*\lambda_i)\\
+\log(\lambda_i) & = \beta_0 + \sum_{k}\mathbf{\beta X}
+\end{aligned}
+$$
+
+- \textcolor{blue}{$Y_i$}: The number of CVD inpatients
+- \textcolor{blue}{Pop$_i$}: The total population as an \textcolor{red}{offset}
+- \textcolor{blue}{$\lambda_i$}: The rate parameter of Poisson distribution, both the mean and vaiance
+- Predictor variables: \textcolor{blue}{temperature variation (horizontal and vertical), average temperature, log of GDP per capita, the percent of female, and the percent of rural population}
+
+## Non-spatial Hierarchical Poisson model
+
+Assuming that each ADs have its own characteristics, and observations are **\textcolor{blue}{conditionally independent}**.
+
+$$
+\begin{aligned}
+Y_{ij} & \sim \text{Poisson}(\text{Pop}_{ij}*\lambda_{ij})\\
+\log(\lambda_{ij}) & = \beta_{0j} + \beta_{1j}HV_{ij} + \beta_{2j}VV_{ij} + \sum_{k-2}\mathbf{\beta X} + u_{0j}\\
+\beta_{0j} & \sim N(\mu_0, \sigma_0^2)\\
+\beta_{01} & \sim N(\mu_1, \sigma_1^2)\\
+\beta_{02} & \sim N(\mu_2, \sigma_2^2)\\
+\end{aligned}
+$$
+
+- \textcolor{blue}{Random intercepts}: $\beta_{0j}$ for each AD $j$
+
+- \textcolor{blue}{Random slopes}: $\beta_{1j}$ and $\beta_{2j}$ for each AD $j$
+
+
+## Spatial Poisson models
+
+### Spatial lag Poisson model
+
+- An autoregressive parameter $\rho$
+- A weighting matrix $\mathbf{W}$
+
+$$
+\begin{aligned}
+Y_i & \sim \text{Poisson}(\text{Pop}_i*\lambda_i)\\
+\log(\lambda_i) & = \beta_0 + \sum_{k}\mathbf{\beta X} + \rho\mathbf{W}y
+\end{aligned}
+$$
+
+
+### Geographically weighted Poisson model
+
+
+Still at the initial proof of concept stage. It can be conducted in the `R` package `spgwr` by Roger Bivand (2017).
+
+Results
+=========
+
+## Moran's I - CVD patients
+
+\scriptsize
+```{r}
+pacman::p_load(dplyr, spdep)
+load("data/hloca.Rdata")
+names(hloca)[names(hloca) == "longtitude"] = "longitude"
+hloca = hloca[hloca$N > 1000,]
+```
+```{r echo=TRUE}
+coords = hloca %>% 
+  select(longitude, latitude) %>% 
+  as.matrix()
+nb = dnearneigh(coords,d1=0, d2 = 70, longlat = TRUE) 
+moran.test(hloca$N, nb2listw(nb, style="W"))
+```
+
+\normalsize
+
+
+## non-spatial Poisson models
+
+
+```{r results='asis', echo = FALSE}
+pacman::p_load(stargazer)
+
+load("data/fit1.Rdata")
+load("data/fit2.Rdata")
+
+stargazer(fit1, fit2, header = FALSE, font.size='scriptsize', 
+          title = "Parameter estimates of non-spatial Poisson models",  
+          single.row = TRUE, dep.var.labels=c("Number of CVD hospitalizations"),
+          colnames= FALSE,object.names=FALSE,model.numbers = TRUE,
+          covariate.labels=c("Between variance", "Within variance", "Mean temperature", 
+                             "Log GDP", "Rural", "Female", "Constant"),
+          model.names = FALSE,align=TRUE,column.sep.width="-30pt",
+          column.labels=c("Poisson","Mixed-effects Poisson"), 
+          omit.stat = c("n", "bic"),  dep.var.labels.include = FALSE)
+```
+
+## Spatial Poisson models
+
+To be added
+
+- Spatial lag Poisson model
+- Geographically weighted Poisson model
+
+Discussion
+==========
+
+## Limitations
+
+- Assumptions: the patients did not seek care in other ADs
+
+- Omitted variable bias: air pollution, older population
+
+- Different weights for different severity of CVD hospitalization?
+
+
+## Future directions
+
+
+- Add time series analysis in several major cities?
+
+- Different effects in cold and hot days?
+
+- Hierarchical spatial Poisson regression?
+
+## References
+
+
+
+
+
+
