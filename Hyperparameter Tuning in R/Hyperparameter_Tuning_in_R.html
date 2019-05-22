@@ -2800,7 +2800,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
+  window.initializeCodeFolding("show" === "show");
 });
 </script>
 
@@ -3063,6 +3063,188 @@ gbm_model &lt;- train(diagnosis ~ .,
                    verbose = FALSE,
                    tuneGrid = hyperparams)</code></pre>
 </div>
+</div>
+</div>
+<div id="hyperparameter-tuning-in-h2o" class="section level1">
+<h1><span class="header-section-number">2</span> Hyperparameter tuning in <code>h2o</code></h1>
+<p><code>h2o</code> is designed for scalability, which means it is usually very fast</p>
+<pre class="r"><code>pacman::p_load(h2o)
+h2o.init()
+
+# Data as h2o frame
+seeds_data_hf = as.h2o(seeds_data)
+
+# Define features and target variable
+y = &quot;seed_type&quot;
+x = setdiff(colnames(seeds_data_hf), y)
+
+# Training, validation, and test sets
+sframe = h2o.splitFrame(data = seeds_data_hf,
+                        ratios = c(0.7, 0.15),
+                        seed = 42)
+train = sframe[[1]]
+valid = sframe[[2]]
+test = sframe[[3]]
+
+summary(train$seed_type, exact_quantiles = TRUE)
+summary(test$seed_type, exact_quantiles = TRUE)
+summary(valid$seed_type, exact_quantiles = TRUE)</code></pre>
+<p>Model training in <code>h2o</code></p>
+<ul>
+<li>Gradient Boosted models with <code>h2o.gbm()</code> &amp; <code>h2o.xgboost()</code></li>
+<li>Generalized linear models with <code>h2o.glm()</code></li>
+<li>Random Forest models with <code>h2o.randomForest()</code></li>
+<li>Neural Networks with <code>h2o.deeplearning()</code></li>
+</ul>
+<pre class="r"><code># train the model
+gbm_model &lt;- h2o.gbm(x = x, y = y,
+                     training_frame = train, validation_frame = valid)
+
+# Model performance
+perf &lt;- h2o.performance(gbm_model, test)
+
+h2o.confusionMatrix(perf)
+h2o.logloss(perf)</code></pre>
+<div id="grid-and-random-search-in-h2o" class="section level2">
+<h2><span class="header-section-number">2.1</span> Grid and random search in <code>h2o</code></h2>
+<p>Hyperparameters for <strong>Gradient Boosting</strong>:</p>
+<p><code>?h2o.gbm</code></p>
+<ul>
+<li><code>ntrees</code>: Number of trees. Defaults to 50.</li>
+<li><code>max_depth</code>: Maximum tree depth. Default to 5.</li>
+<li><code>min_rows</code>: Fewest allowed (weighted) observations in a leaf. Defaults to 10.</li>
+<li><code>learn_rate</code>: Learning rate (from 0 to 1.0). Defaults to 0.1.</li>
+<li><code>learn_rate_annealing</code>: Scale the learning rate by this factor after each tree. Defaults to 1.</li>
+</ul>
+<pre class="r"><code>gbm_params = list(ntrees = c(100, 150, 200),
+                  max_depth = c(3, 5, 7), 
+                  learn_rate = c(0.001, 0.01, 0.1))
+gbm_grid = h2o.grid(&quot;gbm&quot;,
+                    grid_id = &quot;gbm_grid&quot;,
+                    x = x,
+                    y = y,
+                    training_frame = train,
+                    validation_frame = valid,
+                    seed = 42,
+                    hyper_params = gbm_params)</code></pre>
+<p><strong>Examining a grid object</strong>:</p>
+<ul>
+<li><strong>Examine results</strong> for our model <code>gbm_grid</code> with <code>h2o.getGrid</code> function</li>
+<li><strong>Get the grid results</strong> sorted by validation accuracy</li>
+</ul>
+<pre class="r"><code>gbm_gridperf &lt;- h2o.getGrid(grid_id = &quot;gbm_grid&quot;,
+                            sort_by = &quot;accuracy&quot;,
+                            decreasing = TRUE)</code></pre>
+<ul>
+<li><strong>Top GMB model chosen by validation accuracy</strong> has id position 1</li>
+</ul>
+<pre class="r"><code>best_gbm &lt;- h2o.getModel(gbm_gridperf@model_ids[[1]])</code></pre>
+<ul>
+<li><strong>Hyperparameters</strong> for the best model</li>
+</ul>
+<pre class="r"><code>print(best_gbm@model[[&quot;model_summary&quot;]])</code></pre>
+<ul>
+<li><code>best_gbm</code> is a <strong>regular h2o model</strong> object and can be treated as such.</li>
+</ul>
+<pre class="r"><code>h2o.performance(best_gbm, test)</code></pre>
+<ul>
+<li>In addition to hyperparameter grid, add <strong>search criteria</strong>:</li>
+</ul>
+<pre class="r"><code>search_criteria &lt;- list(strategy = &quot;RandomDiscrete&quot;, 
+                        max_runtime_secs = 60, 
+                        seed = 42)
+gbm_grid &lt;- h2o.grid(&quot;gbm&quot;, 
+                     grid_id = &quot;gbm_grid&quot;,
+                     x = x, 
+                     y = y,
+                     training_frame = train,
+                     validation_frame = valid,
+                     seed = 42,
+                     hyper_params = gbm_params,
+                     search_criteria = search_criteria)</code></pre>
+<ul>
+<li>stopping criteria (based on validation data)</li>
+</ul>
+<pre class="r"><code>search_criteria &lt;- list(strategy = &quot;RandomDiscrete&quot;, 
+                        stopping_metric = &quot;mean_per_class_error&quot;, 
+                        stopping_tolerance = 0.0001, 
+                        stopping_rounds = 6)</code></pre>
+</div>
+<div id="automatic-machine-learning-automl" class="section level2">
+<h2><span class="header-section-number">2.2</span> Automatic machine learning (autoML)</h2>
+<ul>
+<li><strong>Automatic tuning of algorithms</strong>: in addition to hyperparameters.</li>
+<li>AutoML makes model tuning and optimization much faster and easier.</li>
+<li>AutoML only needs a <strong>dataset</strong>, a <strong>target</strong> variable, and a <strong>time</strong> or <strong>model number limit</strong> for training.</li>
+</ul>
+<p>AutoML in <code>h2o</code> compares:</p>
+<ul>
+<li>Generalized Linear Model (GLM)</li>
+<li>(Distributed) Random Forest (DRF)</li>
+<li>Extremely Randomized Trees (XRT)</li>
+<li>Extreme Gradient Boosting (XGBoost)</li>
+<li>Gradient Boosting Machines (GBM)</li>
+<li>Deep Learning (fully-connected multi-layer artificial neural network)</li>
+<li>Stacked Ensembles (of all models &amp; of best of family)</li>
+</ul>
+<p><code>GBM</code> hyperparameters:</p>
+<pre><code>- histogram_type
+- ntrees
+- max_depth
+- min_rows
+- learn_rate
+- sample_rate
+- col_sample_rate
+- col_sample_rate_per_tree
+- min_split_improvement</code></pre>
+<p>Deep learning hyperparameters:</p>
+<pre><code>epochs
+adaptivate_rate
+activation
+rho
+epsilon
+input_dropout_ratio
+hidden
+hidden_dropout_ratios</code></pre>
+<p><code>h2o.automl()</code> in <code>h2o</code>. It will return a <strong>leaderboard</strong> of all models, <strong>ranked</strong> by the chosen metric.</p>
+<pre class="r"><code>automl_model &lt;- h2o.automl(x = x, 
+                           y = y,
+                           training_frame = train,
+                           validation_frame = valid,
+                           max_runtime_secs = 60,
+                           sort_metric = &quot;logloss&quot;,
+                           seed = 42)
+lb = automl_model@leaderoard</code></pre>
+<p>Per default, the leaderboard is calculated on 5-fold cross-validation. Refer to <a href="http://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html"><code>h2o</code> documentation on autoML</a>.</p>
+<pre class="r"><code># List all models by model_id
+model_ids &lt;- as.data.frame(lb)$model_id
+aml_leader &lt;- automl_model@leader # get the best model</code></pre>
+<p><code>aml_leader</code> is again a regular H2O model object and can be treated as such!</p>
+</div>
+</div>
+<div id="wrapup" class="section level1">
+<h1><span class="header-section-number">3</span> Wrapup</h1>
+<div id="terms-you-should-understand-and-apply" class="section level2">
+<h2><span class="header-section-number">3.1</span> Terms you should understand and apply</h2>
+<pre><code>Cartesian Grid Search
+
+Random Search
+
+Adaptive Resampling
+
+Automatic Machine Learning
+
+Evaluating tuning results with performance metrics
+
+Stopping criteria</code></pre>
+</div>
+<div id="application" class="section level2">
+<h2><span class="header-section-number">3.2</span> Application</h2>
+<ul>
+<li><p>Find best hyperparameter set for your models</p></li>
+<li><p>Compare and contrast R packages =&gt; favorite</p></li>
+<li><p>Package manuals &amp; vignettes</p></li>
+</ul>
 </div>
 </div>
 <div class="footnotes">

@@ -9,7 +9,7 @@ output:
     toc_float: true
     number_sections: true
     df_print: paged
-    code_folding: hide
+    code_folding: show
   pdf_document:
     number_sections: yes
 link-citations: yes
@@ -177,3 +177,229 @@ gbm_model <- train(diagnosis ~ .,
                    tuneGrid = hyperparams)
 ```
 
+
+
+
+# Hyperparameter tuning in `h2o`
+
+`h2o` is designed for scalability, which means it is usually very fast
+
+```{r}
+pacman::p_load(h2o)
+h2o.init()
+
+# Data as h2o frame
+seeds_data_hf = as.h2o(seeds_data)
+
+# Define features and target variable
+y = "seed_type"
+x = setdiff(colnames(seeds_data_hf), y)
+
+# Training, validation, and test sets
+sframe = h2o.splitFrame(data = seeds_data_hf,
+                        ratios = c(0.7, 0.15),
+                        seed = 42)
+train = sframe[[1]]
+valid = sframe[[2]]
+test = sframe[[3]]
+
+summary(train$seed_type, exact_quantiles = TRUE)
+summary(test$seed_type, exact_quantiles = TRUE)
+summary(valid$seed_type, exact_quantiles = TRUE)
+```
+
+Model training in `h2o`
+
+- Gradient Boosted models with `h2o.gbm()` & `h2o.xgboost()`
+- Generalized linear models with `h2o.glm()`
+- Random Forest models with `h2o.randomForest()`
+- Neural Networks with `h2o.deeplearning()`
+
+
+
+```{r}
+# train the model
+gbm_model <- h2o.gbm(x = x, y = y,
+                     training_frame = train, validation_frame = valid)
+
+# Model performance
+perf <- h2o.performance(gbm_model, test)
+
+h2o.confusionMatrix(perf)
+h2o.logloss(perf)
+```
+
+## Grid and random search in `h2o`
+
+Hyperparameters for **Gradient Boosting**:
+
+`?h2o.gbm`
+
+- `ntrees`: Number of trees. Defaults to 50.
+- `max_depth`: Maximum tree depth. Default to 5.
+- `min_rows`: Fewest allowed (weighted) observations in a leaf. Defaults to 10.
+- `learn_rate`: Learning rate (from 0 to 1.0). Defaults to 0.1.
+- `learn_rate_annealing`: Scale the learning rate by this factor after each tree. Defaults to 1.
+
+```{r}
+gbm_params = list(ntrees = c(100, 150, 200),
+                  max_depth = c(3, 5, 7), 
+                  learn_rate = c(0.001, 0.01, 0.1))
+gbm_grid = h2o.grid("gbm",
+                    grid_id = "gbm_grid",
+                    x = x,
+                    y = y,
+                    training_frame = train,
+                    validation_frame = valid,
+                    seed = 42,
+                    hyper_params = gbm_params)
+```
+
+**Examining a grid object**:
+
+- **Examine results** for our model `gbm_grid` with `h2o.getGrid` function
+- **Get the grid results** sorted by validation accuracy
+
+```{r}
+gbm_gridperf <- h2o.getGrid(grid_id = "gbm_grid",
+                            sort_by = "accuracy",
+                            decreasing = TRUE)
+```
+
+- **Top GMB model chosen by validation accuracy** has id position 1
+
+```{r}
+best_gbm <- h2o.getModel(gbm_gridperf@model_ids[[1]])
+```
+
+- **Hyperparameters** for the best model
+
+```{r}
+print(best_gbm@model[["model_summary"]])
+```
+
+- `best_gbm` is a **regular h2o model** object and can be treated as such.
+
+```{r}
+h2o.performance(best_gbm, test)
+```
+
+- In addition to hyperparameter grid, add **search criteria**:
+
+```{r}
+search_criteria <- list(strategy = "RandomDiscrete", 
+                        max_runtime_secs = 60, 
+                        seed = 42)
+gbm_grid <- h2o.grid("gbm", 
+                     grid_id = "gbm_grid",
+                     x = x, 
+                     y = y,
+                     training_frame = train,
+                     validation_frame = valid,
+                     seed = 42,
+                     hyper_params = gbm_params,
+                     search_criteria = search_criteria)
+```
+
+
+- stopping criteria (based on validation data)
+
+```{r}
+search_criteria <- list(strategy = "RandomDiscrete", 
+                        stopping_metric = "mean_per_class_error", 
+                        stopping_tolerance = 0.0001, 
+                        stopping_rounds = 6)
+```
+
+## Automatic machine learning (autoML)
+
+- **Automatic tuning of algorithms**: in addition to hyperparameters.
+- AutoML makes model tuning and optimization much faster and easier.
+- AutoML only needs a **dataset**, a **target** variable, and a **time** or **model number limit** for training.
+
+AutoML in `h2o` compares:
+
+- Generalized Linear Model (GLM)
+- (Distributed) Random Forest (DRF)
+- Extremely Randomized Trees (XRT)
+- Extreme Gradient Boosting (XGBoost)
+- Gradient Boosting Machines (GBM)
+- Deep Learning (fully-connected multi-layer artificial neural network)
+- Stacked Ensembles (of all models & of best of family)
+
+`GBM` hyperparameters:
+
+```
+- histogram_type
+- ntrees
+- max_depth
+- min_rows
+- learn_rate
+- sample_rate
+- col_sample_rate
+- col_sample_rate_per_tree
+- min_split_improvement
+```
+
+Deep learning hyperparameters:
+
+```
+epochs
+adaptivate_rate
+activation
+rho
+epsilon
+input_dropout_ratio
+hidden
+hidden_dropout_ratios
+```
+
+`h2o.automl()` in `h2o`. It will return a **leaderboard** of all models, **ranked** by the chosen metric.
+
+```{r}
+automl_model <- h2o.automl(x = x, 
+                           y = y,
+                           training_frame = train,
+                           validation_frame = valid,
+                           max_runtime_secs = 60,
+                           sort_metric = "logloss",
+                           seed = 42)
+lb = automl_model@leaderoard
+```
+
+Per default, the leaderboard is calculated on 5-fold cross-validation. Refer to [`h2o` documentation on autoML](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html).
+
+```{r}
+# List all models by model_id
+model_ids <- as.data.frame(lb)$model_id
+aml_leader <- automl_model@leader # get the best model
+```
+
+`aml_leader` is again a regular H2O model object and can be treated as such!
+
+
+# Wrapup
+
+## Terms you should understand and apply
+
+```
+Cartesian Grid Search
+
+Random Search
+
+Adaptive Resampling
+
+Automatic Machine Learning
+
+Evaluating tuning results with performance metrics
+
+Stopping criteria
+```
+
+## Application
+
+- Find best hyperparameter set for your models
+
+- Compare and contrast R packages => favorite
+
+- Package manuals & vignettes
