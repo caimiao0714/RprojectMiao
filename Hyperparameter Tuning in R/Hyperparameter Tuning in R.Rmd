@@ -9,7 +9,7 @@ output:
     toc_float: true
     number_sections: true
     df_print: paged
-    code_folding: show
+    code_folding: hide
   pdf_document:
     number_sections: yes
 link-citations: yes
@@ -17,17 +17,29 @@ link-color: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
 
-*Splitting* data into training and testing sets.
+
+
+# Introduction to hyperparameters
+
+- **Model parameters**: weights and biases of neural nets that are optimized during training.
+- **Hyperparameters**: Parameters or methods found before training. Options like learning rate, weight decay, and the number of trees in a random forrest that can be tweaked.
+
+## Machine learning with `caret`
+
+- *Splitting* data into training and testing sets.
+- Training set with enough power.
+- Representative test set.
 
 ```{r}
 # Load caret and set seed
 library(caret)
 set.seed(42)
 
+breast_cancer_data = data.table::fread("breast_cancer_data.csv")
 # Create partition index
 index <- createDataPartition(breast_cancer_data$diagnosis, p = .70, 
                              list = FALSE)
@@ -47,7 +59,7 @@ fitControl <- trainControl(method = "repeatedcv",
                            repeats = 5)
 ```
 
-train a random forrest model
+*train a random forrest model*
 
 ```{r}
 tic()
@@ -58,5 +70,110 @@ rf_model <- train(diagnosis ~ .,
                   trControl = fitControl,
                   verbose = FALSE)
 toc()
+```
+
+*XGBoost using caret*
+
+```{r}
+# Create partition index
+index <- createDataPartition(breast_cancer_data$diagnosis, p = 0.7, list = FALSE)
+
+# Subset `breast_cancer_data` with index
+bc_train_data <- breast_cancer_data[index, ]
+bc_test_data  <- breast_cancer_data[-index, ]
+
+# Define 3x5 folds repeated cross-validation
+fitControl <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
+
+# Run the train() function
+gbm_model <- train(diagnosis ~ ., 
+                   data = bc_train_data, 
+                   method = "xgbTree", 
+                   trControl = fitControl,
+                   verbose = FALSE)
+
+# Look at the model
+gbm_model
+```
+
+## Hyperparameter tuning in `caret`
+
+[Available models and hyperparameters in `caret`](https://topepo.github.io/caret/available-models.html)
+
+*svm* in `caret`
+
+```{r}
+library(caret)
+library(tictoc)
+
+fitControl <- trainControl(method = "repeatedcv",
+                           number = 3,
+                           repeats = 5)
+tic()
+set.seed(42)
+svm_model <- train(diagnosis ~ ., 
+                   data = bc_train_data, 
+                   method = "svmPoly", 
+                   trControl = fitControl,
+                   verbose= FALSE)
+toc()
+```
+
+### Automatically tune hyperparameters in `caret`
+
+- **tuneLength**: 
+
+```{r}
+tic()
+set.seed(42)
+svm_model_2 <- train(diagnosis ~ ., 
+                     data = bc_train_data, 
+                     method = "svmPoly", 
+                     trControl = fitControl,
+                     verbose = FALSE,
+                     tuneLength = 5)
+toc()
+```
+
+### Manual hyperparameter tuning in `caret`
+
+- **tuneGrid + expand.grid**
+
+```{r}
+library(caret)
+library(tictoc)
+
+hyperparams <- expand.grid(degree = 4, 
+                           scale = 1, 
+                           C = 1)
+
+tic()
+set.seed(42)
+svm_model_3 <- train(diagnosis ~ ., 
+                     data = bc_train_data, 
+                     method = "svmPoly", 
+                     trControl = fitControl,
+                     tuneGrid = hyperparams,
+                     verbose = FALSE)
+toc()
+```
+
+grid search for gradient boosting machine
+
+```{r}
+# Define hyperparameter grid.
+hyperparams <- expand.grid(n.trees = 200, 
+                           interaction.depth = 1, 
+                           shrinkage = 0.1, 
+                           n.minobsinnode = 10)
+
+# Apply hyperparameter grid to train().
+set.seed(42)
+gbm_model <- train(diagnosis ~ ., 
+                   data = bc_train_data, 
+                   method = "gbm", 
+                   trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
+                   verbose = FALSE,
+                   tuneGrid = hyperparams)
 ```
 
