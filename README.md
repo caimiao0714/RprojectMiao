@@ -12,7 +12,17 @@ def install(package):
 install('h2o')
 ```    
 
-This repository records useful R and other codes.
+```
+library(tidyverse)
+df %>%
+  mutate(b = ifelse(b == 2, 1, b),
+             c = case_when(
+                     c == 0 ~ 3,
+                     c == 1 ~ 5,
+                     TRUE ~ c
+                      )
+               )
+```
 
 The OSC code upon startup:
 
