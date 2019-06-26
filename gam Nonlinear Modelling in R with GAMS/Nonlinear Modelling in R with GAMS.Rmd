@@ -1,0 +1,99 @@
+---
+title: "Nonlinear Modelling in R with GAMS"
+author: "Miao Cai"
+date: "1/9/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+
+# Introduction to Generalized Additive Models
+
+Trade-offs in Model Building
+
+- Linear models
+- GAMs
+- Black-Box ML
+
+```{r gam}
+library(mgcv)
+gamfit = gam(y ~ s(x), data = dat)
+```
+
+The flexible smooths in GAM are constructed of many smaller functions, which are called basis functions. Each smooth is a sum of a number of basis functions and each basis function is multiplied by a coefficient, each of which is a parameter in the model
+
+
+## Basis Functions and Smoothing
+
+The flexibility of GAM makes it easy to overfit the data.
+
+- Close to the data (avoiding under-fitting)
+- Not fitting the noise (avoid overfitting)
+
+### Smoothing parameter
+
+The complexity of likelihood, or how much the curve changes its shape is meausred by **wiggliness**
+
+\[
+\text{Fit} = \text{Likelihood} - \lambda * \text{Wiggliness}
+\]
+
+The key is balance the trade-off between $\text{Likelihood}$ and $\text{Wiggliness}$. The smoothing parameter $\lambda$ is used to control the balance.
+
+Normally we let the package chooses the smoothing parameter.
+
+```{r}
+# Setting a fixed smoothing parameter
+gam(y ~ s(x), data = dat, sp = 0.1)
+gam(y ~ s(x, sp = 0.1), data = dat)
+
+# Smoothing via restricted maximum likelihood
+gam(y ~ s(x), data = dat, method = "REML")
+```
+
+`REML` is recommended as the smoothing algorithm. It is most likely to give stable and reliable results.
+
+### Number of basis functions
+
+Set the number of basis functions
+
+```{r}
+gam(y ~ s(x, k = 3), data = dat, method = "REML")
+gam(y ~ s(x, k = 10), data = dat, method = "REML")
+```
+
+Use the defaults
+
+```{r}
+gam(y ~ s(x), data = dat, method = "REML")
+```
+
+We can test if the number of basis functions is adequate using statistical tests.
+
+
+# Multivariate GAMs
+
+- The `mgcv` package does not use character variables
+- Normally we give splines to continuous variables, while keep categorical variables as they are in GAMs.
+- Set `by` parameter, we can specify different smoothing in different categories.
+
+```{r}
+model4b <- gam(hw.mpg ~ s(weight, by = fuel) + fuel, data = mpg,
+              method = "REML")
+```
+
+## Interpreting GAMs
+
+
