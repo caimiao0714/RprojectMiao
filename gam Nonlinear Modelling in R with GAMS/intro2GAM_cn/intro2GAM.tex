@@ -1,0 +1,150 @@
+\documentclass[]{ctexart}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[left=3cm,right=3cm,top=2cm,bottom=2cm]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\usepackage[usenames,dvipsnames]{color}
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={蔡苗},
+            pdftitle={广义加性模型简介},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+\title{广义加性模型简介}
+\author{蔡苗\footnote{圣路易斯大学公共卫生学院流行病与生物统计系。电子邮件：
+  \url{miao.cai@slu.edu}}}
+\date{2019-07-01}
+\usepackage{setspace}
+
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\begin{document}
+\maketitle
+\begin{abstract}
+广义加性模型是可以假设自变量与因变量或者因变量的函数之间为非线性关系的统计模型。
+\end{abstract}
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\clearpage
+\doublespacing
+
+\hypertarget{section}{%
+\section{引言}\label{section}}
+
+\hypertarget{gam}{%
+\subsection{什么是广义加性模型（GAM）}\label{gam}}
+
+\textbf{广义加性模型}（Generalized additive Model,
+GAM）是一类不假设预测变量和结果变量之间的关系是线性的模型。GAM最开始由
+Hastie and Tibshirani
+(\protect\hyperlink{ref-hastie1986generalized}{1986}){]} 提出。
+
+\hypertarget{gam-1}{%
+\subsection{为什么我们要学会GAM}\label{gam-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  可解读性
+\item
+  灵活性
+\item
+  自动选择参数
+\item
+  正则化
+\end{itemize}
+
+\hypertarget{gam-2}{%
+\subsection{实现GAM的软件和包}\label{gam-2}}
+
+大部分的统计软件均可以实现GAM，如\href{https://www.sas.com/en_us/home.html}{SAS}和\href{https://www.r-project.org/}{R}。在SAS中可以使用\texttt{PROC\ GAM}或者\texttt{PROC\ TPSPLINE}来实现，在R中可以使用
+Wood (\protect\hyperlink{ref-wood2017generalized}{2017})
+开发的\texttt{mgcv}包和由 Hastie (\protect\hyperlink{ref-Rgam}{2018})
+开发的\texttt{gam}来实现。相较于SAS，R的GAM扩展包的功能和灵活性都更强，因此我们比较推荐使用R的\texttt{mgcv}包来实现GAM。
+
+\hypertarget{section-1}{%
+\section{基本概念}\label{section-1}}
+
+\hypertarget{section-2}{%
+\subsection{平滑化}\label{section-2}}
+
+\begin{itemize}
+\tightlist
+\item
+  局部回归(LOESS)
+\item
+  平滑样条(smoothing splines)
+\item
+  回归样条
+\end{itemize}
+
+\hypertarget{gam-3}{%
+\subsection{GAM的估计}\label{gam-3}}
+
+\clearpage
+
+\hypertarget{section-3}{%
+\section*{参考文献}\label{section-3}}
+\addcontentsline{toc}{section}{参考文献}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-Rgam}{}%
+Hastie, Trevor. 2018. \emph{Gam: Generalized Additive Models}.
+\url{https://CRAN.R-project.org/package=gam}.
+
+\leavevmode\hypertarget{ref-hastie1986generalized}{}%
+Hastie, T, and R Tibshirani. 1986. ``Generalized Additive Models
+Statistical Science.''
+
+\leavevmode\hypertarget{ref-wood2017generalized}{}%
+Wood, Simon N. 2017. \emph{Generalized Additive Models: An Introduction
+with R}. Chapman; Hall/CRC.
+
+\end{document}
