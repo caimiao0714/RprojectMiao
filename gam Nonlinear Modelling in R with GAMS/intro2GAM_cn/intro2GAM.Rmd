@@ -32,9 +32,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 什么是广义加性模型（GAM）
 
-**广义加性模型**（Generalized additive Model, GAM）是一类不假设预测变量和结果变量之间的关系是线性的模型。GAM最开始由 @hastie1986generalized] 提出。
+**广义加性模型**（Generalized additive Model, GAM）是一类不假设预测变量和结果变量之间的关系是线性的模型。GAM最开始由 @hastie1986generalized 提出。
 
-
+本稿件主要参考 @larsen2015gam 。
 
 ## 为什么我们要学会GAM
 
@@ -50,6 +50,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 基本概念
 
+## 基底函数
+
+基底函数(basis function)。
+
+## 有效自由度
+
+有效自由度(Effective Degrees of Freedom, **EDF**)。
+
+
+# GAM的统计理论
+
 ## 平滑化
 
 - 局部回归(LOESS)
@@ -58,7 +69,37 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## GAM的估计
 
-- 
+- 局部算分算法
+- 带惩罚项的迭代重新加权最小二乘法(Penalized iterative reweighted least squares, **PIRLS**)
+
+**带惩罚项的似然函数**
+
+$$2\log L(\alpha, s_1(x_1), \cdots, s_k(x_k)) - \sum_{k=1}^K\lambda_kU_k$$
+
+其中$\log L(\alpha, s_1(x_1), \cdots, s_k(x_k))$为对数似然函数，$\sum_{k=1}^K\lambda_kU_k$为惩罚项
+
+
+## 选择平滑参数的方法
+
+- 广义交叉验证(Generalized cross validation criterion, **CGV**)
+- 受限极大似然估计(Restricted Maximum Likelihood, **REML**)
+
+## 变量选择
+
+### 单变量选择
+
+- 信息值(Information value, IV)
+- 证据权重(Weight of evidence, WOE)
+
+### 多变量选择
+
+- 分步选择法（向前和向后法）
+- 收缩估计法(shrinkage)
+
+# 实际例子
+
+
+
 
 
 

@@ -84,7 +84,9 @@
 \textbf{广义加性模型}（Generalized additive Model,
 GAM）是一类不假设预测变量和结果变量之间的关系是线性的模型。GAM最开始由
 Hastie and Tibshirani
-(\protect\hyperlink{ref-hastie1986generalized}{1986}){]} 提出。
+(\protect\hyperlink{ref-hastie1986generalized}{1986}) 提出。
+
+本稿件主要参考 Larsen (\protect\hyperlink{ref-larsen2015gam}{2015}) 。
 
 \hypertarget{gam-1}{%
 \subsection{为什么我们要学会GAM}\label{gam-1}}
@@ -113,7 +115,20 @@ Wood (\protect\hyperlink{ref-wood2017generalized}{2017})
 \section{基本概念}\label{section-1}}
 
 \hypertarget{section-2}{%
-\subsection{平滑化}\label{section-2}}
+\subsection{基底函数}\label{section-2}}
+
+基底函数(basis function)。
+
+\hypertarget{section-3}{%
+\subsection{有效自由度}\label{section-3}}
+
+有效自由度(Effective Degrees of Freedom, \textbf{EDF})。
+
+\hypertarget{gam-3}{%
+\section{GAM的统计理论}\label{gam-3}}
+
+\hypertarget{section-4}{%
+\subsection{平滑化}\label{section-4}}
 
 \begin{itemize}
 \tightlist
@@ -125,13 +140,67 @@ Wood (\protect\hyperlink{ref-wood2017generalized}{2017})
   回归样条
 \end{itemize}
 
-\hypertarget{gam-3}{%
-\subsection{GAM的估计}\label{gam-3}}
+\hypertarget{gam-4}{%
+\subsection{GAM的估计}\label{gam-4}}
+
+\begin{itemize}
+\tightlist
+\item
+  局部算分算法
+\item
+  带惩罚项的迭代重新加权最小二乘法(Penalized iterative reweighted least
+  squares, \textbf{PIRLS})
+\end{itemize}
+
+\textbf{带惩罚项的似然函数}
+
+\[2\log L(\alpha, s_1(x_1), \cdots, s_k(x_k)) - \sum_{k=1}^K\lambda_kU_k\]
+
+其中\(\log L(\alpha, s_1(x_1), \cdots, s_k(x_k))\)为对数似然函数，\(\sum_{k=1}^K\lambda_kU_k\)为惩罚项
+
+\hypertarget{section-5}{%
+\subsection{选择平滑参数的方法}\label{section-5}}
+
+\begin{itemize}
+\tightlist
+\item
+  广义交叉验证(Generalized cross validation criterion, \textbf{CGV})
+\item
+  受限极大似然估计(Restricted Maximum Likelihood, \textbf{REML})
+\end{itemize}
+
+\hypertarget{section-6}{%
+\subsection{变量选择}\label{section-6}}
+
+\hypertarget{section-7}{%
+\subsubsection{单变量选择}\label{section-7}}
+
+\begin{itemize}
+\tightlist
+\item
+  信息值(Information value, IV)
+\item
+  证据权重(Weight of evidence, WOE)
+\end{itemize}
+
+\hypertarget{section-8}{%
+\subsubsection{多变量选择}\label{section-8}}
+
+\begin{itemize}
+\tightlist
+\item
+  分步选择法（向前和向后法）
+\item
+  收缩估计法(shrinkage)
+\end{itemize}
+
+\hypertarget{section-9}{%
+\section{实际例子}\label{section-9}}
 
 \clearpage
 
-\hypertarget{section-3}{%
-\section*{参考文献}\label{section-3}}
+\hypertarget{section-10}{%
+\section*{参考文献}\label{section-10}}
 \addcontentsline{toc}{section}{参考文献}
 
 \hypertarget{refs}{}
@@ -142,6 +211,10 @@ Hastie, Trevor. 2018. \emph{Gam: Generalized Additive Models}.
 \leavevmode\hypertarget{ref-hastie1986generalized}{}%
 Hastie, T, and R Tibshirani. 1986. ``Generalized Additive Models
 Statistical Science.''
+
+\leavevmode\hypertarget{ref-larsen2015gam}{}%
+Larsen, Kim. 2015. ``GAM: The Predictive Modeling Silver Bullet.''
+\emph{Multithreaded. Stitch Fix} 30.
 
 \leavevmode\hypertarget{ref-wood2017generalized}{}%
 Wood, Simon N. 2017. \emph{Generalized Additive Models: An Introduction
