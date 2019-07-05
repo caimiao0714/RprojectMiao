@@ -1,0 +1,40 @@
+---
+title: "repex - separating date time"
+author: "Miao Cai <miao.cai@slu.edu>"
+date: "7/4/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Example data
+
+```{r}
+library(data.table)
+library(lubridate)
+
+# Example data
+driver = rep(c("foo", "bar"), each = 10L)
+dt = ymd_hm(c(
+  "2015-05-27 07:11", "2015-05-27 07:25", "2015-05-27 07:35", "2015-05-27 07:42", "2015-05-27 07:53",
+  "2015-05-27 08:09", "2015-05-27 08:23", "2015-05-27 08:39", "2015-05-27 08:52", "2015-05-27 09:12",
+  "2015-05-27 16:12", "2015-05-27 16:31", "2015-05-27 16:39", "2015-05-27 16:53", "2015-05-27 17:29",
+  "2015-05-27 17:41", "2015-05-27 17:58", "2015-05-27 18:09", "2015-05-27 18:23", "2015-05-27 18:42")
+)
+df = data.table(driver, dt)
+df
+```
+
+Code I've tried to separate the date and time
+```{r}
+df[,diff := as.integer(difftime(dt, shift(dt, 1), units = "mins")),
+   by = driver]
+df[, diff := {diff[1] = 0L; diff}, driver]
+df[,cum_mins := cumsum(diff), driver]
+df[,cum_halfhour := round(cum_mins/30, 3), driver]
+df[,flag := floor(cum_halfhour), driver]
+df
+```
+

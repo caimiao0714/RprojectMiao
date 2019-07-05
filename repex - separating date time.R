@@ -17,9 +17,13 @@ df[,diff := as.integer(difftime(dt, shift(dt, 1), units = "mins")),
 df[, diff := {diff[1] = 0L; diff}, driver]
 df[,cum_mins := cumsum(diff), driver]
 df[,cum_halfhour := round(cum_mins/30, 3), driver]
-df[,flag := floor(cum_halfhour), driver]
-
-
+df[,flag0 := floor(round(cum_mins/30, 3)), driver]
+df[,ind := flag0 - shift(flag0, fill = 0), driver]
+df[, dif := cum_halfhour - floor(cum_halfhour) -
+     (ceiling(shift(cum_halfhour, fill = 0)) - shift(cum_halfhour, fill = 0)), driver]
+df[ind == 0, dif := NA]
+df[dif < 0, flag0 := flag0 - 1]
+df
 
 ## 1st answer
 library(data.table)
