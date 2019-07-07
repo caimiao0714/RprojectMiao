@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.10.17)  7 JUL 2019 02:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.10.17)  7 JUL 2019 03:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -669,20 +669,23 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 90.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (c:/texlive/2018/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 98.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 98.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 98.
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 133.
-
+) (./repex_-_separating_date_time.toc
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 3.
 (c:/texlive/2018/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 3.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 3.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 3.
+)
+\tf@toc=\write4
+\openout4 = `repex_-_separating_date_time.toc'.
+
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 133.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 138.
 [1
 
 {c:/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}pdfTeX warning (e
@@ -691,95 +694,110 @@ d, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.166 
-      ] [2pdfTeX warning (ext4): destination with the same identifier (name{tab
-le.2}) has been already used, duplicate ignored
+l.171 
+      ]
+Overfull \hbox (57.30014pt too wide) in paragraph at lines 205--241
+ [][] 
+ []
+
+[2pdfTeX warning (ext4): destination with the same identifier (name{table.2}) h
+as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.237 
+l.242 
       pdfTeX warning (ext4): destination with the same identifier (name{table.3
 }) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.237 
+l.242 
       ] [3pdfTeX warning (ext4): destination with the same identifier (name{tab
 le.4}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.277 
-      ] [4pdfTeX warning (ext4): destination with the same identifier (name{tab
-le.5}) has been already used, duplicate ignored
+l.282 
+      ]
+Overfull \hbox (57.30014pt too wide) in paragraph at lines 314--348
+ [][] 
+ []
+
+[4pdfTeX warning (ext4): destination with the same identifier (name{table.5}) h
+as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.344 
+l.349 
       pdfTeX warning (ext4): destination with the same identifier (name{table.6
 }) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.344 
+l.349 
       ] [5pdfTeX warning (ext4): destination with the same identifier (name{tab
 le.7}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.384 
-      ] [6pdfTeX warning (ext4): destination with the same identifier (name{tab
-le.8}) has been already used, duplicate ignored
+l.389 
+      ]
+Overfull \hbox (57.30014pt too wide) in paragraph at lines 423--450
+ [][] 
+ []
+
+[6pdfTeX warning (ext4): destination with the same identifier (name{table.8}) h
+as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.446 
+l.451 
       pdfTeX warning (ext4): destination with the same identifier (name{table.9
 }) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.446 
+l.451 
       ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 448.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 453.
 [7pdfTeX warning (ext4): destination with the same identifier (name{table.10}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.448 \end{document}
+l.453 \end{document}
                     ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 448.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 453.
 (./repex_-_separating_date_time.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 448.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 448.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 453.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 453.
 Package rerunfilecheck Info: File `repex_-_separating_date_time.out' has not ch
 anged.
-(rerunfilecheck)             Checksum: 04835F0AEFBDE9C4612A7BB8C5A9A679;2974.
+(rerunfilecheck)             Checksum: D3D6BE9087FEE89328F6135ED2B63F5D;2975.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 448.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 453.
  ) 
 Here is how much of TeX's memory you used:
- 12447 strings out of 492639
- 181118 string characters out of 6133087
- 305658 words of memory out of 5000000
- 16104 multiletter control sequences out of 15000+600000
- 52381 words of font info for 66 fonts, out of 8000000 for 9000
+ 12458 strings out of 492639
+ 181298 string characters out of 6133087
+ 309658 words of memory out of 5000000
+ 16109 multiletter control sequences out of 15000+600000
+ 55695 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  34i,8n,38p,991b,376s stack positions out of 5000i,500n,10000p,200000b,80000s
-{c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/texlive/2018
-/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2018/texmf-dist/fonts/enc/
-dvips/lm/lm-ec.enc}<c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmbx12.pfb
-><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/texlive/2018/
-texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/texlive/2018/texmf-dist/fonts/ty
-pe1/public/lm/lmr17.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmri1
-2.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmtk10.pfb>
-Output written on repex_-_separating_date_time.pdf (7 pages, 130802 bytes).
+{c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2018/tex
+mf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/texlive/2018/texmf-dist/fonts/type1/pu
+blic/lm/lmbx10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmbx12.pfb
+><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/texlive/2018/t
+exmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/texlive/2018/texmf-dist/fonts/typ
+e1/public/lm/lmri12.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmtk1
+0.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
+Output written on repex_-_separating_date_time.pdf (7 pages, 174939 bytes).
 PDF statistics:
- 156 PDF objects out of 1000 (max. 8388607)
- 139 compressed objects within 2 object streams
- 44 named destinations out of 1000 (max. 500000)
+ 173 PDF objects out of 1000 (max. 8388607)
+ 155 compressed objects within 2 object streams
+ 45 named destinations out of 1000 (max. 500000)
  12393 words of extra memory for PDF output out of 14400 (max. 10000000)
 

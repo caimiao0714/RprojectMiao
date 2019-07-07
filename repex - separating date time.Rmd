@@ -5,6 +5,7 @@ date: "7/4/2019"
 output: 
   pdf_document:
     number_sections: true
+    toc: yes
 header-includes:
   - \usepackage{float}
 ---
@@ -13,7 +14,7 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
-# Example data
+# Example data {-}
 
 ```{r}
 pacman::p_load(data.table, lubridate)
@@ -53,7 +54,7 @@ ping_df[,cum_halfhour := round(cum_mins/30, 3), driver]
 ping_df[,flag0 := floor(round(cum_mins/30, 3)), driver]
 setkey(ping_df, driver, ping_time)
 ping_df[,ping_id := .I]
-ping_df = ping_df[,.(ping_id, driver, ping_time, cum_mins, flag0)]
+ping_df = ping_df[,.(ping_id, driver, ping_time, diff, cum_mins, flag0)]
 stargazer::stargazer(ping_df, summary = FALSE, header = FALSE, 
                      title = "Flagged ping data (solution 1)", table.placement = "H")
 ```
@@ -69,7 +70,9 @@ setkey(trip_df, driver, ping_time)
 trip_df[,end_time := shift(ping_time, type = "lead", fill = NA), driver]
 trip_df = trip_df[!is.na(end_time), ]
 trip_df[, trip_id := .I]
-trip_df = trip_df[, .(trip_id, driver, start_time = ping_time, end_time, cum_mins)]
+trip_df[, trip_time := as.integer(difftime(end_time, ping_time, 
+                                          units = "mins"))]
+trip_df = trip_df[, .(trip_id, driver, start_time = ping_time, end_time, trip_time, cum_mins)]
 
 stargazer::stargazer(trip_df, summary = FALSE, header = FALSE, 
                      title = "Constructed trips data (solution 1)", table.placement = "H")
@@ -83,7 +86,7 @@ setkey(trip_df, start_time, end_time)
 ping_df[,dummy := ping_time]
 pitr_df = foverlaps(ping_df, trip_df,
                     by.x = c("ping_time", "dummy"))[, dummy := NULL][
-                      ,.(ping_id, driver, ping_time, trip_id, start_time, end_time)]
+                      ,.(ping_id, driver, ping_time, trip_id, start_time, end_time, trip_time)]
 
 stargazer::stargazer(pitr_df, summary = FALSE, header = FALSE, 
                      title = "Merged ping and trips data (solution 1)", table.placement = "H")
@@ -113,7 +116,7 @@ ping_df[ind == 0, dif := NA]
 ping_df[dif < 0, flag0 := flag0 - 1]
 setkey(ping_df, driver, ping_time)
 ping_df[,ping_id := .I]
-ping_df = ping_df[,.(ping_id, driver, ping_time, cum_mins, flag0)]
+ping_df = ping_df[,.(ping_id, driver, ping_time, diff, cum_mins, flag0)]
 
 stargazer::stargazer(ping_df, summary = FALSE, header = FALSE, 
                      title = "Flagged ping data (solution 2)", table.placement = "H")
@@ -129,7 +132,9 @@ setkey(trip_df, driver, ping_time)
 trip_df[,end_time := shift(ping_time, type = "lead", fill = NA), driver]
 trip_df = trip_df[!is.na(end_time), ]
 trip_df[, trip_id := .I]
-trip_df = trip_df[, .(trip_id, driver, start_time = ping_time, end_time, cum_mins)]
+trip_df[, trip_time := as.integer(difftime(end_time, ping_time, 
+                                          units = "mins"))]
+trip_df = trip_df[, .(trip_id, driver, start_time = ping_time, end_time, trip_time, cum_mins)]
 
 stargazer::stargazer(trip_df, summary = FALSE, header = FALSE, 
                      title = "Constructed trips data (solution 2)", table.placement = "H")
@@ -142,7 +147,7 @@ setkey(trip_df, start_time, end_time)
 ping_df[,dummy := ping_time]
 pitr_df = foverlaps(ping_df, trip_df,
                     by.x = c("ping_time", "dummy"))[, dummy := NULL][
-                      ,.(ping_id, driver, ping_time, trip_id, start_time, end_time)]
+                      ,.(ping_id, driver, ping_time, trip_id, start_time, end_time, trip_time)]
 
 stargazer::stargazer(pitr_df, summary = FALSE, header = FALSE, 
                      title = "Merged ping and trips data (solution 2)", table.placement = "H")
@@ -165,6 +170,7 @@ ping_df[,cum_halfhour := round(cum_mins/30, 3), driver]
 ping_df[,flag0 := floor(round(cum_mins/30, 3)), driver]
 setkey(ping_df, driver, ping_time)
 ping_df[,ping_id := .I]
+ping_df = ping_df[,.(ping_id, driver, ping_time, diff, cum_mins, flag0)]
 
 stargazer::stargazer(ping_df, summary = FALSE, header = FALSE, 
                      title = "Flagged ping data (solution 2)", table.placement = "H")
@@ -184,7 +190,9 @@ trip_df[,end_time := shift(start_time, type = "lead"), by = driver]
 trip_df[,end_time := {end_time[.N - 1] = ping_time[.N]; end_time}, by = driver]
 trip_df = trip_df[!is.na(end_time), ]
 trip_df[, trip_id := .I]
-trip_df = trip_df[, .(trip_id, driver, start_time, end_time, cum_mins)]
+trip_df[, trip_time := as.integer(difftime(end_time, start_time, 
+                                          units = "mins"))]
+trip_df = trip_df[, .(trip_id, driver, start_time, end_time, trip_time, cum_mins)]
 
 stargazer::stargazer(trip_df, summary = FALSE, header = FALSE, 
                      title = "Constructed trips data (solution 3)", table.placement = "H")
@@ -197,7 +205,7 @@ setkey(trip_df, start_time, end_time)
 ping_df[,dummy := ping_time]
 pitr_df = foverlaps(ping_df, trip_df,
                  by.x = c("ping_time", "dummy"))[, dummy := NULL][
-                   ,.(ping_id, driver, ping_time, trip_id, start_time, end_time)]
+                   ,.(ping_id, driver, ping_time, trip_id, start_time, end_time, trip_time)]
 
 stargazer::stargazer(pitr_df, summary = FALSE, header = FALSE, 
                      title = "Merged ping and trips data (solution 3)", table.placement = "H")
