@@ -25,6 +25,31 @@ ping_df[, diff := {diff[1] = 0L; diff}, driver]
 ping_df[,cum_mins := cumsum(diff), driver]
 ping_df[,cum_halfhour := round(cum_mins/30, 3), driver]
 ping_df[,flag0 := floor(round(cum_mins/30, 3)), driver]
+setkey(ping_df, driver, ping_time)
+ping_df[,ping_id := .I]
+ping_df = ping_df[,.(ping_id, driver, ping_time, cum_mins, flag0)]
+
+# construct trip_df
+t1 = ping_df[, .SD[c(1)], by = c("driver")]
+t2 = ping_df[, .SD[c(.N)], by = c("driver", "flag0")]
+trip_df = rbindlist(list(t1, t2), TRUE)
+setkey(trip_df, driver, ping_time)
+trip_df[,end_time := shift(ping_time, type = "lead", fill = NA), driver]
+trip_df = trip_df[!is.na(end_time), ]
+trip_df[, trip_id := .I]
+trip_df = trip_df[, .(trip_id, driver, start_time = ping_time, end_time, cum_mins)]
+trip_df
+
+# merge trip_id back to ping data
+setkey(trip_df, start_time, end_time)
+ping_df[,dummy := ping_time]
+pitr_df = foverlaps(ping_df, trip_df,
+                    by.x = c("ping_time", "dummy"))[, dummy := NULL][
+                      ,.(ping_id, trip_id, driver, start_time, end_time, ping_time)]
+pitr_df
+
+
+
 
 
 # ---------------------------------------------------- #
@@ -45,14 +70,36 @@ ping_df[, dif := cum_halfhour - floor(cum_halfhour) -
           (ceiling(shift(cum_halfhour, fill = 0)) - shift(cum_halfhour, fill = 0)), driver]
 ping_df[ind == 0, dif := NA]
 ping_df[dif < 0, flag0 := flag0 - 1]
-ping_df = ping_df[,.(driver, ping_time, cum_mins, flag0)]
 setkey(ping_df, driver, ping_time)
 ping_df[,ping_id := .I]
-#
+ping_df = ping_df[,.(ping_id, driver, ping_time, cum_mins, flag0)]
+
+# construct trip_df
+t1 = ping_df[, .SD[c(1)], by = c("driver")]
+t2 = ping_df[, .SD[c(.N)], by = c("driver", "flag0")]
+trip_df = rbindlist(list(t1, t2), TRUE)
+setkey(trip_df, driver, ping_time)
+trip_df[,end_time := shift(ping_time, type = "lead", fill = NA), driver]
+trip_df = trip_df[!is.na(end_time), ]
+trip_df[, trip_id := .I]
+trip_df = trip_df[, .(trip_id, driver, start_time = ping_time, end_time, cum_mins)]
+trip_df
+
+# merge trip_id back to ping data
+setkey(trip_df, start_time, end_time)
+ping_df[,dummy := ping_time]
+pitr_df = foverlaps(ping_df, trip_df,
+                    by.x = c("ping_time", "dummy"))[, dummy := NULL][
+                      ,.(ping_id, trip_id, driver, start_time, end_time, ping_time)]
+pitr_df
+
+
 
 
 # ---------------------------------- #
+#                                    #
 # 3. Solution 3: Global half an hour #
+#                                    #
 # ---------------------------------- #
 ping_df = ex()
 ping_df[,diff := as.integer(difftime(ping_time, shift(ping_time, 1),
@@ -69,7 +116,7 @@ ping_df[,ping_id := .I]
 t1 = ping_df[, .SD[c(1)], by = c("driver")]
 t2 = ping_df[, .SD[c(.N)], by = c("driver", "flag0")]
 trip_df = rbindlist(list(t1, t2), TRUE)
-trip_df = trip_df[order(driver, ping_time),]
+setkey(trip_df, driver, ping_time)
 trip_df[,add1 := 0:(.N-1), by = driver]
 trip_df[,start_time := ping_time[1] + add1*30*60, driver]
 trip_df[,end_time := shift(start_time, type = "lead"), by = driver]
