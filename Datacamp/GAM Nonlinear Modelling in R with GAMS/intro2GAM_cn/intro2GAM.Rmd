@@ -1,0 +1,107 @@
+---
+title: "广义加性模型简介"
+author: 
+  - 蔡苗^[圣路易斯大学公共卫生学院流行病与生物统计系。电子邮件： [miao.cai@slu.edu](miao.cai@slu.edu)]
+date: "`r Sys.Date()`"
+documentclass: ctexart
+output:
+  rticles::ctex:
+    toc: true
+    number_sections: true
+    keep_tex: yes
+    latex_engine: xelatex
+header-includes:
+  - \usepackage{setspace}
+colorlinks: yes
+link-citations: yes
+bibliography: ref.bib
+geometry: "left=3cm,right=3cm,top=2cm,bottom=2cm"
+abstract: |
+  | 广义加性模型是可以假设自变量与因变量或者因变量的函数之间为非线性关系的统计模型。
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+\clearpage
+\doublespacing
+
+# 引言
+
+## 什么是广义加性模型（GAM）
+
+**广义加性模型**（Generalized additive Model, GAM）是一类不假设预测变量和结果变量之间的关系是线性的模型。GAM最开始由 @hastie1986generalized 提出。
+
+本稿件主要参考 @larsen2015gam 。
+
+## 为什么我们要学会GAM
+
+- 可解读性
+- 灵活性
+- 自动选择参数
+- 正则化
+
+## 实现GAM的软件和包
+
+大部分的统计软件均可以实现GAM，如[SAS](https://www.sas.com/en_us/home.html)和[R](https://www.r-project.org/)。在SAS中可以使用`PROC GAM`或者`PROC TPSPLINE`来实现，在R中可以使用
+@wood2017generalized 开发的`mgcv`包和由 @Rgam  开发的`gam`来实现。相较于SAS，R的GAM扩展包的功能和灵活性都更强，因此我们比较推荐使用R的`mgcv`包来实现GAM。
+
+# 基本概念
+
+## 基底函数
+
+基底函数(basis function)。
+
+## 有效自由度
+
+有效自由度(Effective Degrees of Freedom, **EDF**)。
+
+
+# GAM的统计理论
+
+## 平滑化
+
+- 局部回归(LOESS)
+- 平滑样条(smoothing splines)
+- 回归样条
+
+## GAM的估计
+
+- 局部算分算法
+- 带惩罚项的迭代重新加权最小二乘法(Penalized iterative reweighted least squares, **PIRLS**)
+
+**带惩罚项的似然函数**
+
+$$2\log L(\alpha, s_1(x_1), \cdots, s_k(x_k)) - \sum_{k=1}^K\lambda_kU_k$$
+
+其中$\log L(\alpha, s_1(x_1), \cdots, s_k(x_k))$为对数似然函数，$\sum_{k=1}^K\lambda_kU_k$为惩罚项
+
+
+## 选择平滑参数的方法
+
+- 广义交叉验证(Generalized cross validation criterion, **CGV**)
+- 受限极大似然估计(Restricted Maximum Likelihood, **REML**)
+
+## 变量选择
+
+### 单变量选择
+
+- 信息值(Information value, IV)
+- 证据权重(Weight of evidence, WOE)
+
+### 多变量选择
+
+- 分步选择法（向前和向后法）
+- 收缩估计法(shrinkage)
+
+# 实际例子
+
+
+
+
+
+
+\clearpage
+# 参考文献

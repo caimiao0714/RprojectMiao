@@ -1,0 +1,423 @@
+---
+title: "Writing Efficient R Code"
+author: "Miao Cai"
+date: "1/9/2019"
+output:
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    code_folding: show
+  pdf_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+# The Art of Benchmarking
+
+```{r RandC, fig.cap="Comparing R and C"}
+knitr::include_graphics("RandC.png")
+```
+
+> Premature optimization is the root of all evil
+> -- by Donald Knuth
+
+You should only optimize your code when necessary. 
+
+## Keep your R version updated.
+
+One of the relatively easy optimizations available is to use an up-to-date version of R. In general, R is very conservative, so upgrading doesn't break existing code. However, a new version will often provide free speed boosts for key functions. The `version` command returns a list that contains (among other things) the major and minor version of R currently being used.
+
+```{r version}
+# Print the R version details using version
+version
+
+# Assign the variable major to the major component
+(major <- version$major)
+
+# Assign the variable minor to the minor component
+(minor <- version$minor)
+```
+
+## Benchmark
+
+Timing with `system.time()`
+
+- **user time**: the CPU time charged for the execution of user instructions
+- **system time**: the CPU time charged for execution by the system on behalf of the calling process.
+- **elapsed time**: approximately the sum of user and system time, which is ususally the time we care about.
+
+```{Benchmark}
+library(microbenchmark)
+set.seed(666)
+n = 1e8
+microbenchmark(
+  colon(n),
+  seq.default(n),
+  seq_by(n)
+)
+```
+
+`readRDS("data.rds)` is almost 10 times faster than `read.csv("data.csv)`
+
+## How good is your machine
+
+```{r eval = FALSE}
+library("benchmarkme")
+res = benchmark_std(runs = 3)
+plot(res)
+upload_results(res)
+```
+
+- SALUS windows computer: You are ranked 79 out of 82 machines.
+- Macbook Pro 2018: You are ranked 63 out of 82 machines
+
+For many problems your time is the expensive part. If having a faster computer makes you more productive, it can be cost effective to buy one. However, before you splash out on new toys for yourself, your boss/partner may want to see some numbers to justify the expense. Measuring the performance of your computer is called benchmarking, and you can do that with the `benchmarkme` package.
+
+```{r}
+(ram <- benchmarkme::get_ram())
+(cpu <- benchmarkme::get_cpu())
+```
+
+The benchmarkme package allows you to run a set of standardized benchmarks and compare your results to other users. One set of benchmarks tests is reading and writing speeds.
+
+The function call
+
+```{r}
+res = benchmarkme::benchmark_io(runs = 1, size = 5)
+```
+
+records the length of time it takes to read and write a 50 MB file.
+
+
+# Fine Tuning: Efficient Base R
+
+## Memory Allocation
+
+In R
+
+- Memory allocation happens automatically
+- R allocate memory in RAM to store variables
+- Minimize variable assignment for speed
+
+## Example
+
+To create a sequence of numbers:
+
+1. Sequecing: the obvious and best way:
+
+```
+x <- 1:n
+```
+
+2. Preallocating: not so bad:
+
+```
+x <- vector("numeric", n)
+for (i in 1:n) {
+  x[i] <- i  
+}
+```
+
+3. Growing: don't ever do this (cardinal sin):
+
+```
+x <- NULL
+for (i in 1:n) {
+  x <- c(x, i) 
+}
+```
+
+> The first rule of R: never, ever grow a vector.
+
+## The importance of vectorizing your code
+
+General rule:
+
+- Calling an R function eventually leads to C or FORTRAN code
+- This code very heavily optimized
+
+Goal:
+
+- Access the underlying C or FORTRAN codes as quickly as possible; the fewer functions call the better.
+
+Vectorized functions
+
+- Many R functions are vectorized
+- single number but return a vector `rnorm(4)`
+- vector as input `mean(c(36, 48))`
+
+
+### Looping and vectorizing
+
+Allocation:
+
+- Loop: One-off cost
+- Vectorized: comparable
+
+Generation:
+
+- Loop: one million calls to `rnorm()`
+- Vectorized: a single call to `rnorm()`
+
+
+Assignment:
+
+- Loop: One million calls to the assignment method
+- Vectorized: a single assignment
+
+
+## Dataframe and Matrices
+
+- Dataframes: tabular structure with rows and columns. Column data should be the same type while the rows can be different types
+- Matrices: a rectangular data structure and you can perform usual subsetting and extracting operations. Every element must be the same data type
+
+> The third rule: Use a matrix whenever appropriate.
+
+Compare selecting columns in a dataframe and matrix
+
+```{r}
+zz = as.matrix(mtcars)
+summary(microbenchmark::microbenchmark(mtcars[, 1], zz[, 1]))
+```
+
+Compare selecting rows in a dataframe and matrix
+
+```{r}
+summary(microbenchmark::microbenchmark(mtcars[1, ], zz[1, ]))
+```
+
+
+# Diagnosing Problems: Code Profiling
+
+**Code profiling**
+
+The general idea is to:
+
+- Run the code
+- Every few milliseconds, record what is being currently executed
+- `Rprof()` comes with R and does exactly this
+  - Tricky to use
+- Use **profvis** package instead.
+
+
+**profvis**
+
+- Rstudio has integrated support for profilingn with profvis
+- Highlight the code you want to profile
+- `Profile -> Profile Selected lines`
+
+Command line
+
+```
+library("profvis")
+
+profvis({
+  #Your functions here
+})
+```
+
+
+The `&` operator will always evaluate both its arguments. That is, if you type `x & y`, R will always try to work out what `x` and `y` are. There are some cases where this is inefficient. For example, if `x` is FALSE, then `x & y` will always be FALSE, regardless of the value of y. Thus, you can save a little processing time by not calculating it. The `&&` operator takes advantage of this trick, and doesn't bother to calculate y if it doesn't make a difference to the overall result.
+
+In this code, if `is_double[1]` is `FALSE` we don't need to evalulate `is_double[2]` or `is_double[3]`, so we can get a speedup by swapping `&` for `&&`.
+
+**One thing to note is that `&&` only works on single logical values**, i.e., logical vectors of length 1 (like you would pass into an if condition), but `&` also works on vectors of length greater than 1.
+
+
+## Recap of the Monopoly game
+
+### Dataframes VS matrices
+
+- Total monopoly simulation time: 2 seconds to 0.5 seconds
+- Creating a dataframe is slower than a matrix
+- In the monopoly simulation, we created 10,000 data frames.
+
+### `apply` VS `rowSums`
+
+```
+total <- apply(df, 1, sum)
+total <- rowSums(df)
+```
+
+- 0.5 seconds to 0.16 seconds -> 3 fold speed up
+
+### & VS &&
+
+```
+is_double[1] & is_double[2] & is_double[3] # original
+is_double[1] && is_double[2] && is_double[3] # updated
+```
+- Limited speed up
+- 0.16 seconds to 0.15 seconds
+
+
+
+
+# Turbo Charged Code: Parallel Programming
+
+**CPU**
+
+- CPU: brains of the computer
+- Speed has slowly stabilized
+  - CPUs were getting too hot
+- Multi-core CPUs
+- But R only uses 1 core
+
+```{r}
+library("parallel")
+detectCores()
+```
+
+Monte-Carlo simulations
+
+- 8 core machine
+- One simulation per core
+- Combine the results at the end
+- Embarassingly parallel
+
+
+But, not everything runs in parallel
+
+**Rule of thumb**
+
+> Can the loop be run forward and backwards?
+
+## The parallel package
+
+- Part of R since 2011 `library("parallel")`
+- Cross platform: Code works under Windows, Linux, Mac
+- Has parallel versions of standard functions
+
+**The `apply()` function**
+
+- `apply()` is similar to a for loop
+  - We apply a function to each row/column of a matrix
+- A 10 column, 10,000 row matrix:
+`m <- matrix(rnorm(100000), ncol = 10)`
+- apply is neater than a for loop
+`res <- apply(m, 1, median)`
+
+
+Converting to parallel
+
+- Load the package `parallel`
+- Specifying the number of cores
+- Create a cluster object
+- Swap to `parApply()`
+- Stop!
+
+```{r}
+library("parallel")
+copiesCore = 4
+cl = makeCluster(copiesCore)
+parApply(cl, mtcars[,1:5], 2, median)
+stopCluster(cl)
+```
+
+
+The bad news:
+
+As Lewis Caroll said:
+
+> The hurrier I go, the behinder I get.
+
+- Sometimes running in parallel is slower due to **thread communication**
+- Benchmark both solutions
+
+
+
+**The parSapply function in the parallel package**
+
+There are parallel versions of 
+
+- `apply() - parApply()`
+- `sapply() - parSapply()`
+  - applying a function to a vector
+- `lapply() - parLapply()`
+  - applying a function to a list
+  
+`sapply()` is just another way of writing a loop.
+
+```
+for (i in 1:10) {
+  x[i] <- simulate(i)
+}
+
+sapply(1:10, simulate)
+```
+
+It is the same recipe:
+
+1. Load the package `parallel`
+2. Make a cluster
+3. Switch to `parSapply()`
+4. Stop!
+
+## Bootstrapping
+
+In a perfect world, we would resample from the population; but we can't
+
+Instead, we assume the original sample is representative of the population
+
+1. Sample with replacement from your data
+  - The same point could appear multiple times
+2. Calculate the correlation statistics from your new sample
+3. Repeat
+
+Converting to parallel
+
+- Load the package
+- Specify the number of cores
+- Create a cluster object
+- Export functions/data
+
+
+When the number of bootstraps is less than 100, it is quicker to run with just one core.
+
+
+```{r eval=FALSE}
+play <- function() {
+  total <- no_of_rolls <- 0
+  while(total < 10) {
+    total <- total + sample(1:6, 1)
+
+    # If even. Reset to 0
+    if(total %% 2 == 0) total <- 0 
+    no_of_rolls <- no_of_rolls + 1
+  }
+  no_of_rolls
+}
+
+library(parallel)
+
+# Create a cluster via makeCluster (2 cores)
+cl <- makeCluster(2)
+
+# Export the play() function to the cluster
+clusterExport(cl, "play")
+
+# Parallelize this code
+res <- parSapply(cl, 1:100, function(i) play())
+
+# Stop the cluster
+stopCluster(cl)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
