@@ -12,6 +12,21 @@ def install(package):
 install('h2o')
 ```    
 
+keep the first observation in each group in `data.table`:
+
+```
+head = largeDT[, head(.SD, 3), cyl]
+SD   = largeDT[, .SD[1:3], cyl]
+I    = largeDT[largeDT[, .I[1:3], cyl]$V1]
+
+Unit: relative
+ expr      min       lq     mean   median       uq      max neval cld
+ head 1.808732 1.917790 2.087754 1.902117 2.340030 2.441812    10   b
+   SD 1.923151 1.937828 2.150168 2.040428 2.413649 2.436297    10   b
+    I 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000    10  a
+```
+
+
 ```
 library(tidyverse)
 df %>%
