@@ -1,36 +1,61 @@
 ---
-title: "Calculate geographical distance -repex"
+title: "Calculate geographical distance - repex"
 author: "Miao Cai <miao.cai@slu.edu>"
 date: "`r Sys.Date()`"
 output: 
   pdf_document:
     number_sections: true
     toc: yes
+    keep_tex: true
 header-includes:
   - \usepackage{float}
 geometry: "left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
-## R Markdown
+# Example data {-}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+pacman::p_load(data.table, lubridate, kableExtra, magrittr)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+ex = function(){
+  df = structure(list(driver = c("acot", "acot", "acot", "acot", "acot", 
+"acot", "acot", "acot", "acot", "acot", "zima4", "zima4", "zima4", 
+"zima4", "zima4", "zima4", "zima4", "zima4", "zima4", "zima4"
+), ping_id = c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 6766359L, 
+6766360L, 6766361L, 6766362L, 6766363L, 6766364L, 6766365L, 6766366L, 
+6766367L, 6766368L), trip_id = c(100270801L, 100270801L, 100270802L, 
+100270802L, 100270802L, 100270802L, 100270803L, 100270803L, 100270803L, 
+100270803L, 100171344L, 100171344L, 100171344L, 100171344L, 100171344L, 
+100171344L, 100171344L, 100171344L, 100171344L, 100171344L), 
+    ping_time = structure(c(1428559630, 1428560518, 1428564130, 
+    1428565020, 1428565030, 1428565496, 1428588948, 1428589292, 
+    1428589298, 1428589330, 1427864710, 1427865600, 1427865610, 
+    1427866500, 1427866512, 1427867400, 1427867412, 1427868300, 
+    1427868312, 1427869200), class = c("POSIXct", "POSIXt"), tzone = "UTC"), 
+    lon = c(-76.8371288, -76.8872324, -76.8919562, -76.7774871, 
+    -76.7758961, -76.7668669, -76.7668669, -76.9617213, -76.9617994, 
+    -76.9618486, -78.1493029, -78.240918, -78.2373618, -78.0423679, 
+    -78.0393196, -77.875084, -77.8719141, -77.6481797, -77.6465663, 
+    -77.5223926), lat = c(40.2515512, 40.3067711, 40.313665, 
+    40.1008598, 40.0984966, 40.0702363, 40.0702363, 39.8249557, 
+    39.8250498, 39.8250029, 35.577303, 35.4827431, 35.4820191, 
+    35.4158038, 35.4143296, 35.3275635, 35.3263614, 35.261458, 
+    35.2617837, 35.2205192)), row.names = c(NA, -20L), class = c("data.table", 
+"data.frame"))
+  
+  df[,ping_id := .I]
+  return(df)
+}
 
-```{r cars}
-summary(cars)
+df = ex()
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+knitr::kable(df, "latex", booktabs = TRUE, caption = "Example data") %>% 
+  kable_styling(latex_options = "hold_position")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
