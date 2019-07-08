@@ -13,8 +13,9 @@ geometry: "left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+knitr::opts_chunk$set(echo = TRUE, results = 'asis')
 ```
+
 
 # Example data {-}
 
@@ -22,7 +23,7 @@ knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 pacman::p_load(data.table, lubridate, kableExtra, magrittr)
 
 ex = function(){
-  df = structure(list(driver = c("acot", "acot", "acot", "acot", "acot", 
+  df = data.table(driver = c("acot", "acot", "acot", "acot", "acot", 
 "acot", "acot", "acot", "acot", "acot", "zima4", "zima4", "zima4", 
 "zima4", "zima4", "zima4", "zima4", "zima4", "zima4", "zima4"
 ), ping_id = c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 6766359L, 
@@ -44,8 +45,7 @@ ex = function(){
     40.1008598, 40.0984966, 40.0702363, 40.0702363, 39.8249557, 
     39.8250498, 39.8250029, 35.577303, 35.4827431, 35.4820191, 
     35.4158038, 35.4143296, 35.3275635, 35.3263614, 35.261458, 
-    35.2617837, 35.2205192)), row.names = c(NA, -20L), class = c("data.table", 
-"data.frame"))
+    35.2617837, 35.2205192))
   
   df[,ping_id := .I]
   return(df)
@@ -56,6 +56,25 @@ df = ex()
 
 ```{r}
 knitr::kable(df, "latex", booktabs = TRUE, caption = "Example data") %>% 
+  kable_styling(latex_options = "hold_position")
+```
+
+# Calculate distance
+
+```{r}
+df = ex()
+df[,ping_time := NULL]
+df[,`:=`(lon1 = shift(lon, type = "lag", fill = NA),
+         lat1 = shift(lat, type = "lag", fill = NA)), 
+   by = driver]
+
+df[,distance := geosphere::distHaversine(cbind(lon, lat), 
+                                         cbind(lon1, lat1))]
+df[,distance := round(distance/1609.344, 3)]
+```
+
+```{r}
+knitr::kable(df, "latex", booktabs = TRUE, caption = "Distance in miles") %>% 
   kable_styling(latex_options = "hold_position")
 ```
 

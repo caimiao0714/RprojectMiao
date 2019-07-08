@@ -29,6 +29,46 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -112,6 +152,50 @@
 \section*{Example data}\label{example-data}}
 \addcontentsline{toc}{section}{Example data}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pacman}\OperatorTok{::}\KeywordTok{p_load}\NormalTok{(data.table, lubridate, kableExtra, magrittr)}
+
+\NormalTok{ex =}\StringTok{ }\ControlFlowTok{function}\NormalTok{()\{}
+\NormalTok{  df =}\StringTok{ }\KeywordTok{data.table}\NormalTok{(}\DataTypeTok{driver =} \KeywordTok{c}\NormalTok{(}\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }
+\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"acot"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }
+\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}\NormalTok{, }\StringTok{"zima4"}
+\NormalTok{), }\DataTypeTok{ping_id =} \KeywordTok{c}\NormalTok{(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 6766359L, }
+\NormalTok{6766360L, 6766361L, 6766362L, 6766363L, 6766364L, 6766365L, 6766366L, }
+\NormalTok{6766367L, 6766368L), }\DataTypeTok{trip_id =} \KeywordTok{c}\NormalTok{(100270801L, 100270801L, 100270802L, }
+\NormalTok{100270802L, 100270802L, 100270802L, 100270803L, 100270803L, 100270803L, }
+\NormalTok{100270803L, 100171344L, 100171344L, 100171344L, 100171344L, 100171344L, }
+\NormalTok{100171344L, 100171344L, 100171344L, 100171344L, 100171344L), }
+    \DataTypeTok{ping_time =} \KeywordTok{structure}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1428559630}\NormalTok{, }\DecValTok{1428560518}\NormalTok{, }\DecValTok{1428564130}\NormalTok{, }
+    \DecValTok{1428565020}\NormalTok{, }\DecValTok{1428565030}\NormalTok{, }\DecValTok{1428565496}\NormalTok{, }\DecValTok{1428588948}\NormalTok{, }\DecValTok{1428589292}\NormalTok{, }
+    \DecValTok{1428589298}\NormalTok{, }\DecValTok{1428589330}\NormalTok{, }\DecValTok{1427864710}\NormalTok{, }\DecValTok{1427865600}\NormalTok{, }\DecValTok{1427865610}\NormalTok{, }
+    \DecValTok{1427866500}\NormalTok{, }\DecValTok{1427866512}\NormalTok{, }\DecValTok{1427867400}\NormalTok{, }\DecValTok{1427867412}\NormalTok{, }\DecValTok{1427868300}\NormalTok{, }
+    \DecValTok{1427868312}\NormalTok{, }\DecValTok{1427869200}\NormalTok{), }\DataTypeTok{class =} \KeywordTok{c}\NormalTok{(}\StringTok{"POSIXct"}\NormalTok{, }\StringTok{"POSIXt"}\NormalTok{), }\DataTypeTok{tzone =} \StringTok{"UTC"}\NormalTok{), }
+    \DataTypeTok{lon =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\FloatTok{76.8371288}\NormalTok{, }\FloatTok{-76.8872324}\NormalTok{, }\FloatTok{-76.8919562}\NormalTok{, }\FloatTok{-76.7774871}\NormalTok{, }
+    \FloatTok{-76.7758961}\NormalTok{, }\FloatTok{-76.7668669}\NormalTok{, }\FloatTok{-76.7668669}\NormalTok{, }\FloatTok{-76.9617213}\NormalTok{, }\FloatTok{-76.9617994}\NormalTok{, }
+    \FloatTok{-76.9618486}\NormalTok{, }\FloatTok{-78.1493029}\NormalTok{, }\FloatTok{-78.240918}\NormalTok{, }\FloatTok{-78.2373618}\NormalTok{, }\FloatTok{-78.0423679}\NormalTok{, }
+    \FloatTok{-78.0393196}\NormalTok{, }\FloatTok{-77.875084}\NormalTok{, }\FloatTok{-77.8719141}\NormalTok{, }\FloatTok{-77.6481797}\NormalTok{, }\FloatTok{-77.6465663}\NormalTok{, }
+    \FloatTok{-77.5223926}\NormalTok{), }\DataTypeTok{lat =} \KeywordTok{c}\NormalTok{(}\FloatTok{40.2515512}\NormalTok{, }\FloatTok{40.3067711}\NormalTok{, }\FloatTok{40.313665}\NormalTok{, }
+    \FloatTok{40.1008598}\NormalTok{, }\FloatTok{40.0984966}\NormalTok{, }\FloatTok{40.0702363}\NormalTok{, }\FloatTok{40.0702363}\NormalTok{, }\FloatTok{39.8249557}\NormalTok{, }
+    \FloatTok{39.8250498}\NormalTok{, }\FloatTok{39.8250029}\NormalTok{, }\FloatTok{35.577303}\NormalTok{, }\FloatTok{35.4827431}\NormalTok{, }\FloatTok{35.4820191}\NormalTok{, }
+    \FloatTok{35.4158038}\NormalTok{, }\FloatTok{35.4143296}\NormalTok{, }\FloatTok{35.3275635}\NormalTok{, }\FloatTok{35.3263614}\NormalTok{, }\FloatTok{35.261458}\NormalTok{, }
+    \FloatTok{35.2617837}\NormalTok{, }\FloatTok{35.2205192}\NormalTok{))}
+  
+\NormalTok{  df[,ping_id }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{.I]}
+  \KeywordTok{return}\NormalTok{(df)}
+\NormalTok{\}}
+
+\NormalTok{df =}\StringTok{ }\KeywordTok{ex}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(df, }\StringTok{"latex"}\NormalTok{, }\DataTypeTok{booktabs =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"Example data"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{latex_options =} \StringTok{"hold_position"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{table}[!h]
 
 \caption{\label{tab:unnamed-chunk-2}Example data}
@@ -143,6 +227,65 @@ zima4 & 17 & 100171344 & 2015-04-01 05:50:12 & -77.87191 & 35.32636\\
 zima4 & 18 & 100171344 & 2015-04-01 06:05:00 & -77.64818 & 35.26146\\
 zima4 & 19 & 100171344 & 2015-04-01 06:05:12 & -77.64657 & 35.26178\\
 zima4 & 20 & 100171344 & 2015-04-01 06:20:00 & -77.52239 & 35.22052\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{calculate-distance}{%
+\section{Calculate distance}\label{calculate-distance}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df =}\StringTok{ }\KeywordTok{ex}\NormalTok{()}
+\NormalTok{df[,ping_time }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\OtherTok{NULL}\NormalTok{]}
+\NormalTok{df[,}\StringTok{`}\DataTypeTok{:=}\StringTok{`}\NormalTok{(}\DataTypeTok{lon1 =} \KeywordTok{shift}\NormalTok{(lon, }\DataTypeTok{type =} \StringTok{"lag"}\NormalTok{, }\DataTypeTok{fill =} \OtherTok{NA}\NormalTok{),}
+         \DataTypeTok{lat1 =} \KeywordTok{shift}\NormalTok{(lat, }\DataTypeTok{type =} \StringTok{"lag"}\NormalTok{, }\DataTypeTok{fill =} \OtherTok{NA}\NormalTok{)), }
+\NormalTok{   by =}\StringTok{ }\NormalTok{driver]}
+
+\NormalTok{df[,distance }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\NormalTok{geosphere}\OperatorTok{::}\KeywordTok{distHaversine}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(lon, lat), }
+                                         \KeywordTok{cbind}\NormalTok{(lon1, lat1))]}
+\NormalTok{df[,distance }\OperatorTok{:}\ErrorTok{=}\StringTok{ }\KeywordTok{round}\NormalTok{(distance}\OperatorTok{/}\FloatTok{1609.344}\NormalTok{, }\DecValTok{3}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(df, }\StringTok{"latex"}\NormalTok{, }\DataTypeTok{booktabs =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"Distance in miles"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{latex_options =} \StringTok{"hold_position"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[!h]
+
+\caption{\label{tab:unnamed-chunk-4}Distance in miles}
+\centering
+\begin{tabular}{lrrrrrrr}
+\toprule
+driver & ping\_id & trip\_id & lon & lat & lon1 & lat1 & distance\\
+\midrule
+acot & 1 & 100270801 & -76.83713 & 40.25155 & NA & NA & NA\\
+acot & 2 & 100270801 & -76.88723 & 40.30677 & -76.83713 & 40.25155 & 4.645\\
+acot & 3 & 100270802 & -76.89196 & 40.31367 & -76.88723 & 40.30677 & 0.538\\
+acot & 4 & 100270802 & -76.77749 & 40.10086 & -76.89196 & 40.31367 & 15.914\\
+acot & 5 & 100270802 & -76.77590 & 40.09850 & -76.77749 & 40.10086 & 0.184\\
+\addlinespace
+acot & 6 & 100270802 & -76.76687 & 40.07024 & -76.77590 & 40.09850 & 2.012\\
+acot & 7 & 100270803 & -76.76687 & 40.07024 & -76.76687 & 40.07024 & 0.000\\
+acot & 8 & 100270803 & -76.96172 & 39.82496 & -76.76687 & 40.07024 & 19.865\\
+acot & 9 & 100270803 & -76.96180 & 39.82505 & -76.96172 & 39.82496 & 0.008\\
+acot & 10 & 100270803 & -76.96185 & 39.82500 & -76.96180 & 39.82505 & 0.004\\
+\addlinespace
+zima4 & 11 & 100171344 & -78.14930 & 35.57730 & NA & NA & NA\\
+zima4 & 12 & 100171344 & -78.24092 & 35.48274 & -78.14930 & 35.57730 & 8.329\\
+zima4 & 13 & 100171344 & -78.23736 & 35.48202 & -78.24092 & 35.48274 & 0.206\\
+zima4 & 14 & 100171344 & -78.04237 & 35.41580 & -78.23736 & 35.48202 & 11.904\\
+zima4 & 15 & 100171344 & -78.03932 & 35.41433 & -78.04237 & 35.41580 & 0.200\\
+\addlinespace
+zima4 & 16 & 100171344 & -77.87508 & 35.32756 & -78.03932 & 35.41433 & 11.038\\
+zima4 & 17 & 100171344 & -77.87191 & 35.32636 & -77.87508 & 35.32756 & 0.197\\
+zima4 & 18 & 100171344 & -77.64818 & 35.26146 & -77.87191 & 35.32636 & 13.405\\
+zima4 & 19 & 100171344 & -77.64657 & 35.26178 & -77.64818 & 35.26146 & 0.094\\
+zima4 & 20 & 100171344 & -77.52239 & 35.22052 & -77.64657 & 35.26178 & 7.574\\
 \bottomrule
 \end{tabular}
 \end{table}
