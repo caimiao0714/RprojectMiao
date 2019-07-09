@@ -1,11 +1,11 @@
 pacman::p_load(data.table, lubridate, geosphere, magrittr)
 setDTthreads(parallel::detectCores())
-d = fread("data/20190626_ping_with_weather.csv")
+df = fread("data/20190626_ping_with_weather.csv")
 
 
-rmk_trip = function(data = d, sep_time = 30, datapath = "data/"){
+rmk_trip = function(data = df, sep_time = 30, datapath = "data/"){
   # 01. clean the original data
-  ping_df = d %>%
+  ping_df = df %>%
     .[,`:=`(driver1 = gsub("\"", "", driver1),
             DATIME  = ymd_hms(DATIME))] %>%
     setkey(driver1, DATIME) %>%
@@ -21,10 +21,10 @@ rmk_trip = function(data = d, sep_time = 30, datapath = "data/"){
     .[,time_type := factor(time_type, levels = c("start_time", "end_time0"))] %>%
     dcast(driver + trip_id ~ time_type, value.var = "ping_time") %>%
     .[,trip_time := as.integer(difftime(end_time0, start_time, units = "mins"))] %>%
-    .[,trip_units := ceiling(trip_time/30)] %>%
+    .[,trip_units := ceiling(trip_time/sep_time)] %>%
     .[rep(seq(.N), trip_units), !c("trip_time", "trip_units")] %>%
     .[,add1 := 0:(.N-1), by = c("driver", "trip_id")] %>%
-    .[,start_time := start_time[1] + add1*30*60, .(driver, trip_id)] %>%
+    .[,start_time := start_time[1] + add1*sep_time*60, .(driver, trip_id)] %>%
     .[,end_time := shift(start_time, type = "lead"), .(driver, trip_id)] %>%
     .[,end_time := {end_time[.N] = end_time0[.N]; end_time}, .(driver, trip_id)] %>%
     .[,c("end_time0", "add1") := NULL] %>%
@@ -137,27 +137,26 @@ rmk_trip = function(data = d, sep_time = 30, datapath = "data/"){
               by.x = c("driver", "start_time", "end_time")) %>%
     .[, dummy := NULL] %>%
     .[!is.na(EVT_TYP),] %>%
-    .[,.(new_trip_id, driver, event_time, EVT_TYP)] %>%
+    .[,.(new_trip_id, driver, event_time, EVT_TYP)]
+
+  newtrip_ce = ce2merge %>%
     .[,.(CE_num = .N,
          CE_time = paste(event_time, collapse = ";"),
          CE_type = paste(EVT_TYP, collapse = ";")),
-      new_trip_id]
-
-  newtrip_ce = ce2merge %>%
+      new_trip_id] %>%
     .[newtrip, on = 'new_trip_id'] %>%
     .[,ave_dist_speed := distance*60/trip_time] %>%
     .[,ave_dist_speed := ifelse(ave_dist_speed >= 80,
                                 ave_ping_speed, ave_dist_speed)] %>%
-    setkey(driver, start_time)
+    setkey(driver, start_time) %>%
+    merge(d2[,.(driver, age)], by = "driver", all.x = TRUE)
 
   return(list(trip_has_CE = newtrip_ce,
-              trip_no_CE  = newtrip,
-              CE_alone    = ce0[,dummy := NULL]))
+              CE_alone    = ce2merge))
 }
 
 
 zz = rmk_trip()
 
 fwrite(zz$CE_alone, paste0("gen_data/", today(), "_nt_CE_alone.csv"))
-fwrite(zz$trip_no_CE, paste0("gen_data/", today(), "_nt_trip_no_CE.csv"))
 fwrite(zz$trip_has_CE, paste0("gen_data/", today(), "_nt_trip_has_CE.csv"))
