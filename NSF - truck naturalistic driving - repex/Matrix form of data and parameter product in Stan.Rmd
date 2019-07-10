@@ -1,5 +1,5 @@
 ---
-title: "Matrix form of data and parameter product in `stan`"
+title: "Simulating multilevel models in the Matrix form in `stan`"
 author: "Miao Cai <miao.cai@slu.edu>"
 date: "`r Sys.Date()`"
 output: 
@@ -10,6 +10,7 @@ header-includes:
   - \usepackage{float}
   - \usepackage{setspace}
 geometry: "left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm"
+linkcolor: blue
 ---
 
 ```{r setup, include=FALSE}

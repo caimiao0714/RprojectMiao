@@ -1,0 +1,62 @@
+---
+title: "Gamma-Poisson distribution"
+author: "Miao Cai <miao.cai@slu.edu>"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    number_sections: true
+    toc: no
+header-includes:
+  - \usepackage{float}
+  - \usepackage{setspace}
+geometry: "left=2cm,right=2cm,top=2.5cm,bottom=2.5cm"
+linkcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Gamma-Poisson distribution introduction
+
+Let us assume that:
+
+$$
+\begin{aligned}
+\lambda & \sim \text{Gamma}(\alpha, \beta)\\
+X|\lambda & \sim \text{Poisson}(\lambda)\\
+\end{aligned}
+$$
+
+Then we have:
+
+$$X \sim \text{Gamma-Poisson}(\alpha, \beta)$$
+
+The Gamma-Poisson distribution is a $\alpha$-parameter distribution, with the probability mass function of:
+
+$$f(x) = \frac{\Gamma(x + \beta)\alpha^x}{\Gamma(\beta)(1 + \alpha)^{\beta + x}x!}, \quad x = 0, 1, 2, \dots$$
+
+The mean and variance are:
+
+$$
+\begin{aligned}
+E(X) & = \alpha\beta \\
+V(X) & = \alpha\beta + \alpha^2\beta\\
+     & = \alpha\beta(1 + \alpha)
+\end{aligned}
+$$
+
+where $\alpha$ measures the overdispersion.
+
+We might assume that:
+$$
+\log\beta = \mathbf{X\gamma}, \; \text{and } \alpha \text{ is fixed}
+$$
+
+and $\alpha$ is a fixed value.
+
+# Simulation
+
+
+# Estimation
+

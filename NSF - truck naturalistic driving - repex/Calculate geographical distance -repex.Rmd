@@ -6,7 +6,7 @@ output:
   pdf_document:
     number_sections: true
     toc: yes
-    keep_tex: true
+    keep_tex: no
 header-includes:
   - \usepackage{float}
 geometry: "left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm"
