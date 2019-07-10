@@ -1,0 +1,176 @@
+---
+title: "Matrix form of data and parameter product in `stan`"
+author: "Miao Cai <miao.cai@slu.edu>"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    number_sections: true
+    toc: yes
+header-includes:
+  - \usepackage{float}
+  - \usepackage{setspace}
+geometry: "left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+
+# Model setting
+
+A simple random intercept model. Let us assume that there are three predictor variables $x_1, x_2, x_3$, and **10 groups** ($d(i) = 1, 2, \cdots, 10$):
+
+$$
+\begin{aligned}
+y_i & = \beta_{0,d(i)} + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon_i\\
+\epsilon_i & \sim N(0, \sigma^2)\\
+\beta_{0,d(i)} & \sim N(\mu_0, \sigma_0^2)
+\end{aligned}
+$$
+
+The goal here is to write this $\beta_1x_1 + \beta_2x_2 + \beta_3x_3$ term in a matrix multiplication form in `Stan`. Here we assume the predictor variables were generated from the following distribution:
+
+$$
+\begin{aligned}
+x_1 & \sim N(3, 10)\\
+x_2 & \sim \text{Gamma}(10, 10)\\
+x_3 & \sim \text{Poisson}(10)
+\end{aligned}
+$$
+
+The parameter settings are:
+
+$$
+\begin{aligned}
+\text{Hyperparameters:} &\quad \mu_0 = 2, \sigma_0 = 5\\
+\text{Fixed parameters:} & \quad \beta_1 = 2.5, \beta_2 = 0.5, \beta_3 = -1.3\\
+\text{Variance parameter:} & \quad \sigma = 2
+\end{aligned}
+$$
+
+\clearpage
+# Data simulation
+```{r}
+set.seed(123)
+# Simulation setting
+d = 10 # total number of groups
+D = rpois(d, 100) # sample size in each group
+n = sum(D) # total sample size
+
+# Hyper-parameters
+mu0 = 2; sigma0 = 5
+
+# Parameters
+B = c(2.5, 0.5, -1.3); sigma = 2
+
+# Random intercepts
+b0 = rnorm(d, mu0, sigma0)
+B0 = rep(b0, D)
+
+# Predictor variables
+id = rep(1:d, D)
+x1 = rnorm(n, 3, 10)
+x2 = rgamma(n, 10, 10)
+x3 = rpois(n, 10)
+epsilon = rnorm(n, 0, sigma)
+X = matrix(c(x1, x2, x3), nrow = n)
+
+Y = B0 + X %*% B + epsilon
+df = data.frame(cbind(id, Y, X))
+names(df) = c("id", "y", paste0("x", 1:3))
+```
+
+The random intercepts are:
+
+```{r}
+df_b0 = data.frame(t(b0))
+names(df_b0) = paste0("b0_", 1:d)
+knitr::kable(df_b0, digits = 3)
+```
+
+\clearpage
+# Estimation with `lme`
+
+```{r}
+pacman::p_load(lme4, rstanarm, brms, rstan, broom)
+
+fit0 <- lme4::lmer(y ~ x1 + x2 + x3 + (1 | id), data = df)
+
+broom::tidy(fit0) %>% 
+  knitr::kable(digits = 3)
+```
+
+\clearpage
+# Esitmation with `rstanarm`
+
+```{r}
+f_rstanarm = stan_lmer(y ~ x1 + x2 + x3 + (1 | id),
+                       data = df, 
+                       chains = 1, iter = 1000, refresh = 0)
+```
+
+## Parameter estimates
+
+```{r}
+broom::tidy(f_rstanarm, parameters = "non-varying") %>% 
+  knitr::kable(digits = 3)
+broom::tidy(f_rstanarm, parameters = "varying") %>% 
+  knitr::kable(digits = 3)
+broom::tidy(f_rstanarm, parameters = "hierarchical") %>% 
+  knitr::kable(digits = 3)
+broom::tidy(f_rstanarm, parameters = "auxiliary") %>% 
+  knitr::kable(digits = 3)
+```
+
+## Default priors
+
+```{r}
+prior_summary(f_rstanarm)
+```
+
+
+\clearpage
+# Esitmation with `brms`
+
+```{r}
+f_brms = brm(y ~ x1 + x2 + x3 + (1 | id), 
+             data = df, family = gaussian(), 
+             chains = 1, iter = 1000, refresh = 0)
+```
+
+## Parameter estimates
+
+```{r}
+broom::tidy(f_brms) %>% 
+  knitr::kable(digits = 3)
+```
+
+## Default priors
+
+```{r}
+prior_summary(f_brms)
+```
+
+\clearpage
+\linespread{0.9}
+## Return `stan` code using `brms::stancode()`
+```{r comment=NA}
+stancode(f_brms)
+```
+
+
+\clearpage
+## Return `stan` code using `brms::make_stancode()`
+```{r comment=NA}
+make_stancode(y ~ x1 + x2 + x3 + (1 | id), data = df, family = gaussian())
+```
+\linespread{1}
+
+\clearpage
+# Self-define R code
+
+```{r}
+
+```
+
