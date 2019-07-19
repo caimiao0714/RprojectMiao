@@ -1,0 +1,6 @@
+
+
+
+# Integrated Laplace Approximation (INLA)
+
+[@Havard2009; @Lindgren2011; @Thiago2013; @Coninck2016; @Rue2017; @Verbosio2017; @Kourounis2018]
