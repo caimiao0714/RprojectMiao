@@ -4,12 +4,13 @@ pacman::p_load(sf, dplyr, tidyr, ggplot2, viridis, cowplot)
 source("functions/theme_map.R")
 
 # 01. Read in and merge data
-s = read_sf("Countries_WGS84/Countries_WGS84.shp") %>% 
+s = read_sf("Countries_WGS84/Shapefile.shp") %>% 
+  select(-sdi) %>% 
   left_join(
-    readxl::read_excel("data/OOE_excel.xlsx"),
-    by = c("CNTRY_NAME" = "country")
+    readxl::read_excel("data/OOE_excel_v2.xlsx"),
+    by = c("NAME" = "country")
   ) %>% 
-  select("CNTRY_NAME", "sdi", "OOE")
+  select("NAME", "sdi", "OOE")
 
 # 02. Default parameters for fonts, background, and family
 default_font_color <- "#4e4d47"
@@ -77,7 +78,7 @@ biv_map_5 = quantile_s %>%
 biv_final_5 = ggdraw() +
   draw_plot(biv_map_5, 0, 0, 1, 1) +
   draw_plot(biv_legend_5, 0.05, 0.2, 0.2, 0.2)
-biv_final_5
+#biv_final_5
 
 # 09. Save the combined plot
 ggsave(plot = biv_final_5, filename = "biv_map_5_top.png", 
