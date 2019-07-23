@@ -79,5 +79,5 @@ update_biv_legend = biv_legend_5 +
                arrow = arrow(length = unit(0.2,"cm"))) + 
   annotate("text", label = "1", x = 0.3, y = 2.5)
 
-ggsave(plot = biv_final_5, filename = "biv_map_5.png", 
+ggsave(plot = update_biv_legend, filename = "update_biv_legend.png", 
        dpi = 300, width = 10, height = 6.18)
