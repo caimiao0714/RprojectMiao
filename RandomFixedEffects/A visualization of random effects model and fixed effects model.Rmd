@@ -1,8 +1,10 @@
 ---
 title: "A visualization of random effects model and fixed effects model"
 author: "Miao Cai"
-date: "October 10, 2018"
-output: pdf_document
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -11,14 +13,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Random intercept model
 
-\begin{align}
-y_{ij} & = \beta_{0j} + \beta_{1}*x + \epsilon\\
-\beta_{0j} & \sim N(\mu, \sigma^2)
-\end{align}
+Statistical model
+---
+In this section, we will set up the statistical model for a random-intercept model:
+$$
+\begin{aligned}
+y_{ij} & = \beta_{0j} + \beta_{1}*x_{1i} +  \beta_{2}*x_{2i} + \beta_{3}*x_{3i} + \epsilon_{i}\\
+\beta_{0j} & \sim N(\mu_0, \sigma_0^2)
+\end{aligned}
+$$
 
-Let's assume $\mu = 1, \sigma = 1$.
+Where $i = 1, 2, \cdots, N$ is the index for individual observations, so the total sample size is $N$ in this case. $j = 1, 2, \cdots, J$ is the index for groups, so there are $J$ groups/clusters in this case. $\beta_{01}, \beta_{02}, \cdots, \beta_{0J}$ are the random intercepts in this model. $\beta_1, \beta_2, \cdots, \beta_K$ are the fixed-effects parameters, and in this case, $K = 3$. The number of predictor variables can vary, and this data generating process can be generalized using a more succinct matrix form style as:
+$$
+\begin{aligned}
+y_{ij} & = \beta_{0j} + \mathbf{X\beta} + \epsilon_{i}\\
+\beta_{0j} & \sim N(\mu_0, \sigma_0^2)
+\end{aligned}
+$$
+where $\mathbf{X}$ is a $N\times K$ data matrix, and $\mathbf{\beta}$ is a $K \times 1$ column vector.
 
-```{r SimulateData}
+We assume that the random intercepts $\beta_{0j}$ has a normal distribution with two hyperparameters: mean $\mu_0$ and standard deviation $\sigma_0$.
+
+Simulation parameters
+---
+
+
+
+```{r SimulateData, eval=FALSE}
 set.seed(666)
 
 Total_obs = 500
@@ -88,4 +109,7 @@ ggplot(data = dat, aes(x = x, y = p, group = driverID)) +
   ggtitle("Random intercept and random slope model of driver fatigue")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
