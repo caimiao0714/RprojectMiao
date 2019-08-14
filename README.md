@@ -109,3 +109,7 @@ source from [https://sites.northwestern.edu/summerworkshops/resources/software-i
 - `conda env list`: a list of environments
 - `conda list`: a list of all packages installed in the current environment
 - `conda list 'tensorflow|pytorch'`: a list of all different versions of packges
+
+```
+conda install --name py36 pytorch
+```

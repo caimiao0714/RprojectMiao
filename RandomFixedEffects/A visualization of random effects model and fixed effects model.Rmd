@@ -37,46 +37,93 @@ We assume that the random intercepts $\beta_{0j}$ has a normal distribution with
 Simulation parameters
 ---
 
+### Observations and groups
+
+- The number of groups/clusters is $J = 10$,
+- The number of observations per group is generated from a homogeneous Poisson process with the mean parameter of $\lambda = 40$.
+
+### Model parameters
+
+- Hyperparameters: $\mu = 1, \sigma = 1$,
+- Number of fixed parameters: $K = 3$,
+- Fixed-effects parameter vector: $\mathbf{\beta} = [1, -1, 0.5]^\prime$
+- Error term: $\epsilon_i \sim \text{Normal}(0, 5)$
+- Data matrix:
+  + $x_1 \sim \text{Normal}(2, 3)$,
+  + $x_2 \sim \text{Poisson}(3)$,
+  + $x_3 \sim \text{Gamma}(5, 5)$
 
 
-```{r SimulateData, eval=FALSE}
+Data simulation
+---
+
+```{r SimulateData, eval=TRUE}
+pacman::p_load(lme4, broom, dplyr)
 set.seed(666)
 
-Total_obs = 500
-group = 10
-Group_Obs = Total_obs/group
+# Obs and groups
+J = 10 # of the groups
+lambda = 40 # mean number of obs per group
+N_j = rpois(J, lambda) # number of obs per group
+N = sum(N_j) # total number of obs
 
-b1 = 1
-mu = 1
-sigma = 1
-epsilon = 2
+# Model parameters
+mu0 = 1; sigma0 = 1 # Hyperparameters
+b0_j = rnorm(J, mu0, sigma0) # Random intercepts for j-th group
+b0_i = rep(b0_j, N_j) # Random intercepts for i-th obs
+
+K = 3
+b_vector = c(1, -1, 0.5)
+epsilon = rnorm(N, 0, 5)
+
+X = as.matrix(data.frame(
+  x1 = rnorm(N, 2, 3),
+  x2 = rpois(N, 3),
+  x3 = rgamma(N, 5, 5)
+))
+id = rep(1:J, N_j)
 
 # y = b0 + b1 + e
-j = rep(1:group, Group_Obs)
-b0 = rnorm(group, 1, 5)
-x = rnorm(Total_obs, 5, 5)
+y = b0_i + X%*%b_vector + epsilon
+dt = data.frame(id = id, y = y, X) # simulated data
 
-y = rep(b0, Group_Obs) + b1*x + rnorm(Total_obs)
-
-dat = data.frame(y, j, x, b0, b1)
-
-plot(x, y)
-for (i in 1:group) {
-  abline(b0[i], b1)
+rfit = function(fit){
+ r = fit %>% 
+  broom::tidy() %>% 
+  mutate_if(is.numeric, round, 3)
+ return(r)
 }
+```
 
-reg1 <- lm(y ~ x,data = dat) 
-abline(reg1, col = "grey", lwd = 3)
+Parameter estimation
+===
 
-reg2 <- lm(y ~ factor(j) + x,data = dat)
-reg2_b0 = reg2$coefficients[labels(reg2$coefficients) == "(Intercept)"]
-reg2_b1 = reg2$coefficients[labels(reg2$coefficients) == "x"]
-abline(reg2_b0, reg2_b1, col = "blue", lwd = 3)
+Linear model
+---
 
+```{r}
+dt %>% 
+  lm(y ~ x1 + x2 + x3, data = .) %>%  
+  rfit() 
+```
 
-require(lme4)
-reg3 <- lmer(y ~ x + (1|j), dat)
-summary(reg3)
+Linear model with group-level fixed effects
+---
+
+```{r}
+dt %>% 
+  lm(y ~ factor(id) + x1 + x2 + x3, data = .) %>% 
+  rfit() %>% 
+  filter(grepl("Intercept|x", term))
+```
+
+Random-effects model
+---
+
+```{r}
+dt %>% 
+  lmer(y ~ x1 + x2 + x3 + (1|id), data = .) %>% 
+  rfit()
 ```
 
 ## Including Plots
