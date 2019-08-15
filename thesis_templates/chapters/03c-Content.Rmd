@@ -1,0 +1,68 @@
+# THE PROBABLE CONTENT
+
+The contents will follow the standard format for a traditional dissertation, as per guidelines set by the College for Public Health and Social Justice and Saint Louis University’s Office of Graduate Education.
+
+Chapter 1: Introduction: The problem
+  
+  1. Transportation safety
+  2. Truck safety
+  3. Modern Truck Safety Studies
+
+Chapter 2: Literature review
+
+  1. Naturalistic driving Study (NDS)
+  2. Safety-critical events (SCEs)
+  3. Crashes and SCEs
+  4. Risk factors for traffic safety
+  5. Predictive models
+    a. Overview
+    b. Bayesian models
+    c. Hierarchical models
+    d. Markov chain Monte Carlo (MCMC)
+  6. Scalable Bayesian models
+    a. Hamiltonian Monte Carlo (HMC)
+    b. Subsampling MCMC
+
+Chapter 3: Aim 1 - truck crashes and critical events
+  
+  1. Introduction
+  2. Data sources
+  3. Methods
+  4. Results
+    a. A simulation study on Gamma-Poisson models
+    b. Real-world application on all SCEs
+    c. Real-world application on different types of SCEs
+  5. Discussion  
+
+Chapter 4: Aim 2 - Bayesian hierarchical models for SCEs
+
+  1. Introduction
+  2. Data sources
+  3. Methods
+    a. Logistic regression
+    b. Poisson regression
+    c. Non-homogeneous Poisson process (NHPP)
+  4. Results
+    a. Logistic regression
+    b. Poisson regression
+    c. NHPP
+      i. A simulation study on NHPP
+      ii. Real-world application on NHPP
+  5. Discussion
+
+Chapter 5: Aim 3 - an innovation on NHPP to account for within shift rest time
+  
+  1. Introduction
+  2. Data sources
+  3. Methods
+  4. Results
+    a. A simulation study on this new method
+    b. Real-world application on this new method
+    c. Real-world application on this new method stratified by SCE types
+  5. Discussion
+
+Chapter 6: Discussion
+
+  1.	Conclusion
+  2.	Strengths and limitation
+  3.	Future research

@@ -1,0 +1,10 @@
+\cleardoublepage
+
+# Bibliography {-}
+
+<div id="refs"></div>
+
+
+# Vita Auctoris {-}
+
+Miao Cai was born and raised in Xinzhou district, Wuhan, Hubei Province, China.

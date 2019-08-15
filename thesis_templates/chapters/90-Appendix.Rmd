@@ -1,0 +1,213 @@
+
+
+
+\singlespacing
+
+APPENDIX {#appendix .unnumbered}
+========
+
+Query weather data {#weatherdat .unnumbered}
+------------------
+
+```{r eval=FALSE}
+gps_sample = 
+  structure(list(
+    from_lat = c(41.3473127, 41.8189037, 32.8258477, 40.6776808, 
+                 40.2366043, 41.3945561, 32.6320605, 40.5413856, 
+                 33.6287422, 40.0692742, 41.347986, 37.7781459, 
+                 43.0843081, 41.48026, 43.495149, 41.5228684, 
+                 41.5763081, 47.6728665, 41.0918361, 41.1537819),
+    from_lon = c(-74.2850908, -73.0835104, -97.0306677, -75.1450753,
+                 -76.9367494, -72.8589916, -96.8538145, -74.8547061, 
+                 -113.7671634, -76.762612, -74.284785, -77.4615586, 
+                 -76.0977384, -73.2107541, -73.7727896, -74.0739204, 
+                 -88.1529175, -117.3224667, -74.1554972, -74.1887031), 
+    beg_time = structure(
+      c(1453101738, 1437508088, 1436195038, 1435243088, 1454270680, 
+        1432210106, 1438937772, 1446486480, 1450191622, 1449848630, 
+        1457597084, 1432870446, 1457968284, 1451298724, 1431503502, 
+        1443416864, 1438306368, 1445540454, 1452619392, 1436091072), 
+      class = c("POSIXct", "POSIXt"), tzone = "UTC")), 
+    .Names = c("from_lat", "from_lon", "beg_time"), 
+    row.names = c(NA, 20L), 
+    class = c("tbl_df", "tbl", "data.frame"))
+gps_sample
+```
+
+```{r eval=FALSE}
+library(darksky)
+add_var = function(dat){
+  dat[,c("time", "summary", "icon", "precipIntensity", 
+         "precipProbability", "temperature", "apparentTemperature", 
+         "dewPoint", "humidity", "pressure", "windSpeed", "windGust", 
+         "windBearing", "cloudCover", "visibility")] = NA
+  return(dat)
+}
+
+for(i in 1:nrow(gps_sample)){
+  t = get_forecast_for(gps_sample$from_lat[i], gps_sample$from_lon[i], 
+                       gps_sample$beg_time[i])
+  gps_sample$summary[i] = ifelse(is.null(t[[3]]$summary), NA, 
+                                 t[[3]]$summary)
+  gps_sample$icon[i] = ifelse(is.null(t[[3]]$icon), NA, t[[3]]$icon)
+  gps_sample$precipIntensity[i] = ifelse(is.null(t[[3]]$precipIntensity), 
+                                         NA, t[[3]]$precipIntensity)
+  gps_sample$precipProbability[i] = ifelse(is.null(t[[3]]$precipProbability), 
+                                           NA, t[[3]]$precipProbability)
+  gps_sample$temperature[i] = ifelse(is.null(t[[3]]$temperature), NA, 
+                                     t[[3]]$temperature)
+  gps_sample$apparentTemperature[i] = ifelse(is.null(
+    t[[3]]$apparentTemperature), NA, t[[3]]$apparentTemperature)
+  gps_sample$dewPoint[i] = ifelse(is.null(t[[3]]$dewPoint), NA, 
+                                  t[[3]]$dewPoint)
+  gps_sample$humidity[i] = ifelse(is.null(t[[3]]$humidity), NA, 
+                                  t[[3]]$humidity)
+  gps_sample$pressure[i] = ifelse(is.null(t[[3]]$pressure), NA, 
+                                  t[[3]]$pressure)
+  gps_sample$windSpeed[i] = ifelse(is.null(t[[3]]$windSpeed), NA, 
+                                   t[[3]]$windSpeed)
+  gps_sample$windGust[i] = ifelse(is.null(t[[3]]$windGust), NA, 
+                                  t[[3]]$windGust)
+  gps_sample$windBearing[i] = ifelse(is.null(t[[3]]$windBearing), NA, 
+                                     t[[3]]$windBearing)
+  gps_sample$cloudCover[i] = ifelse(is.null(t[[3]]$cloudCover), NA, 
+                                    t[[3]]$cloudCover)
+  gps_sample$visibility[i] = ifelse(is.null(t[[3]]$visibility), NA, 
+                                    t[[3]]$visibility)
+}
+```
+
+
+Query road geometry data {#roadgeometry .unnumbered}
+========================
+
+```{r eval=FALSE}
+pacman::p_load(osmar, stringr)
+src <- osmsource_api(url = "https://api.openstreetmap.org/api/0.6/")
+road_data = function(i = 5, width = 100, data = df3){
+  bb <- center_bbox(data$lon_short[i], data$lat_short[i], 
+                    width, width)
+  ua = get_osm(bb, source = src)
+  ua
+  road_inf <- data.frame(ua$ways$tags)
+  colnames(road_inf) <- c("ID", "Key", "Value")
+  road_inf$Key <- as.character(road_inf$Key)
+  road_inf$Value <- as.character(road_inf$Value)
+  row_speed <-  which(road_inf$Key == "maxspeed", arr.ind=TRUE)
+  row_lane <- which(road_inf$Key == "lanes", arr.ind=TRUE)
+  
+  max_speed <- as.numeric(str_extract(road_inf[row_speed,"Value"], 
+                                      "[[:digit:]]+"))
+  num_lanes <- as.numeric(str_extract(road_inf[row_lane,"Value"], 
+                                      "[[:digit:]]+"))
+  return(c(mean(max_speed), mean(num_lanes)))
+}
+
+loop_data = function(start_index = 1, loop_length = 100000){
+  end_index = start_index + loop_length
+  out_data = data.frame(matrix(0, ncol = 2, nrow = loop_length))
+  df_index_diff = start_index-1
+  
+  for (i in start_index:end_index) {
+    out_data[i-df_index_diff,] = road_data(i, data = df)
+    print(paste0(end_index - i, " remained (", 
+                 round((end_index - i)*100/
+                         (end_index-df_index_diff), 3), "%)"))
+  }
+  
+  return(out_data)
+}
+```
+
+```{r eval=FALSE}
+df = data.table::fread("data/20190605_ping_compressed_3digits.csv")
+dfcontainer12 = loop_data(start_index = 1)
+```
+
+
+\doublespacing
+
+## Likelihood function of a NHPP
+
+*The first event*: The cumulative density function (cdf) of time to the first event is $F(t_1)$: $$F_1(t_1) = P(T_1 \leq t_1) = 1 - S(t_1)$$.
+
+The survival function for the first event $S_1(t_1)$ is:
+\begin{align*}
+S_1(t_1) & = P(T_1 > t_1) \\
+ & = P(N(0, t_1) = 0) \quad N \text{is the number of events}\\
+ & = e^{-\int_{0}^{t_1}\lambda_{u}du}(e^{-\int_{0}^{t_1}\lambda_{u}du})^0/0!\\
+ & = e^{-\int_{0}^{t_1}\lambda_{u}du}
+\end{align*}
+
+The probability density function (pdf) of time to the first event can be calculated by taking the first order derivative of the cdf $F_1(t_1)$:
+\begin{align*}
+f_1(t_1) & = \frac{d}{dt_1}F_1(t_1)\\
+& = \frac{d}{dt_1}[1 - S_1(t_1)] \\
+& = - \frac{d}{dt_1}S_1(t_1)\\
+& = - \frac{d}{dt_1}e^{-\int_{0}^{t_1}\lambda (u)du}\\
+& = -(-\lambda_{t_1})e^{-\int_{0}^{t_1}\lambda (u)du}\\
+& = \lambda (t_1)e^{-\int_{0}^{t_1}\lambda (u)du}
+\end{align*}
+
+If this NHPP is a PLL, we plug in the intensity function $\lambda(t) = (\beta / \theta)(t/\theta)^{\beta - 1}$, then we have:
+
+$$f_1(t_1) = \frac{\beta}{\theta}(\frac{t_1}{\theta})^{\beta - 1}e^{-(\frac{t_1}{\theta})^\beta}, \quad t_1 > 0$$
+
+This pdf is identical with the pdf of Weibull distribution, so we have:
+$$T_1 \sim \text{Weibull}(\beta, \theta)$$
+
+
+*The second event*: the Survival function of the second event given the first event occurred at $t_2$ is:
+
+\begin{align*}
+S_2(t_2 | t_1) & = P(T_2 > t_2 | T_1 = t)\\
+& = P(N(t_1, t_2) = 0|T_1 = t_1) \\
+& = e^{-\int_{t_1}^{t_2}\lambda_{u}du}[\int_{t_1}^{t_2}\lambda_{u}du]^0/0!\\
+& = e^{-\int_{t_1}^{t_2}\lambda_{u}du}
+\end{align*}
+
+The we can derive the pdf of $t_2$ conditioned on $t_1$
+\begin{equation}\label{t2}
+\begin{aligned}
+f(t_2|t_1) & = - \frac{d}{dt_2}S_2(t_2)\\
+& = - \frac{d}{dt_2}e^{-\int_{t_1}^{t_2}\lambda(u)du}\\
+& = \lambda(t_2)e^{-\int_{t_1}^{t_2}\lambda(u)du}\\
+& = \frac{\beta}{\theta}(\frac{t_2}{\theta})^{\beta - 1}e^{-[(\frac{t_2}{\theta})^\beta - (\frac{t_1}{\theta})^\beta]}\\
+& = \frac{\frac{\beta}{\theta}(\frac{t_2}{\theta})^{\beta - 1}e^{-(t_2/\theta)^\beta }}{e^{- (t_1/\theta)^\beta}}, \quad t_2 > t_1
+\end{aligned}
+\end{equation}
+
+*Failure truncated case*: in this case, we know that the total number of events $n$ before the experiment starts. Therefore, we can get the joint likelihood function for $t_1 < t_2 < \cdots < t_n$ in the failure truncated case based on Equation \@ref(t2).
+\begin{equation}\label{pdfn}
+\begin{aligned}
+f(t_1, t_2, \cdots, t_n) & = f(t_1)f(t_2|t_1)f(t_3|t_1, t_2) \cdots f(t_n|t_1, t_2, \dots, t_{n - 1}) \\
+& = \lambda (t_1)e^{-\int_{0}^{t_1} \dot \lambda (u)du}\lambda (t_2)e^{-\int_{t_1}^{t_2} \dot \lambda (u)du}\cdots\lambda (t_n)e^{-\int_{t_{n-1}}^{t_n}\lambda (u)du}\\
+& = \Big(\prod_{i=1}^n\lambda(t_i)\Big)e^{-\int_0^t\lambda(u)du}\\
+& = \Big(\prod_{i=1}^n\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1}\Big)e^{-(t_n/\theta)^\beta}, \quad t_1 < t_2 < \cdots < t_n
+\end{aligned}
+\end{equation}
+
+The log-likelihood function in the failure truncated case is therefore:
+$$\log \ell = n\log\beta - n\beta\log\theta + (\beta - 1)\bigg(\sum_{i=1}^n\log t_i\bigg) - \Big(\frac{t_n}{\theta}\Big)^\beta$$
+
+*Time truncated case*: in this case, we assume that the truncated time is $\tau$. The derivation of $f(t_1, t_2, \cdots, t_n|n)$ is messy in math, we directly give the conclusion here: $$f(t_1, t_2, \cdots, t_n|n) = n!\prod_{i=1}^n\frac{\lambda(t_i)}{\Lambda(\tau)}$$
+
+Therefore, the joint likelihood function for $f(n, t_1, t_2, \cdots, t_n)$ is:
+\begin{equation}
+\begin{aligned}
+f(n, t_1, t_2, \cdots, t_n) & = f(n)f(t_1, t_2, \cdots, t_n|n)\\
+& = \frac{e^{-\int_0^\tau \lambda(u)du}[\int_0^\tau \lambda(u)du]^n}{n!}n!\frac{\prod_{i=1}^n\lambda(t_i)}{[\Lambda(\tau)]^n}\\
+& = \Big(\prod_{i=1}^n\lambda(t_i) \Big)e^{-\int_0^\tau \lambda(u)du}\\
+& = \Big(\prod_{i=1}^n\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1} \Big)e^{-(\tau/\theta)^\beta},\\ 
+n & = 0, 1, 2, \cdots, \quad  0 < t_1 < t_2 < \cdots < t_n
+\end{aligned}
+\end{equation}
+
+The log likelihood function $l$ is then:
+\begin{equation}
+\begin{aligned}
+l & = \log \Bigg(\Big(\prod_{i=1}^n\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1}\Big)e^{-(\tau/\theta)^\beta}\Bigg)\\
+& = \sum_{i=1}^n\log\Big(\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1}\Big) - (\frac{\tau}{\theta})^\beta\\
+& = n\log\beta - n\beta\log\theta + (\beta - 1)\bigg(\sum_{i=1}^n\log t_i\bigg) - \Big(\frac{\tau}{\theta}\Big)^\beta
+\end{aligned}
+\end{equation}

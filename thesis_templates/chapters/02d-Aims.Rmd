@@ -1,0 +1,24 @@
+Research aims
+-------------
+
+\hl{Describes the research problems to be addressed and why these are important issues.}
+
+The overarching goal of this proposed study is to 
+
+1. **Aim1**: to examine the association between truck crashes and critical events using a Gamma-Poisson regression.
+
+
+2. **Aim2**: to construct three scalable Bayesian hierarchical models for SCEs: logistic regression, Poisson regression, and non-homogeneous Poisson process.
+
+
+3. **Aim3**: to propose an innovative reliability model that accounts for both within shift cumulative driving time and within-shift between-trip rest time.
+
+
+
+**Gaps in literature**
+
+- A focus on crashes instead of precursors of crashes
+- A focus on road segments rather than drivers
+- A focus on case-control comparison given the rareness of truck crashes rather than rates
+- A focus on small-scale data
+- A focus on traditional statistical models instead of recurrent events models

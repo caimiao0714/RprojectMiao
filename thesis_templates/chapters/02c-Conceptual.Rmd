@@ -1,0 +1,17 @@
+Conceptual framework
+--------------------
+
+The conceptual model in this study is based on three frameworks:
+
+1. *Truck Driver Fatigue Model* by @crum2002influence, 
+2. *$5 \times$ST-level hierarchy theory* in traffic safety by @huang2010multilevel, 
+3. *Commercial motor vehicle driver fatigue framework* by @stern2019data.
+
+Summarized from literature review and focus groups, the *Truck Driver Fatigue Model* includes three general categories of factors to driver fatigue, and each category includes several comparatively specific constructs: truck driving environment (regularity of time, quality of rest, and trip control), economic pressure (scheduling demands of commerce, driver internal economic or personal factors, and carrier economic factors), and organizational carrier support (operational practices and general safety measures) [@crum2002influence]. @huang2010multilevel proposed a 5-level hierarchy theory in studying traffic safety: geographic region, traffic site, traffic crash, driver-vehicle unit, and occupant. The framework proposed in @stern2019data listed four predictor domains including driver, vehicle, carrier, and environment, as well as five outcome variables, crash rate, serious crash rate, fatal crash rate, safety critical event rate, and fatigue.
+
+Figure \@ref(fig:conceptmodel) demonstrates the conceptual framework used in this study. A two-level hierarchy structure is proposed in this study, driver level and trip level. Driver level factors include driver features and fatigue; trip level factors include traffic, road geometry, and weather. These factors are assumed to be directly associated with SCEs, which can be modeled by statistical and reliability models. Final, the SCEs are hypothesized to be directly associated with crashes.
+
+```{r conceptmodel, fig.cap='Conceptual model. SCEs represent safety critical events.', echo=FALSE, eval=TRUE}
+knitr::include_graphics("figs/conceptual_model.png")
+```
+

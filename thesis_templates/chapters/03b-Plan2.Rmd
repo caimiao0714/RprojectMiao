@@ -1,0 +1,132 @@
+Analytical Plan for Aim 2
+-------------------------
+
+The purpose of aim 2 is to develop three hierarchical Bayesian statistical and reliability models for the SCEs of truck drivers. Vehicle drivers will be viewed as the sampling unit. The workflow is to sample a certain number of drivers from a population of drivers, observe their driving trips or shifts for a specific period, then compare the safety events with non-events, and make conclusions on risk factors associated with these safety events. Bayesian hierarchical logistic regression, Poisson regression, and NHPP that accounts for both driver-level variation and trip-level variation will be used. 
+
+### Data aggregation
+
+
+
+
+### Logistic regression
+
+Here the probability of a critical event occurred will be modeled using a Bayesian hierarchical logistic regression. I will categorize the number of safety events during a trip into a binary variable $Y_{i, d}$ of either 0 or 1, where 0 indicates that no critical event occurred during that trip while 1 indicates that at least 1 critical event occurred during the trip. 
+$$
+\begin{split}
+Y_{i} &\sim \text{Bernoulli}(p_{i})\\
+\log\frac{p_{i}}{1-p_{i}} &= \beta_{0, d(i)} + \beta_{1, d(i)} \cdot \text{CT}_i + \sum_{j=1}^{J} x_{ij}\beta_j\\
+\beta_{0, d} &\sim \text{i.i.d. } N(\mu_0, \sigma_0^2), \quad d = 1, 2, \cdots, D\\
+\beta_{1, d} &\sim \text{i.i.d. } N(\mu_1, \sigma_1^2), \quad d = 1, 2, \cdots, D
+(\#eq:hierarchicallogit)
+\end{split}
+$$
+
+We assume that the drivers are random effects, and we assume exchangeable priors of the form
+\[
+\beta_{0, d(1)}, \beta_{0, d(2)}, \ldots , \beta_{0, d(n)} \sim \text{i.i.d.} N(\mu_0,\sigma_0^2)
+\]
+and 
+\[
+\beta_{1, d(1)}, \beta_{1, d(2)}, \ldots , \beta_{1, d(n)} \sim \text{i.i.d.} N(\mu_1,\sigma_1^2)
+\]
+The parameters $\mu_0, \sigma_0, \mu_1$, and $\sigma_1$ are hyperparameters with priors. Since we do not have much prior knowledge on the hyperparameters, we assigned diffuse priors for these hyperparameters.
+$$
+\begin{split}
+Y_{i} &\sim \text{Bernoulli}(p_{i})\\
+\log\frac{p_{i}}{1-p_{i}} &= \beta_{0, d(i)} + \beta_{1, d(i)} \cdot \text{CT}_i + \sum_{j=1}^{J} x_{ij}\beta_j\\
+\beta_{0, d} &\sim \text{i.i.d. } N(\mu_0, \sigma_0^2), \quad d = 1, 2, \cdots, D\\
+\beta_{1, d} &\sim \text{i.i.d. } N(\mu_1, \sigma_1^2), \quad d = 1, 2, \cdots, D
+(\#eq:priors)
+\end{split}
+$$
+Since $\mu_0$ and $\mu_1$ can be any real number, so we assigned two normal distributions with mean of 0 and standard deviation of 10 as the priors for these two hyperparameters. In comparison, $\sigma_0$ and $\sigma_1$ must be strictly positive, so we assigned GAMMA$(1, 1)$ with wide distribution on positive real numbers as their priors.
+
+### Poisson regression
+
+Since logistic regression ignores the intensity of the critical events with any number greater than 0 categorized into 1, I adopt a Bayesian hierarchical Poisson regression to model the effect of cumulative driving time on the occurrence of critical events. Each driver has a random intercept and a random slope on cumulative driving time.
+$$
+\begin{split}
+Y_{i}  & \sim \text{Poisson}(T_i\cdot\lambda_i)\\
+\log\lambda_{i} & =\beta_{0, d(i)} + \beta_{1, d(i)} \cdot \text{CT}_i + \sum_{j=1}^{J} x_{ij}\beta_j\\
+\beta_{0, d} &\sim \text{i.i.d. } N(\mu_0, \sigma_0^2), \quad d = 1, 2, \cdots, D\\
+\beta_{1, d} &\sim \text{i.i.d. } N(\mu_1, \sigma_1^2), \quad d = 1, 2, \cdots, D
+(\#eq:hierarchicalpoisson)
+\end{split}
+$$
+Where N is the number of critical events for driver $d(i)$ in time interval $j$, and it has a Poisson distribution with parameter $\lambda$. The other variables are identical as those described in Equation .
+
+
+### Non-homogeneous Poisson process (NHPP)
+
+```{r arrowplot, fig.cap='An arrow plot of time to SCEs in each shift', echo=FALSE, eval=TRUE, out.width="0.5\\linewidth"}
+knitr::include_graphics("figs/NHPP_arrow_plot.png")
+```
+
+A point process is a stochastic model which describes the occurrence of events in a given period [@rigdon2000statistical]. The mean function of a point process is $\Lambda(t) = E(N(t))$, where $\Lambda(t)$ is the expected number of failures through time $t$. Two notations that are important in reliability models are *Rate of Occurence of Failures (ROCOF)* and *Intensity function*.
+
+1. *ROCOF*: When the mean function $\Lambda(t)$ is differentiable, the ROCOF is:
+$$\mu(t) = \frac{d}{dt}\Lambda(t)$$
+The ROCOF can be interpreted as the instantaneous rate of change in the expected number of failures.
+
+2. *Intensity function*: The intensity function of a point process is 
+$$\lambda(t) = \lim_{\Delta t \rightarrow 0}\frac{P(N(t, t+\Delta t] \geq 1)}{\Delta t}$$
+
+
+When there is no simultaneous events, ROCOF is the same as intensity function.
+
+
+*Nonhomogeneous Poisson Process (NHPP)*: The NHPP is a Poisson process whose intensity function is non-constant. The Power law process (PLP) is a special case of a NHPP when the intensity function of a NHPP is:
+$$\lambda(t) = \frac{\beta}{\theta}\bigg(\frac{t}{\theta}\bigg)^{\beta-1}$$, 
+Where $\beta > 0$ and $\theta > 0$, the process is called the power law process (PLP).
+
+Therefore, the mean function $\Lambda(t)$ is the integral of the intensity function:
+$$\Lambda(t) = \int_0^t \lambda(t)dt = \int_0^t \frac{\beta}{\theta}\bigg(\frac{t}{\theta}\bigg)^{\beta-1} = \bigg(\frac{t}{\theta}\bigg)^{\beta}$$.
+
+There are two forms of truncation in a NHPP:
+
+1. **Failure truncation**: When testing stops after a predetermined number of failures, the data are said to be failure truncated.
+2. **Time truncation**: Data are said to be time truncated when testing stops at a predetermined time $t$.
+
+In a time truncated case, the joint likelihood function for $f(n, t_1, t_2, \cdots, t_n)$ is (the prove can be found in the Appendix):
+\begin{equation}\label{pdftau}
+\begin{aligned}
+f(n, t_1, t_2, \cdots, t_n) & = f(n)f(t_1, t_2, \cdots, t_n|n)\\
+& = \frac{e^{-\int_0^\tau \lambda(u)du}[\int_0^\tau \lambda(u)du]^n}{n!}n!\frac{\prod_{i=1}^n\lambda(t_i)}{[\Lambda(\tau)]^n}\\
+& = \Big(\prod_{i=1}^n\lambda(t_i) \Big)e^{-\int_0^\tau \lambda(u)du}\\
+& = \Big(\prod_{i=1}^n\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1} \Big)e^{-(\tau/\theta)^\beta},\\ 
+n & = 0, 1, 2, \cdots, \quad  0 < t_1 < t_2 < \cdots < t_n
+\end{aligned}
+\end{equation}
+
+The log likelihood function $l$ is then:
+\begin{equation}\label{logtau}
+\begin{aligned}
+l & = \log \Bigg(\Big(\prod_{i=1}^n\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1}\Big)e^{-(\tau/\theta)^\beta}\Bigg)\\
+& = \sum_{i=1}^n\log\Big(\frac{\beta}{\theta}(\frac{t_i}{\theta})^{\beta - 1}\Big) - (\frac{\tau}{\theta})^\beta\\
+& = n\log\beta - n\beta\log\theta + (\beta - 1)\bigg(\sum_{i=1}^n\log t_i\bigg) - \Big(\frac{\tau}{\theta}\Big)^\beta
+\end{aligned}
+\end{equation}
+
+
+
+Despite Poisson regression consider the frequency of SCEs in a given interval, it assumes that the intensity of events is a constant, which may not be true in real-life transportation practice. Here we presented a reliability model, a non-homogeneous Poisson process (NHPP) with a power law process (PLP) based on the merged shifts data set. we aim to answer if SCEs occurred more frequently at early stages of shifts, towards the end of shifts, or does not show significant patterns.
+
+Let $T_{d, s, i}$ denote the time to the $d$-th driver's $s$-th shift's $i$-th critical event. The total number critical events of $d$-th driver's $s$-th shift is $n_{d,s}$. The ranges of these notations are: 
+\begin{itemize}
+\item $i = 1, 2, \cdots, n_{d, S_d}$,
+\item $s = 1, 2, \cdots, S_d$,
+\item $d = 1, 2, \cdots, D$.
+\end{itemize}
+We assumes that the times of critical events within the $d$-th driver's $s$-th shift were generated from a PLP, with a fixed shape parameter $\beta$ and varying scale parameters $\theta_{d, s}$ across drivers $d$ and shifts $s$. In a PLP, the intensity function of the NHPP is $\lambda(t) \frac{\beta}{\theta}(\frac{t}{\theta})^{\beta-1}$. The model is described in Equation~\ref{eq:nhpp}.
+\begin{equation}\label{eq:nhpp}
+\begin{aligned}
+  T_{d, s, 1}, T_{d, s, 2}, \cdots , T_{d, s, n_{d, s}} & \sim \text{PLP}(\beta, \theta_{d, s})\\
+  \beta & \sim \text{Gamma}(1, 1)\\
+  \log\theta_{d, s} &= \gamma_{0d} + \gamma_{1}x_{d, s, 1} + \gamma_{2}x_{d, s, 2} + \cdots + \gamma_{k}x_{d, s, k}\\
+  \gamma_{01}, \gamma_{02}, \cdots, \gamma_{0D} & \sim \text{i.i.d. }N(\mu_0, \sigma_0^2)\\
+  \gamma_1, \gamma_2, \cdots, \gamma_k & \sim \text{i.i.d. }N(0, 10^2)\\
+  \mu_0 &\sim N(0, 10^2) \\
+  \sigma_0 &\sim \text{Gamma}(1, 1)
+\end{aligned}
+\end{equation}
+The shape parameter $\beta$ shows the reliability changes of drivers. When $\beta > 1$, the intensity function $\lambda(t)$ is increasing, the reliability of drivers is  decreasing, and SCEs are becoming more frequent; when $\beta < 1$, the intensity function $\lambda(t)$ is decreasing, the reliability of drivers is increasing, and SCEs are becoming less frequent; when $\beta = 1$, the NHPP is simplified as a homogeneous Poisson process with the intensity of $1/\theta$. The $\theta_{d, s}$ is a scale parameter that does not reflect reliability changes.

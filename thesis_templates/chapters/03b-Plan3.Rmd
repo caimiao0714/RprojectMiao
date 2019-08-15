@@ -1,0 +1,6 @@
+Analytical Plan for Aim 3
+-------------------------
+
+Aim 3 seeks to innovate the NHPP proposed in Aim 2 by accounting for the rest time within a shift. One more parameter, the percent of reliability recovery during a break within a shift, will be estimated for in this model.
+
+@black1996statistical.
