@@ -1,0 +1,72 @@
+---
+title: "LASSO multinomial logistic regression"
+subtitle: "Variable selection for high dimensional data"
+author: "Miao Cai"
+date: "9/22/2019"
+output: 
+  pdf_document:
+    number_sections: true
+linkcolor: red
+urlcolor: red
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+# Introduction
+
+**Penalized logistic regression** imposes a penalty to the logistic model for having too many variables. This results in shrinking the coefficients of the less contributive variables toward zero. This is also known as regularization.
+
+The most commonly used penalized regression include:
+
+1. **ridge regression**: variables with minor contribution have their coefficients close to zero. However, all the variables are incorporated in the model. This is useful when all variables need to be incorporated in the model according to domain knowledge.
+2. **lasso regression**: the coefficients of some less contributive variables are forced to be exactly zero. Only the most significant variables are kept in the final model.
+3. **elastic net regression**: the combination of ridge and lasso regression. It shrinks some coefficients toward zero (like ridge regression) and set some coefficients to exactly zero (like lasso regression).
+
+Above contents sourced from [http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/](http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/).
+
+
+# LASSO syntax with `glmnet` package
+
+```{r eval=FALSE}
+x <- model.matrix(diabetes ~ ., train_data)[,-1]
+y <- ifelse(train_data$diabetes == "pos", 1, 0)
+
+glmnet(x, y, family = "binomial", alpha = 1, lambda = NULL)
+```
+
+- `x`: matrix of predictor variables
+- `y`: the response or outcome variable, which is a binary variable.
+- `family`: the response type. Use “binomial” for a binary outcome variable
+- `alpha`: the elasticnet mixing parameter. Allowed values include:
+    + “1”: for lasso regression
+    + “0”: for ridge regression
+    + a value between 0 and 1 (say 0.3) for elastic net regression.
+- `lamba`: a numeric value defining the amount of shrinkage. Should be specify by analyst.
+
+
+# Application using `glmnet`
+
+## Data importing
+
+```{r}
+library(data.table)
+library(dplyr)
+d = fread("pd_speech_features/pd_speech_features.csv", skip = 1) %>%
+  .[, `:=`(y_cat = case_when(PPE < 0.762 ~ 0,
+                             PPE >= 0.762 & PPE < 0.809 ~ 1,
+                             PPE >= 0.809 & PPE < 0.834 ~ 2,
+                             PPE >= 0.834  ~ 3),
+           PPE = NULL)]
+```
+
+
+## A simple application
+
+```{r}
+library(glmnet)
+```
+
+
+## Cross-validation for the optimal $\alpha$
