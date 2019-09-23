@@ -135,4 +135,4 @@ knitr::kable(cbind(zz[[1]][1:10,], zz[[2]][1:10,], zz[[3]][1:10,]),
              caption = "Penalized regression coefficients for different levels of Y")
 ```
 
-Since we have four different levels of y, there are three sets of regression coefficients. I only listed the first 10 coefficients here.
+Since we have four different levels of y, there are three sets of regression coefficients. I only listed the first 10 coefficients here. To select the variables, we need to define whether we want the **variables in all three levels** to be greater than 0, or **the variables in any of the three levels** to be greater than 0.
