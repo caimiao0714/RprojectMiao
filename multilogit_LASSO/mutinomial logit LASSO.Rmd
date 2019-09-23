@@ -11,7 +11,7 @@ urlcolor: red
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, cache = TRUE)
 ```
 
 # Introduction to penalized regression
@@ -26,8 +26,37 @@ The most commonly used penalized regression include:
 
 Above contents sourced from [http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/](http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/).
 
-# Penalized logistic regression
+# Theories of Penalized logistic regression
 
+## Logistic regression theory
+
+A logistic regression assumes the binary outcome variable $Y$  has Bernoulli distribution with the parameter $p$. The log odds of $p$ equals a linear combination of predictor variables $x_1, x_2, \cdots, x_k$ and parameters $\beta_1, \beta_2, \cdots, \beta_k$.
+
+$$
+\begin{split}
+Y & \sim \text{Bernoulli}(p)\\
+\log \frac{p}{1 - p} &= \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots + \beta_kx_k
+\end{split}
+$$
+
+After a little bit of algebra, we have:
+\begin{equation}\label{eq:p}
+p_i = \frac{\exp(\beta_0 + \beta_1x_{1i} + \beta_2x_{2i} + \cdots + \beta_kx_{ki})}{1 + \exp(\beta_0 + \beta_1x_{1i} + \beta_2x_{2i} + \cdots + \beta_kx_{ki})}
+\end{equation}
+
+To get the parameter estimates for $\beta_1, \beta_2, \cdots, \beta_k$, we need to maximize the likelihood function $L$:
+$$L = \prod_{i=1}^Np_i^{y_i}(1-p_i)^{(1-y_i)}$$
+or the log likelihood function $LL$:
+\begin{equation}\label{eq:LL}
+\begin{aligned}
+LL &= \log\bigg(\prod_{i=1}^Np_i^{y_i}(1-p_i)^{(1-y_i)}\bigg)\\
+&= \sum_{i=1}^N\bigg(y_i\log p_i + (1-y_i)\log (1-p_i)\bigg)
+\end{aligned}
+\end{equation}
+
+Where the $p_i$ can be substituted by the expression in Equation \ref{eq:p}. The purpose of MLE is to maximize the log likelihood in Equation \ref{eq:LL} and obtain MLE estimates for $\beta_1, \beta_2, \cdots, \beta_k$.
+
+## 
 
 
 
