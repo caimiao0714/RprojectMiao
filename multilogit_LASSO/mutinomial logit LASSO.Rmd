@@ -6,6 +6,7 @@ date: "9/22/2019"
 output: 
   pdf_document:
     number_sections: true
+    toc: true
 linkcolor: red
 urlcolor: red
 ---
@@ -20,9 +21,9 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, cache = TRU
 
 The most commonly used penalized regression include:
 
-1. **ridge regression**: variables with minor contribution have their coefficients close to zero. However, all the variables are incorporated in the model. This is useful when all variables need to be incorporated in the model according to domain knowledge.
-2. **lasso regression**: the coefficients of some less contributive variables are forced to be exactly zero. Only the most significant variables are kept in the final model.
-3. **elastic net regression**: the combination of ridge and lasso regression. It shrinks some coefficients toward zero (like ridge regression) and set some coefficients to exactly zero (like lasso regression).
+1. **Ridge regression**: variables with minor contribution have their coefficients close to zero. However, all the variables are incorporated in the model. This is useful when all variables need to be incorporated in the model according to domain knowledge.
+2. **LASSO regression** (Least Absolute Shrinkage and Selection Operator): the coefficients of some less contributive variables are forced to be exactly zero. Only the most significant variables are kept in the final model.
+3. **Elastic net regression**: the combination of ridge and lasso regression. It shrinks some coefficients toward zero (like ridge regression) and set some coefficients to exactly zero (like lasso regression).
 
 Above contents sourced from [http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/](http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/).
 
@@ -54,11 +55,18 @@ LL &= \log\bigg(\prod_{i=1}^Np_i^{y_i}(1-p_i)^{(1-y_i)}\bigg)\\
 \end{aligned}
 \end{equation}
 
-Where the $p_i$ can be substituted by the expression in Equation \ref{eq:p}. The purpose of MLE is to maximize the log likelihood in Equation \ref{eq:LL} and obtain MLE estimates for $\beta_1, \beta_2, \cdots, \beta_k$.
+Where the $p_i$ can be substituted by the expression in Equation \ref{eq:p}. The purpose of MLE is to maximize the log likelihood in Equation \ref{eq:LL} and obtain MLE estimates for $\beta_1, \beta_2, \cdots, \beta_k$, or equivalently minimizing the negative log likelihood $-LL$.
 
-## 
+## Penalized logistic regression
 
+- For LASSO, also known as $L1$-regularization, it minimizes 
+$$-LL + \lambda\sum_{i=1}^K|\beta_i|$$
+- For Ridge regression, also known as $L2$-regularization, it minimizes 
+$$-LL + \lambda\sum_{i=1}^K\beta_i^2$$
+- For elastic net, which is a combined version of ridge and LASSO, it minimizes the 
+$$-LL + \lambda\Bigg((1-\alpha)\sum_{i=1}^K\beta_i^2 + \alpha\sum_{i=1}^K|\beta_i|\Bigg)$$
 
+For all the above three penalized likelihoods, they are a balance between the likelihood function $LL$ and penalty term. On one hand, the parameters $\beta_1, \beta_2, \cdots, \beta_k$ should be maximized to maximize the likelihood function. On the other hand, the parameters $\beta_1, \beta_2, \cdots, \beta_k$ should be minimized to minimize the penalty term. $\lambda$ is a hyperparameter that controls the extent of regularization, and it could be determined by cross validation (CV).
 
 # LASSO syntax with `glmnet` package
 
@@ -86,7 +94,7 @@ glmnet(x, y, family = "binomial", alpha = 1, lambda = NULL)
 ```{r}
 library(data.table)
 library(dplyr)
-d = fread("pd_speech_features/pd_speech_features.csv", skip = 1) %>%#multilogit_LASSO/
+d = fread("pd_speech_features/pd_speech_features.csv", skip = 1) %>% # multilogit_LASSO/
   mutate(y_cat = case_when(PPE < 0.762 ~ 0,
                              PPE >= 0.762 & PPE < 0.809 ~ 1,
                              PPE >= 0.809 & PPE < 0.834 ~ 2,
