@@ -11,10 +11,10 @@ urlcolor: red
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, cache = TRUE)
 ```
 
-# Introduction
+# Introduction to penalized regression
 
 **Penalized logistic regression** imposes a penalty to the logistic model for having too many variables. This results in shrinking the coefficients of the less contributive variables toward zero. This is also known as regularization.
 
@@ -25,6 +25,10 @@ The most commonly used penalized regression include:
 3. **elastic net regression**: the combination of ridge and lasso regression. It shrinks some coefficients toward zero (like ridge regression) and set some coefficients to exactly zero (like lasso regression).
 
 Above contents sourced from [http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/](http://www.sthda.com/english/articles/36-classification-methods-essentials/149-penalized-logistic-regression-essentials-in-r-ridge-lasso-and-elastic-net/).
+
+# Penalized logistic regression
+
+
 
 
 # LASSO syntax with `glmnet` package
@@ -40,8 +44,8 @@ glmnet(x, y, family = "binomial", alpha = 1, lambda = NULL)
 - `y`: the response or outcome variable, which is a binary variable.
 - `family`: the response type. Use “binomial” for a binary outcome variable
 - `alpha`: the elasticnet mixing parameter. Allowed values include:
-    + “1”: for lasso regression
-    + “0”: for ridge regression
+    + "1": for lasso regression
+    + "0": for ridge regression
     + a value between 0 and 1 (say 0.3) for elastic net regression.
 - `lamba`: a numeric value defining the amount of shrinkage. Should be specify by analyst.
 
@@ -53,20 +57,45 @@ glmnet(x, y, family = "binomial", alpha = 1, lambda = NULL)
 ```{r}
 library(data.table)
 library(dplyr)
-d = fread("pd_speech_features/pd_speech_features.csv", skip = 1) %>%
-  .[, `:=`(y_cat = case_when(PPE < 0.762 ~ 0,
+d = fread("pd_speech_features/pd_speech_features.csv", skip = 1) %>%#multilogit_LASSO/
+  mutate(y_cat = case_when(PPE < 0.762 ~ 0,
                              PPE >= 0.762 & PPE < 0.809 ~ 1,
                              PPE >= 0.809 & PPE < 0.834 ~ 2,
                              PPE >= 0.834  ~ 3),
-           PPE = NULL)]
+         PPE = NULL,
+         app_entropy_shannon_10_coef = NULL)
 ```
 
 
-## A simple application
+## Cross-validation (CV) for the optimal $\alpha$
 
 ```{r}
 library(glmnet)
+set.seed(123)
+
+X <- as.matrix(d[, 1:(ncol(d) - 1)])
+Y <- d$y_cat
+
+# cross validation to search for the optimal
+fit_cv = cv.glmnet(X, Y, alpha = 1, family = "multinomial")
+  
+plot(fit_cv)
 ```
 
 
-## Cross-validation for the optimal $\alpha$
+## Applying the optimal $\lambda$ provided by CV
+
+```{r}
+# should specify lambda = fit_cv$lambda.min
+fit1 = glmnet(X, Y, alpha = 1, family="multinomial", lambda = 0.3)
+zz = coef(fit_cv, 0.03)
+```
+
+Here we should specify `lambda = fit_cv$lambda.min` in `glmnet()` function. However, it does not really work for this specific data. So I just changed it to a random value of 0.3.
+
+```{r}
+knitr::kable(cbind(zz[[1]][1:10,], zz[[2]][1:10,], zz[[3]][1:10,]), 
+             caption = "Penalized regression coefficients for different levels of Y")
+```
+
+Since we have four different levels of y, there are three sets of regression coefficients. I only listed the first 10 coefficients here.
