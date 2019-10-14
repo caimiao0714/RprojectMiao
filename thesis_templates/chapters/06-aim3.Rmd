@@ -1,7 +1,0 @@
-# Jump-point NHPP
-
-<!--
-- Comparison with results given by frequentist models using REML (`lmer4`)
-- Comparison with results given by Bayesian models using HMC (`rstan`)
-- Comparison with results given Bayesian models using INLA (`INLA`)
--->
