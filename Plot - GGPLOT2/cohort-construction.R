@@ -64,4 +64,4 @@ ggplot() +
         panel.grid.minor = element_blank(),
         panel.grid.major = element_blank())
 
-ggsave("Plot - ggplot2/cohort_construction.png", width = 10, height = 4, dpi = 300)
+ggsave("Plot - ggplot2/cohort_construction.png", width = 8, height = 3.2, dpi = 300)
