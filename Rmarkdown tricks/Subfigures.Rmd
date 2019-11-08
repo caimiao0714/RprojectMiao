@@ -1,0 +1,67 @@
+---
+title: "Subfigures"
+author: "Miao Cai <miao.cai@slu.edu>"
+date: "11/4/2019"
+output:
+  pdf_document:
+    extra_dependencies: ["subfig", "float"]
+    toc: true
+    number_sections: true
+  html_document:
+    df_print: paged
+    code_folding: hide
+    toc: true
+    toc_float: true
+    smooth_scroll: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = "H", out.extra = "")
+```
+
+# Use base `R` plotting
+
+```{r fig-sub, fig.cap='All', fig.subcap=c('A', 'B', 'C'),fig.ncol = 3, out.width = "33.3%", fig.align = "center"}
+plot(1:10)
+plot(cars, pch = 19)
+boxplot(Sepal.Width ~ Species, data = iris)
+```
+
+# Use `ggplot2`
+
+```{r fig-sub-ggplot2, fig.cap='All', fig.subcap=c('A', 'B', 'C'),fig.ncol = 3, out.width = "33.3%", fig.align = "center", fig.width=3, fig.height=3*.618}
+pacman::p_load(ggthemes, ggplot2)
+
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) + 
+  geom_point() + theme_bw()
+
+p2 = ggplot(cars, aes(speed, dist)) + 
+  geom_point() + theme_bw()
+
+p3 = ggplot(iris, aes(Species, Sepal.Width)) + 
+  geom_boxplot() + theme_bw()
+
+p1; p2; p3
+```
+
+```{r eval=FALSE, echo=FALSE}
+p1 = p1 + theme_tufte()
+p2 = p2 + theme_tufte()
+p3 = p3 + theme_tufte()
+
+ggsave("Rmarkdown tricks/p1.pdf", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.pdf", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 3, height = 3*.618)
+
+ggsave("Rmarkdown tricks/p1.svg", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.svg", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.svg", p3, width = 3, height = 3*.618)
+```
+
+# Use `knitr::include_graphics()`
+
+```{r fig-sub-includegraphics, fig.cap='All', fig.subcap=c('A', 'B', 'C'),fig.ncol = 3, out.width = "33.3%", fig.align = "center"}
+knitr::include_graphics(c("p1.svg", "p2.svg", "p3.svg"))
+```
+
