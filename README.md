@@ -113,3 +113,11 @@ source from [https://sites.northwestern.edu/summerworkshops/resources/software-i
 ```
 conda install --name py36 pytorch
 ```
+
+Remove a specific Python distribution
+```
+conda env remove --name myenv
+# OR
+conda remove --name myenv --all
+```
+
