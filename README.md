@@ -116,8 +116,12 @@ conda install --name py36 pytorch
 
 Remove a specific Python distribution
 ```
+# Delete a specific conda python distribution
 conda env remove --name myenv
 # OR
 conda remove --name myenv --all
+
+# PLUS: delete the kernel for jupyter notebook
+jupyter kernelspec uninstall unwanted_kernel
 ```
 
