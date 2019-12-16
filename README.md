@@ -112,6 +112,7 @@ source from [https://sites.northwestern.edu/summerworkshops/resources/software-i
 
 ```
 conda install --name py36 pytorch
+conda install -c conda-forge keras tensorflow # install from conda-forge
 ```
 
 Remove a specific Python distribution
