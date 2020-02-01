@@ -1,0 +1,38 @@
+\begin{theindex}
+
+  \item $*$Topic{\large  \ \textbf  {package}}
+    \subitem \texttt  {dgdecomp-package}, \hyperpage{2}
+
+  \indexspace
+
+  \item \texttt  {Decomp\_Factors}, \hyperpage{3}
+  \item \texttt  {Decomp\_Factors\_Matx} \textit  {(\texttt  {Decomp\_Factors})}, 
+		\hyperpage{3}
+  \item \texttt  {Decomp\_on\_DT}, \hyperpage{4}
+  \item \texttt  {dgdecomp} \textit  {(\texttt  {dgdecomp-package})}, 
+		\hyperpage{2}
+  \item \texttt  {dgdecomp-package}, \hyperpage{2}
+
+  \indexspace
+
+  \item \texttt  {Func\_Create\_Combn}, \hyperpage{5}
+  \item \texttt  {Func\_Cross}, \hyperpage{5}
+  \item \texttt  {Func\_Cross\_Matx} \textit  {(\texttt  {Func\_Cross})}, 
+		\hyperpage{5}
+  \item \texttt  {Func\_Dem}, \hyperpage{6}
+  \item \texttt  {Func\_Inner}, \hyperpage{6}
+  \item \texttt  {Func\_Inner\_Matx} \textit  {(\texttt  {Func\_Inner})}, 
+		\hyperpage{6}
+  \item \texttt  {Func\_Inner\_Sum}, \hyperpage{7}
+  \item \texttt  {Func\_Inner\_Sum\_Matx} \textit  {(\texttt  {Func\_Inner\_Sum})}, 
+		\hyperpage{7}
+  \item \texttt  {Func\_Num}, \hyperpage{7}
+  \item \texttt  {Func\_Num\_Matx} \textit  {(\texttt  {Func\_Num})}, 
+		\hyperpage{7}
+
+  \indexspace
+
+  \item \texttt  {simulate\_decomp\_data}, \hyperpage{8}
+  \item \texttt  {simulate\_decomp\_data\_fullmat}, \hyperpage{8}
+
+\end{theindex}

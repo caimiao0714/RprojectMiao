@@ -32,14 +32,20 @@ system(paste(shQuote(file.path(R.home("bin"), "R")),
 
 
 # start example
+library(dgdecomp)
 set.seed(123)
-sim_dt <- simulate_decomp_data_fullmat(T_term = 2, num_factors = 8, id_grps = 1)
+number_of_factors = 26
+#threads = 5
+sim_dt <- simulate_decomp_data_fullmat(T_term = 2,
+                                       num_factors = number_of_factors,
+                                       id_grps = 1)
 
 decomp_out_DT <- Decomp_on_DT(
   input_data = sim_dt,
   factor_names = paste0("X_", c(1:number_of_factors)),
   bycol = "Id",
   time_col = "t"
+  #parallel = threads
 )
 
 decomp_out_DT

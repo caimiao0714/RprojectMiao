@@ -1,0 +1,512 @@
+limits = c(2006,2018))+
+theme_classic()
+pacman::p_load(dplyr, ggplot2, ggrepel)
+ND = readRDS("Plot - ggplot2/nd.Rds")
+nd %>%
+ggplot(aes(x = year, y = hr_update,
+group = variables, color = variables)) +
+geom_line() +
+labs(y = "Time-varying HRs") +
+geom_label_repel(data = filter(nd, year == 2008, hr_update >= 2),
+aes(label = label),
+nudge_x = -10.5 - filter(nd, year == 2008, hr_update >= 2) %>%
+pull(variables) %>% nchar(),
+nudge_y = 1,
+segment.size = 0.2,
+#vjust = 4,
+na.rm = TRUE) +
+scale_colour_discrete(guide = 'none')+
+scale_x_continuous(breaks = 2008:2018, labels = 2008:2018,
+limits = c(2006,2018))+
+theme_classic()
+ggsave("Plot - ggplot2/label_lines_using_geom_label_repel.png")
+67*0.2
+76*0.2
+pacman::p_load(dplyr, ggplot2, lubridate, pBrackets, grid)
+bracketsGrob <- function(...){
+l <- list(...)
+e <- new.env()
+e$l <- l
+grid:::recordGrob(  {
+do.call(grid.brackets, l)
+}, e)
+}
+b1 <- bracketsGrob(0.33, 0.7, 0.05, 0.7, h=0.05, lwd=2, col="#018571")
+b2 <- bracketsGrob(0.9, 0.7, 0.34, 0.7, h=0.05,  lwd=2, col="#a6611a")
+ggplot() +
+geom_segment(data = data.frame(start_time = 2003, end_time = 2008),
+aes(x = start_time, xend = end_time, y = 0, yend = 0),
+size = 0.8, color = "#018571", linetype = "dashed") +
+geom_segment(data = data.frame(start_time = 2008, end_time = 2018),
+aes(x = start_time, xend = end_time, y = 0, yend = 0),
+arrow = arrow(length = unit(0.2, "cm")),
+lineend = 'butt', size = 1, color = "black") +
+geom_point(aes(x = 2003, y = 0)) +
+geom_point(aes(x = 2008, y = 0)) +
+geom_point(aes(x = 2013, y =0), shape = 4, color = 'red', size = 5) +
+annotate("text", x = 2003, y = -0.05, family = "Times",
+label = latex2exp::TeX("2003", output="character"),
+hjust = 0.5, size = 4, parse = TRUE)+
+annotate("text", x = 2008, y = -0.05, family = "Times",
+label = latex2exp::TeX("T_0 = 2008", output="character"),
+hjust = 0.5, size = 4, parse = TRUE) +
+annotate("text", x = 2013, y = -0.05, color = "red", family = "Times",
+label = latex2exp::TeX("Amputation", output="character"),
+hjust = 0.5, size = 4, parse = TRUE) +
+annotate("text", x = 2018, y = -0.05, family = "Times",
+label = latex2exp::TeX("T_{end} = 2018", output="character"),
+hjust = 0.5, size = 4, parse = TRUE) +
+annotate("text", x = 2005.5, y = -0.18, family = "Times", color = "#018571",
+label = latex2exp::TeX("Baseline", output="character"),
+hjust = 0.5, size = 4, parse = TRUE) +
+annotate("text", x = 2013, y = -0.18, family = "Times", color = "#a6611a",
+label = latex2exp::TeX("Follow-up (N = 6,227,383)", output="character"),
+hjust = 0.5, size = 4, parse = TRUE) +
+annotate("text", x = 2003, y = -0.28, family = "Times", #color = "#018571",
+label = latex2exp::TeX("Inclusion and exclusion criteria:",
+output="character"),
+hjust = 0, size = 4, parse = TRUE) +
+annotate("text", x = 2003, y = -0.4, family = "Times", #color = "#018571",
+label = latex2exp::TeX("- At least one encounter at VHA one year before T_0,",  output="character"),
+hjust = 0, size = 4, parse = TRUE) +
+annotate("text", x = 2003, y = -0.47, family = "Times", #color = "#018571",
+label = latex2exp::TeX("- Interaction with VHA for at least 1 year,",  output="character"),
+hjust = 0, size = 4, parse = TRUE) +
+annotate("text", x = 2003, y = -0.54, family = "Times", #color = "#018571",
+label = latex2exp::TeX("- No amputation or death before T_0.",
+output = "character"),
+hjust = 0, size = 4, parse = TRUE) +
+ylim(c(-0.8, 0.2)) + xlim(c(2003, 2019)) +
+annotation_custom(b1)+
+annotation_custom(b2) +
+theme_void() +
+theme(legend.justification = c(1, 1), legend.position = "none", #c(0.75, 0.99),
+legend.direction="horizontal", text=element_text(family="Times"),
+panel.grid.minor = element_blank(),
+panel.grid.major = element_blank())
+ggsave("Plot - ggplot2/cohort_construction.png", width = 10, height = 4, dpi = 300)
+ggsave("Plot - ggplot2/cohort_construction.png", width = 5, height = 2, dpi = 300)
+ggsave("Plot - ggplot2/cohort_construction.png", width = 8, height = 3.2, dpi = 300)
+library(data.table)
+data(mtcars)
+mtcars$car <- factor(gsub("(.*?) .*", "\\1", rownames(mtcars)), ordered=TRUE)
+mtcars <- data.table(mtcars)
+mtcars
+mtcars[, list(Total=length(mpg)), by="car"][order(car)]
+mtcars[, list(Total=length(mpg)), by=car][order(car)]
+mtcars[,sum(mpg), gear]
+zz = function(d, var, group) return(d[,sum(var), group])
+zz(mtcars, mpg, gear)
+zz(mtcars, mpg, "gear")
+zz = function(d, var, group) return(d[,sum(var), substitute(group)])
+zz(mtcars, mpg, "gear")
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,sum(substitute(var)), substitute(group)])
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,sum(quote(var)), substitute(group)])
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,sum(quote(var)), quote(group)])
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,.(sum(quote(var))), quote(group)])
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,.(sum( substitute(var))),  substitute(group)])
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,sum( substitute(var)),  substitute(group)])
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) return(d[,sum(eval(substitute(var))),  eval(substitute(group))])
+zz(mtcars, mpg, gear)
+mtcars
+zz = function(d, var, group) {
+var = eval(substitute(var))
+group = eval(substitute(group))
+return(d[,sum(var), group])
+}
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) {
+return(d[,sum(get(var)), group])
+}
+zz(mtcars, mpg, gear)
+class(mtcars)
+zz = function(d, var, group) {
+return(d[,sum(get(var)), substitute(group)])
+}
+zz(mtcars, mpg, gear)
+zz = function(d, var, group) {
+return(d[,sum(get(var)), eval(group)])
+}
+zz(mtcars, mpg, gear)
+library(data.table)
+mtcars = data.table(mtcars)
+mtcars[,sum(mpg), gear]
+zz = function(data, var, group){
+return(data[,sum(var), group])
+}
+zz(mtcars, mpg, gear)
+library(data.table)
+mtcars = data.table(mtcars)
+zz = function(d, var, group) {
+return(d[,sum(get(var)), eval(group)])
+}
+zz(mtcars, mpg, gear)
+# https://stackoverflow.com/questions/58648886/a-simple-reproducible-example-to-pass-arguments-to-data-table-in-a-self-defined
+zz1 <- function(data, var, group){
+var <- substitute(var)
+group <- substitute(group)
+setnames(data[, sum(eval(var)), by = group],
+c(deparse(group), deparse(var)))[]
+# or use
+#  setnames(data[, sum(eval(var)), by = c(deparse(group))], 2, deparse(var))[]
+}
+zz1(mtcars, mpg, gear)
+data[, sum(eval(var)), by = group]
+zz1 <- function(data, var, group){
+var <- substitute(var)
+group <- substitute(group)
+data[, sum(eval(var)), by = group]
+# or use
+#  setnames(data[, sum(eval(var)), by = c(deparse(group))], 2, deparse(var))[]
+}
+zz1(mtcars, mpg, gear)
+pacman::p_load(rlang)
+gregor_rlang = function(data, var, group) {
+data[, sum(eval(enexpr(var))), by = .(group = eval(enexpr(group)))]
+}
+gregor_rlang(mt, mpg, cyl)
+gregor_rlang(mtcars, mpg, cyl)
+# (2)
+zz2 = function(dt, ...){
+return(dt[...])
+}
+zz2(mtcars, , sum(mpg), gear)
+zz2(mtcars, , .(abc = sum(mpg)), gear)
+data.frame(x = 1:10) %>%
+ggplot(aes(x = x)) + geom_point()
+ggplot(data.frame(x = 1:10), aes(x = x)) + geom_point()
+require(ggplot2)
+ggplot(data.frame(x = 1:10), aes(x = x)) + geom_point()
+ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) + geom_point()
+ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_bw()
+cars
+ggplot(cars, aes(speed dist)) +
+geom_point() + theme_bw()
+ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_bw()
+ggplot(iris, aes(Sepal.Width, Species)) +
+geom_boxplot() + theme_bw()
+ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_bw()
+require(ggplot2)
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_bw()
+p2 = ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_bw()
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_bw()
+ggsave("Rmarkdown tricks/p1.pdf", p1, width = 10, height = 6.18)
+ggsave("Rmarkdown tricks/p2.pdf", p2, width = 10, height = 6.18)
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 10, height = 6.18)
+ggsave("Rmarkdown tricks/p1.pdf", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.pdf", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 3, height = 3*.618)
+require(ggplot2)
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_bw()
+p2 = ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_bw()
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_bw()
+ggsave("Rmarkdown tricks/p1.eps", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.eps", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.eps", p3, width = 3, height = 3*.618)
+require(ggplot2)
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_bw()
+p2 = ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_bw()
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_bw()
+ggsave("Rmarkdown tricks/p1.svg", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.svg", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.svg", p3, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p1.pdf", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.pdf", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 3, height = 3*.618)
+geom_boxplot2 <- function(mapping = NULL, data = NULL, stat = "boxplot", position = "dodge2",
+..., outlier.colour = NULL, outlier.color = NULL, outlier.fill = NULL,
+outlier.shape = 1, outlier.size = 1.5, outlier.stroke = 0.5,
+outlier.alpha = NULL, notch = FALSE, notchwidth = 0.5, varwidth = FALSE,
+na.rm = FALSE, show.legend = NA, inherit.aes = TRUE,
+linetype = "dashed"){
+list(
+geom_boxplot(mapping = mapping, data = data, stat = stat, position = position,
+outlier.colour = outlier.colour, outlier.color = outlier.color,
+outlier.fill = outlier.fill, outlier.shape = outlier.shape,
+outlier.size = outlier.size, outlier.stroke = outlier.stroke,
+outlier.alpha = outlier.alpha, notch = notch,
+notchwidth = notchwidth, varwidth = varwidth, na.rm = na.rm,
+show.legend = show.legend, inherit.aes = inherit.aes,
+linetype = linetype, ...),
+stat_boxplot(aes(ymin = ..lower.., ymax = ..upper..), outlier.shape = 1) ,
+stat_boxplot(geom = "errorbar", aes(ymin = ..ymax..)) ,
+stat_boxplot(geom = "errorbar", aes(ymax = ..ymin..)) ,
+theme_classic(), # remove panel background and gridlines
+theme(plot.title = element_text(hjust = 0.5,  # hjust = 0.5 centers the title
+size = 14,
+face = "bold"),
+panel.border = element_rect(linetype = "solid",
+colour = "black", fill = "NA", size = 0.5))
+)
+}
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot2() + theme_bw()
+p3
+boxplot(Sepal.Width ~ Species, data = iris)
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_bw()
+p3
+require(ggthemes)
+require(ggtheme)
+install.packages("ggthemes")
+require(ggthemes)
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_clean()
+p3
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_clean())
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 3, height = 3*.618)
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_base())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_economist())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_economist_white())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_few())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_test())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_fivethirtyeight())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_foundation())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_gdocs())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_wsj())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_tufte())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_minimal())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_stata())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_solid())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_solarized())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_pander())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_minimal())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_void())
+(p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_tufte())
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_tufte()
+p2 = ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_tufte()
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_tufte()
+require(ggthemes)
+require(ggplot2)
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_tufte()
+p2 = ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_tufte()
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_tufte()
+ggsave("Rmarkdown tricks/p1.pdf", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.pdf", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p1.svg", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.svg", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.svg", p3, width = 3, height = 3*.618)
+require(ggthemes)
+require(ggplot2)
+p1 = ggplot(data.frame(x = 1:10, y = 1:10), aes(x = x, y = y)) +
+geom_point() + theme_bw()
+p2 = ggplot(cars, aes(speed, dist)) +
+geom_point() + theme_bw()
+p3 = ggplot(iris, aes(Species, Sepal.Width)) +
+geom_boxplot() + theme_bw()
+p1; p2; p3
+p1 = p1 + theme_tufte()
+p2 = p2 + theme_tufte()
+p3 = p3 + theme_tufte()
+ggsave("Rmarkdown tricks/p1.pdf", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.pdf", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.pdf", p3, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p1.svg", p1, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p2.svg", p2, width = 3, height = 3*.618)
+ggsave("Rmarkdown tricks/p3.svg", p3, width = 3, height = 3*.618)
+rsthemes::try_rsthemes()
+rsthemes::try_rsthemes("light")
+rstudioapi::applyTheme()
+rsthemes::list_rsthemes()
+rstudioapi::applyTheme("One Dark {rsthemes}")
+devtools::install_github("gadenbuie/rsthemes")
+?mget
+pacman::p_load(microbenchmark, data.table)
+set.seed(123)
+z = data.table(x = sample(c(NA_integer_, 1), 2e7, TRUE))
+pacman::p_load(microbenchmark, data.table)
+f_gdata = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 2e7, TRUE))
+z[,x1 := gdata::NAToUnknown(x, 0)]
+}
+f_fifelse = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 2e7, TRUE))
+z[,x1 := fifelse(is.na(x), 0, x)]
+}
+f_twostep = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 2e7, TRUE))
+z[, x1 := 1]
+z[is.na(x), x1 := 0]
+}
+microbenchmark::microbenchmark(f_gdata, f_fifelse, f_twostep)
+f_gdata = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x1 := gdata::NAToUnknown(x, 0)]
+}
+f_fifelse = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x1 := fifelse(is.na(x), 0, x)]
+}
+f_twostep = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[, x1 := 1]
+z[is.na(x), x1 := 0]
+}
+microbenchmark::microbenchmark(f_gdata, f_fifelse, f_twostep)
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[, x1 := 1]
+z[is.na(x), x1 := 0]
+set.seed(123)
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+pacman::p_load(microbenchmark, data.table)
+f_gdata = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x1 := gdata::NAToUnknown(x, 0)]
+return(z)
+}
+f_fifelse = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x1 := fifelse(is.na(x), 0, x)]
+return(z)
+}
+f_twostep = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[, x1 := 1]
+z[is.na(x), x1 := 0]
+return(z)
+}
+microbenchmark::microbenchmark(f_gdata, f_fifelse, f_twostep)
+set.seed(7)
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+pacman::p_load(microbenchmark, data.table)
+f_gdata = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x1 := gdata::NAToUnknown(x, 0)]
+return(z)
+}
+f_fifelse = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x1 := fifelse(is.na(x), 0, x)]
+return(z)
+}
+f_twostep = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[, x1 := 1]
+z[is.na(x), x1 := 0]
+return(z)
+}
+microbenchmark::microbenchmark(f_gdata, f_fifelse, f_twostep)
+set.seed(7)
+pacman::p_load(microbenchmark, data.table)
+f_gdata = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x := gdata::NAToUnknown(x, 0)]
+return(z)
+}
+f_fifelse = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x := fifelse(is.na(x), 0, x)]
+return(z)
+}
+f_twostep = function(){
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[is.na(x), x := 0]
+return(z)
+}
+microbenchmark::microbenchmark(f_gdata, f_fifelse, f_twostep)
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x := gdata::NAToUnknown(x, 0)]
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[,x := fifelse(is.na(x), 0, x)]
+z = data.table(x = sample(c(NA_integer_, 1), 5e7, TRUE))
+z[is.na(x), x := 0]
+z = readxl::read_excel("data/OOE_excel.xlsx")
+z = readxl::read_excel("world_bivar_map/data/OOE_excel.xlsx")
+z
+# Shape file downloaded from:
+# https://hub.arcgis.com/datasets/a21fdb46d23e4ef896f31475217cbb08_1/data
+pacman::p_load(sf, dplyr, tidyr, ggplot2, viridis, cowplot)
+z = readxl::read_excel("world_bivar_map/data/OOE_excel.xlsx") %>% select("CNTRY_NAME", "sdi", "OOE")
+33976927+38817014
+11402355+11402355
+11402355+32344598
+6617631*11
+1444+806+781
+load("F:/Onedrive/OneDrive - Saint Louis University/Orders/Chang Xu/dat_O2016_2.Rdata")
+load("F:/Onedrive/OneDrive - Saint Louis University/Orders/Chang Xu/DL20171204_OP.Rdata")
+load("F:/Onedrive/OneDrive - Saint Louis University/Orders/Chang Xu/UPDATEOP1317.Rdata")
+load("F:/Onedrive/OneDrive - Saint Louis University/Orders/Chang Xu/UPDATEOP1317.Rdata")
+(-8.108 - 7.845)/2
+exp(0.899)
+exp(1.288)
+delta = p2018*Rate - p2008*Rate
+smoke = c("NS", "NS", "FS", "FS", "CS", "CS")
+gender = c("F", "M", "F", "M", "F", "M")
+p2008 = c(0.2, 0.2, 0.1, 0.2, 0.15, 0.15)
+p2018 = c(0.1, 0.1, 0.2, 0.2, 0.10, 0.30)
+Rate = c(1, 2, 3, 5, 6, 10)
+delta = p2018*Rate - p2008*Rate
+delta = sum(p2018*Rate) - sum(p2008*Rate)
+delta
+smoke = c("NS", "NS", "FS", "FS", "CS", "CS")
+gender = c("F", "M", "F", "M", "F", "M")
+p2008 = c(0.2, 0.2, 0.1, 0.2, 0.15, 0.15)
+p2018 = c(0.1, 0.1, 0.2, 0.2, 0.10, 0.30)
+Rate = c(1, 2, 3, 5, 6, 10)
+delta = sum(p2018*Rate) - sum(p2008*Rate)
+delta
+p2018*Rate
+sum(p2018*Rate)
+sum(p2008*Rate)
+(p2018 - p2008)*Rate
+sum((p2018 - p2008)*Rate)
+(p2008[gender == "F"]*Rate[gender == "F"] + p2018[gender == "F"]*Rate[gender == "F"])/(p2008[gender == "F"] + p2018[gender == "F"])
+sum(p2008[gender == "F"]*Rate[gender == "F"] + p2018[gender == "F"]*Rate[gender == "F"])/sum(p2008[gender == "F"] + p2018[gender == "F"])
+sum(p2008[gender == "M"]*Rate[gender == "M"] + p2018[gender == "M"]*Rate[gender == "M"])/sum(p2008[gender == "M"] + p2018[gender == "M"])
+devtools::install_github('sadatnfs/dgdecomp/dgdecomp')
+devtools::install_github('sadatnfs/dgdecomp')
+devtools::install_github('sadatnfs/dgdecomp')
+devtools::install_github('sadatnfs/dgdecomp/dgdecomp')
+sm = "NS"
+sum(p2008[smoke == sm]*Rate[smoke == sm] + p2018[smoke == sm]*Rate[smoke == sm])/sum(p2008[smoke == sm] + p2018[smoke == sm])
+sm = "FS"
+sum(p2008[smoke == sm]*Rate[smoke == sm] + p2018[smoke == sm]*Rate[smoke == sm])/sum(p2008[smoke == sm] + p2018[smoke == sm])
+sm = "CS"
+sum(p2008[smoke == sm]*Rate[smoke == sm] + p2018[smoke == sm]*Rate[smoke == sm])/sum(p2008[smoke == sm] + p2018[smoke == sm])
+devtools::install_github('sadatnfs/dgdecomp/dgdecomp')
+sessionInfo()
