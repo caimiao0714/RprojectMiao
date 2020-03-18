@@ -1,0 +1,364 @@
+---
+title: 'The Charlson comorbidity index and the Elixhauser index: do they work for
+  the Chinese population?'
+author: "Miao Cai <miao.cai@slu.edu>"
+date: "r Sys.Date()"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+
+
+```{r get data from sql, eval = F, include = F}
+#library(RODBC)
+#myconn <- odbcConnect('dl20171204', uid='sa', pwd='123456')
+
+#1. HR: I11.0, I13.0, I13.2, I50
+CHF20171204 <- sqlFetch(myconn, 'CHF20171204')
+
+#2. CRF: N18
+CRF20171204 <- sqlFetch(myconn, 'CRF20171204')
+
+#3. Type 2 Diabetes: E11
+DIA20171204 <- sqlFetch(myconn, 'DIA20171204')
+
+#4. Stroke: I60, I61, I63, I64
+STROKE20171204 <- sqlFetch(myconn, 'STROKE20171204')
+
+#5. PCI: 00.66, 36.01, 36.02, 36.05
+PCI20171204 <- sqlFetch(myconn, 'PCI20171204')
+
+# save(CHF20171204, file = ".\\Data\\CHF20171204.Rdata")
+# save(CRF20171204, file = ".\\Data\\CRF20171204.Rdata")
+# save(DIA20171204, file = ".\\Data\\DIA20171204.Rdata")
+# save(STROKE20171204, file = ".\\Data\\STROKE20171204.Rdata")
+# save(PCI20171204, file = ".\\Data\\PCI20171204.Rdata")
+```
+
+```{r functions}
+pacman::p_load(icd, tidyverse, DescTools)
+Sys.setlocale(category="LC_ALL",locale="chinese")
+
+cleandat = function(dat){
+  
+  dat %>% dplyr::mutate_if(is.factor, as.character) -> dat
+  dat = dat[(!is.na(dat$年龄)) & (!is.na(dat$性别)) & dat$年龄 >= 18,]
+  names(dat)[which(names(dat) == "其他诊断3")] = "zzz"
+  names(dat)[which(names(dat) == "其他诊断编码3")] = "其他诊断3"
+  names(dat)[which(names(dat) == "zzz")] = "其他诊断编码3"
+  dat$visit_name = 1:nrow(dat)
+  dat$其他诊断编码1[is.na(dat$其他诊断编码1)] = "NA0"
+  dat$其他诊断编码1 <- sub("^$", "NA0", dat$其他诊断编码1)
+  # 1. variable - female
+  dat$female = 0
+  dat$female[dat$性别 == 2] = 1
+  # 2. variable - age
+  dat$age = "18-45"
+  dat$age[dat$年龄 > 45 & dat$年龄 <= 65] = "46-65"
+  dat$age[dat$年龄 > 65 & dat$年龄 <= 75] = "66-75"
+  dat$age[dat$年龄 > 75] = "75+"
+  # 3. variable - marriage
+  dat$marriage = "other"
+  dat$marriage[dat$婚姻 == 1] = "unmarried"
+  dat$marriage[dat$婚姻 == 2] = "married"
+  dat$marriage[dat$婚姻 == 3] = "widowed"
+  dat$marriage[dat$婚姻 == 4] = "divorced"
+  dat$marriage = factor(dat$marriage, levels = c("married", "unmarried", "widowed", "divorced", "other"))
+  # 4. variable - occupation
+  dat$occupation = "other"
+  dat$occupation[dat$职业 %in% c(11, 17, 37)] = "public institution"
+  dat$occupation[dat$职业 %in% c(13, 21, 24, 51, 54)] = "private institution"
+  dat$occupation[dat$职业 == 27] = "farmer"
+  dat$occupation[dat$职业 == 70] = "jobless"
+  dat$occupation[dat$职业 == 80] = "retired"
+  # 5. variable - los
+  dat$los_quart = as.integer(cut(dat$实际住院天数, quantile(dat$实际住院天数, probs=0:4/4), include.lowest=TRUE))
+  dat$los_quart = factor(dat$los_quart)
+  # 6. variable - hospital level
+  dat$hlevel = "secondary"
+  dat$hlevel[dat$医院级别 == "三级"] = "tertiary"
+  # outcome - death
+  dat$outcome = 0
+  dat$outcome[dat$主诊断出院情况 == "4"] = 1
+  
+  dat_sub = subset(dat, select = c("visit_name","outcome", "female", "age", "marriage", "occupation", "los_quart", "hlevel"))
+  
+  return(dat_sub)
+}
+
+
+
+fun_com = function(dat, choice = c("cci", "eci", "cci_quan", "Walraven")){
+  
+  dat %>% dplyr::mutate_if(is.factor, as.character) -> dat
+  dat = dat[(!is.na(dat$年龄)) & (!is.na(dat$性别)) & dat$年龄 >= 18,]
+  names(dat)[which(names(dat) == "其他诊断3")] = "zzz"
+  names(dat)[which(names(dat) == "其他诊断编码3")] = "其他诊断3"
+  names(dat)[which(names(dat) == "zzz")] = "其他诊断编码3"
+  dat$visit_name = 1:nrow(dat)
+  dat$其他诊断编码1[is.na(dat$其他诊断编码1)] = "NA0"
+  dat$其他诊断编码1 <- sub("^$", "NA0", dat$其他诊断编码1)
+  
+  dat1 = subset(dat, select = c("visit_name", paste("其他诊断编码", 1:10, sep = ""))) %>% as.data.frame() %>% as.icd_wide_data() %>% 
+    wide_to_long(icd_labels = paste("其他诊断编码", 1:10, sep = ""))
+  
+  if(choice == "cci"){
+    dat2 = dat1 %>% icd10_comorbid_quan_deyo() %>% as.data.frame()
+  }
+  if(choice == "eci"){
+    dat2 = dat1 %>% icd10_comorbid_quan_elix() %>% as.data.frame()
+  }
+  if(choice == "cci_quan"){
+    dat2 = dat1 %>% icd10_comorbid_quan_deyo() %>% charlson_from_comorbid(scoring_system = "quan") %>% as.data.frame()
+    names(dat2) = "cci_quan"
+  }
+  if(choice == "Walraven"){
+    dat2 = dat1 %>% icd10_comorbid_quan_elix() %>% van_walraven_from_comorbid() %>% as.data.frame()
+    names(dat2) = "Walraven"
+  }
+  if(choice == "Moore"){
+    dat2 = dat1 %>% icd10_comorbid_quan_elix() 
+    dat2 = dat2 %*% matrix(c(9, 0, 0, 3, 3, -1, 5, 5, 6, 0, -3, 0, 6, 4, 0, 0, 6, 14, 7, 0, 11, -5, 9, 11, -3, -2, -1, -7, -5, -5)) %>% as.data.frame()
+    names(dat2) = "Moore"
+  }
+  return(dat2)
+}
+
+```
+
+
+
+
+```{r chf}
+load(".\\Data\\CHF20171204.Rdata")
+
+CHF0 = cleandat(CHF20171204)
+
+CHF_cci = fun_com(CHF20171204, "cci")
+CHF_eci = fun_com(CHF20171204, "eci")
+CHF_cciquan = fun_com(CHF20171204, "cci_quan")
+CHF_Walraven = fun_com(CHF20171204, "Walraven")
+CHF_Moore = fun_com(CHF20171204, "Moore")
+
+lmCHF0 = CHF0 %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCHF1 = cbind(CHF0, CHF_cci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCHF2 = cbind(CHF0, CHF_eci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCHF3 = cbind(CHF0, CHF_cciquan) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCHF4 = cbind(CHF0, CHF_Walraven) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCHF5 = cbind(CHF0, CHF_Moore) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+
+DescTools::Cstat(lmCHF0)
+DescTools::Cstat(lmCHF1)
+DescTools::Cstat(lmCHF2)
+DescTools::Cstat(lmCHF3)
+DescTools::Cstat(lmCHF4)
+DescTools::Cstat(lmCHF5)
+
+```
+
+```{r crf}
+load(".\\Data\\CRF20171204.Rdata")
+
+CRF0 = cleandat(CRF20171204)
+
+CRF_cci = fun_com(CRF20171204, "cci")
+CRF_eci = fun_com(CRF20171204, "eci")
+CRF_cciquan = fun_com(CRF20171204, "cci_quan")
+CRF_Walraven = fun_com(CRF20171204, "Walraven")
+CRF_Moore = fun_com(CRF20171204, "Moore")
+
+lmCRF0 = CRF0 %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCRF1 = cbind(CRF0, CRF_cci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCRF2 = cbind(CRF0, CRF_eci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCRF3 = cbind(CRF0, CRF_cciquan) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCRF4 = cbind(CRF0, CRF_Walraven)%>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmCRF5 = cbind(CRF0, CRF_Moore) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+
+DescTools::Cstat(lmCRF0)
+DescTools::Cstat(lmCRF1)
+DescTools::Cstat(lmCRF2)
+DescTools::Cstat(lmCRF3)
+DescTools::Cstat(lmCRF4)
+DescTools::Cstat(lmCRF5)
+```
+
+
+```{r diabetes}
+require(dplyr)
+require(icd)
+
+load(".\\Data\\DIA20171204.Rdata")
+
+DIA0 = cleandat(DIA20171204)
+
+DIA_cci = fun_com(DIA20171204, "cci")
+DIA_eci = fun_com(DIA20171204, "eci")
+DIA_cciquan = fun_com(DIA20171204, "cci_quan")
+DIA_Walraven = fun_com(DIA20171204, "Walraven")
+DIA_Moore = fun_com(DIA20171204, "Moore")
+
+lmDIA0 = DIA0 %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmDIA1 = cbind(DIA0, DIA_cci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmDIA2 = cbind(DIA0, DIA_eci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmDIA3 = cbind(DIA0, DIA_cciquan) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmDIA4 = cbind(DIA0, DIA_Walraven) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmDIA5 = cbind(DIA0, DIA_Moore) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+
+DescTools::Cstat(lmDIA0)
+DescTools::Cstat(lmDIA1)
+DescTools::Cstat(lmDIA2)
+DescTools::Cstat(lmDIA3)
+DescTools::Cstat(lmDIA4)
+DescTools::Cstat(lmDIA5)
+```
+
+```{r stroke DONOTRUN}
+load(".\\Data\\STROKE20171204.Rdata")
+
+STROKE0 = cleandat(STROKE20171204)
+
+STROKE_cci = fun_com(STROKE20171204, "cci")
+STROKE_eci = fun_com(STROKE20171204, "eci")
+STROKE_cciquan = fun_com(STROKE20171204, "cci_quan")
+STROKE_Walraven = fun_com(STROKE20171204, "Walraven")
+STROKE_Moore = fun_com(STROKE20171204, "Moore")
+
+lmSTROKE0 = STROKE0 %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmSTROKE1 = cbind(STROKE0, STROKE_cci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmSTROKE2 = cbind(STROKE0, STROKE_eci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmSTROKE3 = cbind(STROKE0, STROKE_cciquan) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmSTROKE4 = cbind(STROKE0, STROKE_Walraven) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmSTROKE5 = cbind(STROKE0, STROKE_Moore) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+
+DescTools::Cstat(lmSTROKE0)
+DescTools::Cstat(lmSTROKE1)
+DescTools::Cstat(lmSTROKE2)
+DescTools::Cstat(lmSTROKE3)
+DescTools::Cstat(lmSTROKE4)
+DescTools::Cstat(lmSTROKE5)
+```
+
+```{r pci}
+load(".\\Data\\PCI20171204.Rdata")
+
+PCI0 = cleandat(PCI20171204)
+
+PCI_cci = fun_com(PCI20171204, "cci")
+PCI_eci = fun_com(PCI20171204, "eci")
+PCI_cciquan = fun_com(PCI20171204, "cci_quan")
+PCI_Walraven = fun_com(PCI20171204, "Walraven")
+PCI_Moore = fun_com(PCI20171204, "Moore")
+
+lmPCI0 = PCI0 %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmPCI1 = cbind(PCI0, PCI_cci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmPCI2 = cbind(PCI0, PCI_eci) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmPCI3 = cbind(PCI0, PCI_cciquan) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmPCI4 = cbind(PCI0, PCI_Walraven) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+lmPCI5 = cbind(PCI0, PCI_Moore) %>% select(-visit_name) %>% glm(outcome ~ ., data = ., family = "binomial")
+
+DescTools::Cstat(lmPCI0)
+DescTools::Cstat(lmPCI1)
+DescTools::Cstat(lmPCI2)
+DescTools::Cstat(lmPCI3)
+DescTools::Cstat(lmPCI4)
+DescTools::Cstat(lmPCI5)
+```
+
+```{r tab1}
+tableone::CreateTableOne(data = cbind(CHF0, CHF_cciquan, CHF_Walraven, CHF_Moore))
+tableone::CreateTableOne(data = cbind(CRF0, CRF_cciquan, CRF_Walraven, CRF_Moore))
+tableone::CreateTableOne(data = cbind(DIA0, DIA_cciquan, DIA_Walraven, DIA_Moore))
+tableone::CreateTableOne(data = cbind(PCI0, PCI_cciquan, PCI_Walraven, PCI_Moore))
+```
+
+
+
+```{r tabcom}
+comorbids = c(paste("CCI", names(STROKE_cci), sep = "-"), paste("ECI", names(STROKE_eci), sep = "-"))
+
+com_chf = unname(c(colSums(CHF_cci), colSums(CHF_eci)))
+com_crf = unname(c(colSums(CRF_cci), colSums(CRF_eci)))
+com_dia = unname(c(colSums(DIA_cci), colSums(DIA_eci)))
+com_pci = unname(c(colSums(PCI_cci), colSums(PCI_eci)))
+
+com_chf = paste(com_chf, round(com_chf*100/nrow(CHF_cci), 1), sep = " (") %>% paste(., "%)", sep = "")
+com_crf = paste(com_crf, round(com_crf*100/nrow(CRF_cci), 1), sep = " (") %>% paste(., "%)", sep = "")
+com_dia = paste(com_dia, round(com_dia*100/nrow(DIA_cci), 1), sep = " (") %>% paste(., "%)", sep = "")
+com_pci = paste(com_pci, round(com_pci*100/nrow(PCI_cci), 1), sep = " (") %>% paste(., "%)", sep = "")
+
+tabcom = data.frame(comorbids, com_chf, com_crf, com_dia, com_pci)
+
+write.csv(tabcom, ".//Data//tabcom.csv")
+```
+
+
+
+```{r tabroc}
+require(DescTools)
+
+variable = c("sociodemo", "socio + 17 Charlson", "socio + 30 Elixhauser", "socio + Quan (2011)", "socio + van Walraven (2009)", "socio + Moore (2017)")
+rocchf = c(Cstat(lmCHF0), Cstat(lmCHF1), Cstat(lmCHF2), Cstat(lmCHF3), Cstat(lmCHF4), Cstat(lmCHF5))
+roccrf = c(Cstat(lmCRF0), Cstat(lmCRF1), Cstat(lmCRF2), Cstat(lmCRF3), Cstat(lmCRF4), Cstat(lmCRF5))
+rocdiab = c(Cstat(lmDIA0), Cstat(lmDIA1), Cstat(lmDIA2), Cstat(lmDIA3), Cstat(lmDIA4), Cstat(lmDIA5))
+rocpci = c(Cstat(lmPCI0), Cstat(lmPCI1), Cstat(lmPCI2), Cstat(lmPCI3), Cstat(lmPCI4), Cstat(lmPCI5))
+# rocstroke = rep(NA, 6)
+# rocstroke[1] = Cstat(lmSTROKE0)
+# rocstroke[2] = Cstat(lmSTROKE1)
+# rocstroke[3] = Cstat(lmSTROKE2)
+# rocstroke[4] = Cstat(lmSTROKE3)
+# rocstroke[5] = Cstat(lmSTROKE4)
+# rocstroke[6] = Cstat(lmSTROKE5)
+#  Error: cannot allocate vector of size 3.6 Gb 
+
+tabroc = data.frame(variable, rocchf, roccrf, rocdiab, rocpci)
+names(tabroc) = c("variable", "CHF", "CRF", "Diabetes", "PCI")
+
+write.csv(tabroc, ".//Data//tabroc.csv")
+```
+
+
+```{r plot}
+pacman::p_load(hrbrthemes, dplyr, ggplot2, tidyr, ggthemes, extrafont)
+
+extrafont::loadfonts(device="pdf")
+extrafont::loadfonts(device="postscript")
+extrafont::loadfonts(device="eps")
+
+tabroc = readr::read_csv(".//Data//tabroc.csv") %>% select(-1)
+
+t = gather(tabroc, key = disease, value = `C-statistics`, -variable)
+names(t) = c("Variable sets", "Disease cohorts", "C-statistics")
+t$`Variable sets` = factor(t$`Variable sets`, levels = c(
+  "sociodemo",
+  "socio + Quan (2011)",
+  "socio + van Walraven (2009)",
+  "socio + Moore (2017)",
+  "socio + 17 Charlson",
+  "socio + 30 Elixhauser"))
+
+#+ ggtitle("Figure 1 Comparison of C-statistics among different variable sets")
+
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+#tiff("Figure 1.tiff", units="px", width=4000, height=2500, res = 600, pointsize = 8)
+t %>% 
+  ggplot(aes(x = `Disease cohorts`, 
+             y = `C-statistics`, 
+             fill = `Variable sets`)) + 
+  geom_bar(stat = "identity", 
+           width = 0.75, 
+           position=position_dodge())  + 
+  scale_fill_manual(values = c('#D6D6D6','#DAA520', '#1e656d', 
+                               '#228B22', '#FF8247', '#FF0000')) +
+  coord_cartesian(ylim=c(0.5, 1)) + 
+  theme_few() + 
+  theme() #text = element_text(family="Times")
+
+ggsave("fig1.pdf", device="pdf", width = 10, height = 6.18)
+ggsave("fig1.eps", width = 10, height = 6.18)
+ggsave("fig1.png", width = 10, height = 6.18, dpi = 400)
+```
+
+
