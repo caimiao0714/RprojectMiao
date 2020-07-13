@@ -1,11 +1,6 @@
 ## template of an R script to fit BYM2 model
-
-library(rstan);
+pacman::p_load(rstan, maptools, spdep, rgdal)
 options(mc.cores = 2);
-
-library(maptools);   
-library(spdep);
-library(rgdal)
 
 # using nb_object helper functions
 source("nb_data_funs.R");
@@ -41,4 +36,4 @@ N_edges = nbs$N_edges;
 # fit model
 bym2_stanfit = stan("bym2.stan",
   data=list(N,N_edges,node1,node2,y,E,scaling_factor),
-  iter=5000, warmup=4000, chains= 4, control = list(adapt_delta = 0.95), save_warmup=FALSE);
+  iter=5000, warmup=4000, chains= 4, control = list(adapt_delta = 0.95), save_warmup=FALSE)

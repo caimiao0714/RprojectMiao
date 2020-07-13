@@ -19,3 +19,6 @@ mungeCARdata4stan = function(adjBUGS,numBUGS) {
   return (list("N"=N,"N_edges"=N_edges,"node1"=node1,"node2"=node2));
 }
 
+
+
+
