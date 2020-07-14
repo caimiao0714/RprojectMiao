@@ -1,32 +1,19 @@
 require(tableone)
 require(tidyverse)
-vars <- c("Lifeexpectancy",  "CHICHE_SHA2011", "CHEGDP_SHA2011",
-          "GGHE_DGDP_SHA2011", "PVT_DCHE_SHA2011",
-          "OOPSCHE_SHA2011", "CFACHE_SHA2011", "Population", "GDP" )
+vars <- c("Lifeexpectancy",  "CHICHE_SHA2011")
 
-tmp1 <- print(CreateContTable(vars, strata = "CountryIncomeGroup", data = f1),
-              printToggle = FALSE) %>%
-  as.data.frame() %>% select(c(2:4, 1))
-
-tmp2 <-  print(CreateContTable(vars, data = f1),
-               printToggle = FALSE) %>%
-  as.data.frame()
-
-tab1 <- cbind( tmp2, tmp1)
-
-row.names(tab1) = c(
-  'No of observations',
-  'Life expectancy',
-  'Compulsory health insurance as percent of CHE',
-  'Current health expenditure as percent of GDP',
-  'Government Health Expenditure as percent of GDP',
-  'Private health expenditure as percent CHE',
-  'Out-of-pocket payment as percent of CHE',
-  'Compulsory financing arrangements as percent of CHE',
-  'Population (millions)',
-  'GDP'
-)
-names(tab1) = c("Overall", "Low", "Low-Mid", "Up-Mid", "High")
+d1 = CreateContTable(vars = 
+  c('prep_inten', 'prep_prob', 'wind_speed', 'visibility'), data = d) %>% 
+  print(printToggle = FALSE) %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column() %>% 
+  mutate_if(is.factor, as.character)
+d2 = CreateCatTable(vars = 
+  c('weekend', 'holiday', 'hour_of_day'), data = d) %>% 
+  print(printToggle = FALSE) %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column() %>% 
+  mutate_if(is.factor, as.character)
 
 
 windowsFonts(Times=windowsFont("Times New Roman"))
