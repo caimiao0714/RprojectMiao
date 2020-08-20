@@ -126,3 +126,30 @@ conda remove --name myenv --all
 jupyter kernelspec uninstall unwanted_kernel
 ```
 
+
+
+
+Miao Cai is inviting you to a scheduled Zoom meeting.
+
+Topic: My Meeting
+Time: Aug 20, 2020 11:00 AM Central Time (US and Canada)
+
+Join Zoom Meeting
+https://slu.zoom.us/j/93475270012?pwd=eWhUSzRUUWt3U20xOVpiQzhRVDhjZz09
+
+Meeting ID: 934 7527 0012
+Password: 425644
+
+One tap mobile
++19292056099,93475270012# US (New York)
++13017158592,93475270012# US (Germantown)
+
+Dial by your location
+        +1 929 205 6099 US (New York)
+        +1 301 715 8592 US (Germantown)
+        +1 312 626 6799 US (Chicago)
+        +1 669 900 6833 US (San Jose)
+        +1 253 215 8782 US (Tacoma)
+        +1 346 248 7799 US (Houston)
+Meeting ID: 934 7527 0012
+Find your local number: https://slu.zoom.us/u/aeEREis2LW
