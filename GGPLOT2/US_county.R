@@ -6,7 +6,8 @@ us_county_income <- get_acs(geography = "county", variables = "B19013_001",
   mutate(State = gsub('(.*)(, )(.*)', '\\3', NAME),
          County = gsub('(.*)(, )(.*)', '\\1', NAME),
          FIPS = GEOID,
-         Income = estimate)
+         Income = estimate) %>%
+  dplyr::select(State, County, FIPS, Income)
 st_write(us_county_income, 'GGPLOT2/US_county_map/US_shape/US_county.shp',
          layer_options = "ENCODING=UTF-8", delete_layer = TRUE)
 
