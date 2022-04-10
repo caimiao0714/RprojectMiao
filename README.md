@@ -150,7 +150,7 @@ conda config --set channel_priority strict # set up conda-forge as the default c
 conda search r-base
 conda update -n base -c defaults conda
 
-conda create -n r4.1 conda-forge python=3.8 r-base=4.1.3
+conda create -n r4.1 python=3.8 r-base=4.1.3
 conda activate r4.1
 #conda install -c conda-forge r-base=4.1.3
 
