@@ -126,30 +126,33 @@ conda remove --name myenv --all
 jupyter kernelspec uninstall unwanted_kernel
 ```
 
+# Create R environment using conda
 
+## 1. Install conda on linux
+```
+du -h --max-depth=1 | sort -hr
+wget https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
+ssh cn5
+bash Anaconda3-2021.11-Linux-x86_64.sh
 
+vi ~/.bashrc
+export PATH=$PATH:/home/lighthouse/anaconda3/bin
+source ~/.bashrc
+conda --version
+```
 
-Miao Cai is inviting you to a scheduled Zoom meeting.
+## 2. Install base-R using conda
 
-Topic: My Meeting
-Time: Aug 20, 2020 11:00 AM Central Time (US and Canada)
+```
+conda install mamba -n base -c conda-forge -y # faster downloading of packages in conda using mamba
+conda config --add channels conda-forge # add conda-forge
+conda config --set channel_priority strict # set up conda-forge as the default channel
+conda search r-base
+conda update -n base -c defaults conda
 
-Join Zoom Meeting
-https://slu.zoom.us/j/93475270012?pwd=eWhUSzRUUWt3U20xOVpiQzhRVDhjZz09
+conda create -n r4.1 python=3.8 
+conda activate r4.1
+conda install -c conda-forge r-base=4.1.3
 
-Meeting ID: 934 7527 0012
-Password: 425644
-
-One tap mobile
-+19292056099,93475270012# US (New York)
-+13017158592,93475270012# US (Germantown)
-
-Dial by your location
-        +1 929 205 6099 US (New York)
-        +1 301 715 8592 US (Germantown)
-        +1 312 626 6799 US (Chicago)
-        +1 669 900 6833 US (San Jose)
-        +1 253 215 8782 US (Tacoma)
-        +1 346 248 7799 US (Houston)
-Meeting ID: 934 7527 0012
-Find your local number: https://slu.zoom.us/u/aeEREis2LW
+conda install -c r r-glue r-fansi 
+```
