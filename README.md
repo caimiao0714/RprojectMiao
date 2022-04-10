@@ -156,3 +156,9 @@ conda install -c conda-forge r-base=4.1.3
 
 conda install -c r r-glue r-fansi 
 ```
+
+## 3. Install R package from source
+
+```
+install.packages('', repos = NULL, type = "source")
+```
