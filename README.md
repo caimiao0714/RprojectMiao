@@ -162,3 +162,22 @@ conda install -c r r-glue r-fansi
 ```
 install.packages('', repos = NULL, type = "source")
 ```
+
+# Linux setting
+Change the user's home directory + Move the contents of the user's current directory
+
+```
+usermod -m -d /newhome/username username
+```
+- `usermod` is the command to edit an existing user.
+- `-d` (abbreviation for `--home`) will change the user's home directory.
+`-m` (abbreviation for `--move-home`) will move the content from the user's current directory to the new directory.
+
+
+Linux Change Default User Home Directory While Adding A New User:
+
+```
+vi /etc/default/useradd
+# HOME=/home
+HOME=/newpath/path_folder
+```
