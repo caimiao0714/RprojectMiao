@@ -181,3 +181,11 @@ vi /etc/default/useradd
 # HOME=/home
 HOME=/newpath/path_folder
 ```
+
+Kill rstudio-server
+
+```
+ps -ef | grep rserver
+kill -9 <PID>
+rstudio-server verify-installation
+```
