@@ -182,10 +182,53 @@ vi /etc/default/useradd
 HOME=/newpath/path_folder
 ```
 
+Check the IP address of the linux server: `hostname -I`
+
+
+## RStudio Server setting in Linux
+
 Kill rstudio-server
 
 ```
 ps -ef | grep rserver
 kill -9 <PID>
 rstudio-server verify-installation
+```
+
+More useful error message for RStudio Server
+
+```
+journalctl -u rstudio-server
+```
+
+Check if any service is listening on the port 8787
+
+```
+netstat -lntp
+lsof -i -P -n | grep LISTEN
+```
+
+Make port 8787 available 
+
+```
+ufw allow 8787/tcp
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+```
+
+Open a web link 
+
+```
+gio open command http://localhost:80
+xdg-open http://localhost:80
+```
+
+## Change R setting in Linux
+
+Change the path of installed R packages
+
+```
+cd ~/
+echo .Renviron
+vim .Renviron
+R_LIBS_USER = /your/specific/folder
 ```
