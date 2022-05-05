@@ -243,3 +243,52 @@ yum install devtoolset-7-toolchain
 scl enable devtoolset-7 bash
 gfortran --version | head -2
 ```
+
+## Install R packages by setting up Linux environment
+
+### Install proj-9.0.0 with sqlite3
+
+```
+cd proj-9.0.0
+mkdir build
+cd build
+cmake ..
+
+# Below are the error messages
+-- Requiring C++11
+-- Requiring C++11 - done
+-- Requiring C99
+-- Requiring C99 - done
+-- Configuring PROJ:
+-- PROJ_VERSION                   = 9.0.0
+-- nlohmann/json: internal
+CMake Error at CMakeLists.txt:176 (message):
+  sqlite3 dependency not found!
+
+
+CMake Error at CMakeLists.txt:182 (message):
+  sqlite3 >= 3.11 required!
+
+
+CMake Error at /usr/share/cmake3/Modules/FindPackageHandleStandardArgs.cmake:164 (message):
+  Could NOT find TIFF (missing: TIFF_LIBRARY TIFF_INCLUDE_DIR)
+Call Stack (most recent call first):
+  /usr/share/cmake3/Modules/FindPackageHandleStandardArgs.cmake:445 (_FPHSA_FAILURE_MESSAGE)
+  /usr/share/cmake3/Modules/FindTIFF.cmake:70 (FIND_PACKAGE_HANDLE_STANDARD_ARGS)
+  CMakeLists.txt:193 (find_package)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/data1/Software/PkgDownloads/proj-9.0.0/build/CMakeFiles/CMakeOutput.log".
+```
+
+```
+find / -name libsqlite3.so
+# /data1/Software/Installed/Anaconda3/pkgs/sqlite-3.36.0-hc218d9a_0/lib/libsqlite3.so
+# /data1/Software/Installed/Anaconda3/pkgs/sqlite-3.38.3-h4ff8645_0/lib/libsqlite3.so
+# /data1/Software/Installed/Anaconda3/lib/libsqlite3.so
+# /data1/Software/Installed/Anaconda3/envs/r4.1/lib/libsqlite3.so
+# /data1/Software/Installed/Anaconda3/envs/r-gluonts/lib/libsqlite3.so
+
+cmake -DCMAKE_PREFIX_PATH=/data1/Software/Installed/Anaconda3/ .. # the custom prefix for SQLite3 can be specified
+```
