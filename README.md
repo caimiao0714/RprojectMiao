@@ -232,3 +232,12 @@ echo .Renviron
 vim .Renviron
 R_LIBS_USER = /your/specific/folder
 ```
+
+Enable devtoolset-7 to update gcc, g++, and gfortran
+
+```
+yum install centos-release-scl-rh
+yum install devtoolset-7-toolchain
+scl enable devtoolset-7 bash
+gfortran --version | head -2
+```
