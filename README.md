@@ -212,7 +212,9 @@ Make port 8787 available
 
 ```
 ufw allow 8787/tcp
+firewall-cmd --list-all
 firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --reload
 ```
 
 Open a web link 
