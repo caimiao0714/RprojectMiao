@@ -226,6 +226,10 @@ export PATH=/opt/rh/devtoolset-7/root/usr/bin/:$PATH
 export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib64/:$LD_LIBRARY_PATH
 # export PATH=/data1/Software/Installed/Anaconda3/bin:$PATH
 source ~/.bashrc
+
+echo $PATH # copy the output of the environment variables
+vim /etc/environment # paste the output in this file
+source /etc/environment && export PATH
 ```
 
 ### cmake version 3
