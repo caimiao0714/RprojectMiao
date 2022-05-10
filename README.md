@@ -172,6 +172,7 @@ lsblk # list all hard drives
 fdisk -l # list all hard drives and path
 mount /dev/sda /data1/ # mount /dev/sda to path /data1/
 # note you need to mkdir /data1/ to run this command
+df -lh # Check disk usage and percent
 ```
 
 
@@ -204,6 +205,48 @@ Give a user sudo privilege
 usermod -aG wheel your-username
 ```
 
+## Install Linux compiling environment
+
+### devtoolset-7 (gcc, g++, and gfortran)
+
+Enable devtoolset-7 to update gcc, g++, and gfortran
+
+```
+yum install centos-release-scl-rh
+yum install devtoolset-7-toolchain
+scl enable devtoolset-7 bash
+gfortran --version | head -2
+```
+
+### cmake version 3
+
+[See gist here](https://gist.github.com/1duo/38af1abd68a2c7fe5087532ab968574e)
+
+```
+# use this:
+yum install cmake3
+
+# Don't use the code below (just as reference if the above code does not work)
+wget https://cmake.org/files/v3.12/cmake-3.12.3.tar.gz
+tar zxvf cmake-3.*
+cd cmake-3.*
+./bootstrap --prefix=/usr/ # note the '/local' should not be included
+make -j$(nproc)
+make install
+cmake --version
+```
+
+### `jpeglib.h`
+
+```
+sudo yum install libjpeg-turbo-devel
+```
+
+### `gmp.h`
+
+```
+sudo yum install mpfr-devel
+```
 
 ## Install R on CentOS
 
@@ -236,6 +279,7 @@ sudo ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 sudo ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 ```
 
+### 
 
 ## RStudio Server setting in Linux
 
@@ -287,16 +331,22 @@ vim .Renviron
 R_LIBS_USER = /your/specific/folder
 ```
 
-Enable devtoolset-7 to update gcc, g++, and gfortran
-
-```
-yum install centos-release-scl-rh
-yum install devtoolset-7-toolchain
-scl enable devtoolset-7 bash
-gfortran --version | head -2
-```
 
 ## Install R packages by setting up Linux environment
+
+Install R packages without loading R
+```
+R -e 'install.packages("sf", repos = "https://mirrors.sustech.edu.cn/CRAN/")'
+```
+
+To install `lme4` (dependency `nlopt`)
+
+```
+yum install nlopt nlopt-devel
+```
+
+
+
 
 ### Install proj-9.0.0 with sqlite3
 
