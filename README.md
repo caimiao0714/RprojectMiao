@@ -218,6 +218,16 @@ scl enable devtoolset-7 bash
 gfortran --version | head -2
 ```
 
+Need to export devtoolset-7 to system path
+
+```
+which gcc
+export PATH=/opt/rh/devtoolset-7/root/usr/bin/:$PATH 
+export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib64/:$LD_LIBRARY_PATH
+# export PATH=/data1/Software/Installed/Anaconda3/bin:$PATH
+source ~/.bashrc
+```
+
 ### cmake version 3
 
 [See gist here](https://gist.github.com/1duo/38af1abd68a2c7fe5087532ab968574e)
