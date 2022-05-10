@@ -194,6 +194,39 @@ usermod -m -d /newhome/username username
 
 Check the IP address of the linux server: `hostname -I`
 
+## Install R on CentOS
+
+[RStudio documentation](https://docs.rstudio.com/resources/install-r/)
+
+```
+# Enable the Extra Packages for Enterprise Linux (EPEL) repository
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
+
+# On RHEL 7, enable the Optional repository
+sudo subscription-manager repos --enable "rhel-*-optional-rpms"
+
+# If running RHEL 7 in a public cloud, such as Amazon EC2, enable the
+# Optional repository from Red Hat Update Infrastructure (RHUI) instead
+sudo yum install yum-utils
+sudo yum-config-manager --enable "rhel-*-optional-rpms"
+
+# Specify R version
+export R_VERSION=4.1.3
+
+# Download and install the desired version of R.
+curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm
+sudo yum install R-${R_VERSION}-1-1.x86_64.rpm
+
+# Verify R version
+/opt/R/${R_VERSION}/bin/R --version
+
+# Create a symlink for R
+sudo ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+sudo ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+
+
+```
+
 
 ## RStudio Server setting in Linux
 
