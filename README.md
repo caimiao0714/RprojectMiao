@@ -262,6 +262,10 @@ sudo yum install libjpeg-turbo-devel
 sudo yum install mpfr-devel
 ```
 
+### /lib64/libstdc++.so.6: version `CXXABI_1.3.8' not found 
+
+This problem is caused by low version of `libstdc++.so.6` in your /lib64/. You need to copy newer version of `libstdc++.so.6` (e.g. `libstdc++.so.6.0.28`) and create a soft link for this new `libstdc++.so.6`. See the tutorial [here](https://blog.csdn.net/a13568hki/article/details/108667044).
+
 ## Install R on CentOS
 
 [RStudio documentation](https://docs.rstudio.com/resources/install-r/)
