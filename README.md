@@ -192,7 +192,18 @@ usermod -m -d /newhome/username username
 - `-d` (abbreviation for `--home`) will change the user's home directory.
 `-m` (abbreviation for `--move-home`) will move the content from the user's current directory to the new directory.
 
-Check the IP address of the linux server: `hostname -I`
+Check the IP address of the linux server: 
+
+```
+hostname -I
+```
+
+Give a user sudo privilege
+
+```
+usermod -aG wheel your-username
+```
+
 
 ## Install R on CentOS
 
@@ -223,8 +234,6 @@ sudo yum install R-${R_VERSION}-1-1.x86_64.rpm
 # Create a symlink for R
 sudo ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 sudo ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
-
-
 ```
 
 
