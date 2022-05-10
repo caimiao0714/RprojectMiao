@@ -164,14 +164,15 @@ install.packages('', repos = NULL, type = "source")
 ```
 
 # Linux setting
-Change the user's home directory + Move the contents of the user's current directory
+
+Show all hard drives
 
 ```
-usermod -m -d /newhome/username username
+lsblk # list all hard drives
+fdisk -l # list all hard drives and path
+mount /dev/sda /data1/ # mount /dev/sda to path /data1/
+# note you need to mkdir /data1/ to run this command
 ```
-- `usermod` is the command to edit an existing user.
-- `-d` (abbreviation for `--home`) will change the user's home directory.
-`-m` (abbreviation for `--move-home`) will move the content from the user's current directory to the new directory.
 
 
 Linux Change Default User Home Directory While Adding A New User:
@@ -181,6 +182,15 @@ vi /etc/default/useradd
 # HOME=/home
 HOME=/newpath/path_folder
 ```
+
+Change the user's home directory + Move the contents of the user's current directory
+
+```
+usermod -m -d /newhome/username username
+```
+- `usermod` is the command to edit an existing user.
+- `-d` (abbreviation for `--home`) will change the user's home directory.
+`-m` (abbreviation for `--move-home`) will move the content from the user's current directory to the new directory.
 
 Check the IP address of the linux server: `hostname -I`
 
