@@ -153,6 +153,12 @@ If your `conda activate` is not working and us showing error messages like
 ```
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate my_env
+
+# Export these commands so that it works at every session
+export -f conda
+export -f __conda_activate
+export -f __conda_reactivate
+export -f __conda_hashr
 ```
 
 ## 2. Install base-R using conda
