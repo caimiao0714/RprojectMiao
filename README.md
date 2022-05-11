@@ -141,6 +141,20 @@ source ~/.bashrc
 conda --version
 ```
 
+If your `conda activate` is not working and us showing error messages like 
+
+    CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+    To initialize your shell, run
+
+    $ conda init <SHELL_NAME>". 
+ 
+[Do this](https://stackoverflow.com/questions/61915607/commandnotfounderror-your-shell-has-not-been-properly-configured-to-use-conda)
+    
+```
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate my_env
+```
+
 ## 2. Install base-R using conda
 
 ```
@@ -161,6 +175,18 @@ conda install -c r r-glue r-fansi
 
 ```
 install.packages('', repos = NULL, type = "source")
+```
+
+
+### 4. Use R environment set up by conda in RStudio Server
+
+Check out this [tutorial](https://github.com/grst/rstudio-server-conda). Use the [Running Locally tutorial](https://github.com/grst/rstudio-server-conda#running-locally).
+
+```
+git clone https://github.com/grst/rstudio-server-conda.git
+cd rstudio-server-conda/local
+conda activate my_project
+./start_rstudio_server.sh 8787  # use any free port number here. 
 ```
 
 # Linux setting
@@ -297,7 +323,7 @@ sudo ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
 sudo ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 ```
 
-### 
+
 
 ## RStudio Server setting in Linux
 
@@ -362,7 +388,6 @@ To install `lme4` (dependency `nlopt`)
 ```
 yum install nlopt nlopt-devel
 ```
-
 
 
 
