@@ -126,6 +126,14 @@ conda remove --name myenv --all
 jupyter kernelspec uninstall unwanted_kernel
 ```
 
+Add your conda env to jupyter notebook
+
+```
+conda activate your-env-name
+conda install ipykernel
+ipython kernel install --user --name=your-env-name
+```
+
 # Create R environment using conda
 
 ## 1. Install conda on linux
