@@ -245,6 +245,24 @@ Give a user sudo privilege
 usermod -aG wheel your-username
 ```
 
+### Difference between `/etc/environment` and `/etc/profile`
+
+- `/etc/environment` - This file is specifically meant for system-wide environment variable settings. It is not a script file, but rather consists of assignment expressions, one per line. Specifically, this file stores the system-wide locale and path settings.
+
+- `/etc/profile` - This file gets executed whenever a bash login shell is entered (e.g. when logging in from the console or over ssh), as well as by the DisplayManager when the desktop session loads.
+
+There is a very good tutorial on environmental variables: [A Guide on Environment Variable Configuration in Linux](https://www.alibabacloud.com/blog/a-guide-on-environment-variable-configuration-in-linux_598423)
+
+### Classification of Environment Variables
+
+Environment variables can be divided into user-defined and system-level environment variables.
+
+- Definition Files of **User-Level** Environment Variables: `~/.bashrc` and `~/.profile` (for some systems: `~/.bash_profile`)
+- Definition Files of **System-Level** Environment Variables: `/etc/bashrc`, `/etc/profile` (for some systems: `/etc/bash_profile`), and `/etc/environment`
+
+In addition, the system reads the ~/.bash_profile (or ~/.profile) file first for user-level environment variables. If there is no such file, read ~/.bash_login and then read ~/.bashrc based on the content of these files.
+
+
 ## Install Linux compiling environment
 
 ### devtoolset-7 (gcc, g++, and gfortran)
