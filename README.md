@@ -469,3 +469,36 @@ find / -name libsqlite3.so
 
 cmake -DCMAKE_PREFIX_PATH=/data1/Software/Installed/Anaconda3/ .. # the custom prefix for SQLite3 can be specified
 ```
+
+Network setting: automatically enable ethernet 1 when on boot
+
+```
+grep ONBOOT /etc/sysconfig/network-scripts/ifcfg-*
+vim /etc/sysconfig/network-scripts/ifcfg-em1
+ONBOOT=yes # add this line
+```
+
+Set timezone
+
+```
+timedatectl list-timezones
+timedatectl set-timezone Asia/Hong_Kong
+```
+
+Get the number of logical processors
+
+```
+grep processor /proc/cpuinfo | wc -l
+```
+
+## Enhance system security
+
+Ban an IP address:
+
+
+Check what user/IP is trying to log into the system
+
+```
+vim /var/log/secure
+```
+
