@@ -215,6 +215,35 @@ mount /dev/sda /data1/ # mount /dev/sda to path /data1/
 df -lh # Check disk usage and percent
 ```
 
+[root@localhost /]# mount /dev/sda /data2/
+mount: /dev/sda is write-protected, mounting read-only
+mount: wrong fs type, bad option, bad superblock on /dev/sda,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+
+```
+yum install nfs-utils # 读取nfs格式的硬盘
+mkfs.ext4 /dev/sda # 格式化
+```
+
+
+开机自动挂载
+
+```
+[root@localhost ~]# blkid /dev/sdb
+/dev/sdb: UUID="b8c4a45f-ed74-3089-fcdb-0273de904d6d" TYPE="ext4" 
+
+[root@localhost ~]# vim /etc/fstab
+
+在最后一行增加如下信息
+
+UUID=b8c4a45f-ed74-3089-fcdb-0273de904d6d      /image    ext4    defaults    1 2
+```
+
+
+
 
 Linux Change Default User Home Directory While Adding A New User:
 
