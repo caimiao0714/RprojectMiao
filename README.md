@@ -565,6 +565,10 @@ guides(color = guide_colorbar(
  
  # Add some white space around the plot
  theme(plot.margin = margin(25, 25, 10, 25))
+ 
+ # Left/right align without space
+ theme(plot.title.position = "plot",
+       plot.caption.position = "plot")
 ```
 
 save plots
