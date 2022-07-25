@@ -450,6 +450,22 @@ To install `lme4` (dependency `nlopt`)
 yum install nlopt nlopt-devel
 ```
 
+### /lib64/libc.so.6: version `GLIBC_2.18' not found
+
+The answer below is not working for me for now.
+
+```
+wget https://ftp.gnu.org/gnu/glibc/glibc-2.25.tar.gz --no-check-certificate
+tar -xvzf glibc-2.25.tar.gz
+cd glibc-2.25/
+mkdir build
+cd build/
+# yum install kernel-devel
+../configure --prefix=/opt/local/glibc-2.25/
+make -j8
+make install
+```
+
 
 
 ### Install proj-9.0.0 with sqlite3
@@ -529,5 +545,26 @@ Check what user/IP is trying to log into the system
 
 ```
 vim /var/log/secure
+```
+
+# ggplot2 tricks
+
+```
+# change the legend
+guides(color = guide_colorbar(
+  title.position = 'top',
+  title.just = 0.5,
+  barwidth = unit(20, 'lines'),
+  barheight = unit(0.5, lines)))
+  
+ # remove spacing around the origin
+ coord_cartesian(
+    expand = FALSE, # remove margin
+    clip = 'off'    # remove clipping at borders
+ )
+ 
+ # Add some white space around the plot
+ theme(plot.margin = margin(25, 25, 10, 25))
+ 
 ```
 
