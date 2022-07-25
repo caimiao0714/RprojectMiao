@@ -565,6 +565,16 @@ guides(color = guide_colorbar(
  
  # Add some white space around the plot
  theme(plot.margin = margin(25, 25, 10, 25))
- 
 ```
 
+save plots
+
+```
+ggsave(file, width = 12, height = 8, device = cairo_pdf)
+
+pdftools::pdf_convert(
+  pdf = file, 
+  filenames = glue::glue("{str_remove(file, '.pdf')}.png"),
+  format = "png", dpi = 200
+)
+```
