@@ -582,3 +582,12 @@ pdftools::pdf_convert(
   format = "png", dpi = 200
 )
 ```
+
+
+Colors:
+
+- RStudio: #447099
+- SYSU: #024624
+- Sichuan U: #9A0000
+- SLU: #003EA5
+- Orange highlight: #EE6331
