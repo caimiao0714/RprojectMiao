@@ -591,3 +591,8 @@ Colors:
 - Sichuan U: #9A0000
 - SLU: #003EA5
 - Orange highlight: #EE6331
+
+# Mapping
+## Projection of China
+coord_sf(crs = 32649)
+
