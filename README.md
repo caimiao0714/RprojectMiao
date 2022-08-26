@@ -97,7 +97,7 @@ mypy = pydic(method = 'toneless', dic = 'pinyin2')
 Add a specific python version to jupyter notebook kernel
 
 ```
-conda create -n p36workshop python=3.6 ipykernel jupyter anaconda
+conda create -n p36workshop python=3.6 r-base=4.2.1 ipykernel jupyter anaconda
 source activate p36workshop
 ipython kernel install --name p36workshop --user
 ```
@@ -184,6 +184,19 @@ conda activate r4.1
 
 conda install -c r r-glue r-fansi 
 ```
+
+### BUG FIX
+
+```
+Your installed version is: 2.17
+
+Note that strict channel priority may have removed packages required for satisfiability.
+```
+
+```
+conda config --set channel_priority flexible
+```
+
 
 ## 3. Install R package from source
 
