@@ -576,6 +576,9 @@ guides(color = guide_colorbar(
     clip = 'off'    # remove clipping at borders
  )
  
+ # expand on one side but not another
+ scale_y_continuous(expand = expansion(mult = c(0, .1)))
+ 
  # Add some white space around the plot
  theme(plot.margin = margin(25, 25, 10, 25))
  
