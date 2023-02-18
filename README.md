@@ -612,3 +612,15 @@ Colors:
 ## Projection of China
 coord_sf(crs = 32649)
 
+# `arrow` read date
+
+```
+dd = open_dataset(
+  '/data2/ShareData/Environment/Air/CHAP/arrow/PM_components/BC/',
+  schema = schema(lon = float32(),
+                  lat = float32(),
+                  BC  = float32(),
+                  date = date32())) %>% 
+  filter(date == ymd('2014-01-01')) %>% 
+  collect()
+```
