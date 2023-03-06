@@ -587,6 +587,13 @@ guides(color = guide_colorbar(
        plot.caption.position = "plot")
 ```
 
+.gitignore untrack files
+
+```
+git rm -r --cached .
+```
+
+
 save plots
 
 ```
