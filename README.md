@@ -593,6 +593,14 @@ guides(color = guide_colorbar(
 git rm -r --cached .
 ```
 
+Check what files are being ignored by .gitignore
+
+```
+git check-ignore *
+git check-ignore -v *
+git check-ignore **/*
+```
+
 
 save plots
 
