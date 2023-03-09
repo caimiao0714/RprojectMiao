@@ -216,6 +216,21 @@ conda activate my_project
 ./start_rstudio_server.sh 8787  # use any free port number here. 
 ```
 
+### 5. export your conda environment to a `.yml` file
+
+```
+conda activate myenv
+conda env export > environment.yml
+conda env export --from-history > environment.yml
+```
+
+Create a conda environment using a `.yml` file:
+
+```
+conda env create -f environment.yml
+```
+
+
 # Linux setting
 
 Show all hard drives
