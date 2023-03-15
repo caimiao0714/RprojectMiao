@@ -642,6 +642,14 @@ Colors:
 ## Projection of China
 coord_sf(crs = 32649)
 
+## `data.table` tricks
+
+apply a function to pre-specified columns
+
+```
+data[ , (cancer_cols) := lapply(.SD, function(x){as.character(x)}), .SDcols = cancer_cols]
+```
+
 # `arrow` read date
 
 ```
