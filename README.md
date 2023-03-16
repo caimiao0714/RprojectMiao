@@ -302,6 +302,12 @@ Give a user sudo privilege
 usermod -aG wheel your-username
 ```
 
+Check GPU use
+
+```
+watch -d -n 0.5 nvidia-smi
+```
+
 ### Difference between `/etc/environment` and `/etc/profile`
 
 - `/etc/environment` - This file is specifically meant for system-wide environment variable settings. It is not a script file, but rather consists of assignment expressions, one per line. Specifically, this file stores the system-wide locale and path settings.
