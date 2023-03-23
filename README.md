@@ -635,6 +635,26 @@ pdftools::pdf_convert(
 )
 ```
 
+# Install h2o from local downloaded zip files
+
+## R
+
+```R
+$ unzip h2o-2.9.0.1735.zip
+$ cd h2o-2.9.0.1735/R
+$ pwd
+  ~/Downloads/h2o-2.9.0.1735/R
+> install.packages("~/Downloads/h2o-2.9.0.1735/R/h2o_2.9.0.1735.tar.gz",
+  repos = NULL, type = "source")
+> library(h2o)
+> demo(h2o.glm)
+```
+
+## python
+
+```python
+pip install ll h2o-3.40.0.2-py2.py3-none-any.whl
+```
 
 Colors:
 
