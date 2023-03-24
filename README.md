@@ -656,6 +656,12 @@ $ pwd
 pip install ll h2o-3.40.0.2-py2.py3-none-any.whl
 ```
 
+Kill ray::idle process
+
+```bash
+ps aux | grep ray::IDLE | grep -v grep | awk '{print $2}' | xargs kill -9
+```
+
 Colors:
 
 - RStudio: #447099
