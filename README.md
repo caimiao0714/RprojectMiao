@@ -590,6 +590,18 @@ guides(color = guide_colorbar(
   title.just = 0.5,
   barwidth = unit(20, 'lines'),
   barheight = unit(0.5, lines)))
+
+scale_fill_stepsn(colors = pal, na.value = "grey95", breaks = seq(0, 100, 10)) +
+theme(
+    legend.position = "top",
+    legend.key.width = unit(4, "line"),
+    legend.key.height = unit(0.7, "lines"),
+    legend.text = element_text(color = "#096884"),
+    plot.background = element_rect(fill = "#A2D0E9", color = NA),
+    plot.title = element_text(hjust = 0.5, color = "#096884", face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, margin = margin(5, 0, 10, 0), color = "#096884"),
+    plot.caption = element_text(hjust = 0.5, color = "#096884")
+  )
   
  # remove spacing around the origin
  coord_cartesian(
