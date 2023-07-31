@@ -625,6 +625,16 @@ theme_ipsum(grid = 'Y',
             base_family = 'Roboto', 
             base_size = 14, 
             axis_title_size = 16)
+
+# Roboto
+showtext::showtext_auto()
+font_add(
+  family = 'Roboto',
+  regular = glue('{font_path}/Roboto/Roboto-Regular.ttf'),
+  italic = glue('{font_path}/Roboto/Roboto-Italic.ttf'),
+  bold = glue('{font_path}/Roboto/Roboto-Bold.ttf'),
+  bolditalic = glue('{font_path}/Roboto/Roboto-BoldItalic.ttf')
+)
 ```
 
 .gitignore untrack files
