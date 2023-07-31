@@ -618,6 +618,13 @@ theme(
  # Left/right align without space
  theme(plot.title.position = "plot",
        plot.caption.position = "plot")
+
+# Stylish thing
+library(hrbrthemes)
+theme_ipsum(grid = 'Y', 
+            base_family = 'Roboto', 
+            base_size = 14, 
+            axis_title_size = 16)
 ```
 
 .gitignore untrack files
