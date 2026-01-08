@@ -134,6 +134,65 @@ conda install ipykernel
 ipython kernel install --user --name=your-env-name
 ```
 
+Export Excel file with formatted font, size, header, and borders
+
+```
+pacman::p_load(openxlsx)
+
+export_excel = function(output_data, file, sheet_name = 'Sheet1', header_name){
+  # Create a title style
+  title_style <- createStyle(
+    fontName = 'Arial',
+    fontSize = 10,
+    fontColour = "black",
+    halign = "center",
+    #fgFill = "#4F81BD",
+    textDecoration = "bold",
+    border = "Bottom"
+  )
+
+  my_style = createStyle(
+    fontName = 'Arial',
+    fontSize = 10,
+    halign = 'center',
+    valign = 'center',
+    borderStyle = 'thin',
+    border = 'TopBottomLeftRight',
+    wrapText = TRUE)
+
+  # Register the workbook
+  wb = createWorkbook()
+  addWorksheet(wb, sheet_name)
+
+  # Write header
+  writeData( wb, sheet = sheet_name, x = header_name, startCol = 1, startRow = 1)
+  mergeCells(wb, sheet = sheet_name, cols = 1:ncol(output_data), rows = 1)
+
+  addStyle(wb = wb,
+           sheet = sheet_name,
+           style = title_style,
+           rows = 1,
+           cols = 1:ncol(output_data))
+
+  # Write main table
+  writeData(wb, sheet = sheet_name, x = output_data, startCol = 1, startRow = 2)
+
+  addStyle(wb = wb,
+           sheet = sheet_name,
+           style = my_style,
+           rows = 2:(nrow(output_data) + 2),
+           cols = 1:ncol(output_data),
+           gridExpand = TRUE)
+
+  setColWidths(wb, "Sheet1", cols = 1:ncol(output_data), widths = "auto", ignoreMergedCells = TRUE)
+
+  saveWorkbook(wb = wb, file = file, overwrite = TRUE)
+}
+
+export_excel(d_output, 'example.xlsx', header_name = 'This is just a test header')
+```
+
+
 # Create R environment using conda
 
 ## 1. Install conda on linux
@@ -723,3 +782,4 @@ dd = open_dataset(
   filter(date == ymd('2014-01-01')) %>% 
   collect()
 ```
+
